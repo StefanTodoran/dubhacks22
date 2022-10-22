@@ -44,9 +44,9 @@
     ];
 
     const scan_btn = document.getElementById('scan-btn');
-    // displayItems(testList);
-    scan_btn.classList.add('hidden');
     scan_btn.addEventListener('click', () => {
+      scan_btn.classList.add('hidden');
+      displayItems(testList);
     });
 
     setupCamera();
@@ -70,6 +70,10 @@
     const template = document.getElementById('template');
     container.classList.add('active');
 
+    // clear the container except the template child
+    container.innerHTML = "";
+    container.appendChild(template);
+
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       // @ts-ignore
@@ -92,7 +96,6 @@
   }
 
   function addDuration(node: HTMLElement, type: string, duration: number) {
-    console.log(node, type, duration);
     const indicator:HTMLElement = node.querySelector("." + type);
     if (duration) {
       const length = (duration ** 0.5).toString();

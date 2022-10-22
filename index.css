@@ -1,12 +1,13 @@
 body {
   margin: 0;
   font-family: 'Quicksand', sans-serif;
+  overflow-x: hidden;
 
   --main-color: #F9B630;
   --dark-color: #604D42;
 }
 
-.scan-btn {
+#scan-btn {
   font-family: 'Quicksand', sans-serif;
   border: 1px solid var(--main-color);
   border-radius: 1em;
@@ -22,7 +23,7 @@ body {
   transform: translate(-50%, -50%);
 }
 
-.scan-btn:hover {
+#scan-btn:hover {
   background-color: var(--main-color);
   color: white;
 }
@@ -195,7 +196,7 @@ p {
     flex-direction: column;
   }
 
-  .scan-btn {
+  #scan-btn {
     font-size: 35px;
   }
 
