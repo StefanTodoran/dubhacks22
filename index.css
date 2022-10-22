@@ -11,7 +11,7 @@ button {
   border: 1px solid var(--main-color);
   border-radius: 1em;
   font-size: 50px;
-  padding: 10px 20px;
+  padding: 5px 20px;
   color: var(--main-color);
   background-color: #F9B63000;
   transition: background-color 0.5s ease, color 0.5s ease;
@@ -25,6 +25,13 @@ button:hover {
 
 p {
   max-width: 60em;
+}
+
+.hr {
+  background-color: lightgray;
+  width: 80vw;
+  height: 1px;
+  margin-bottom: 2em;
 }
 
 #scan-btn {
@@ -106,11 +113,73 @@ p {
   padding: 5vmin 5vmin;
 }
 
-.hr {
-  background-color: lightgray;
-  width: 80vw;
-  height: 1px;
-  margin-bottom: 2em;
+/* FOOD ITEM STYLES */
+.food-item {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1em;
+  --color: var(--dark-color);
+  --icon: url(assets/default.png);
+}
+
+.food-name {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: var(--color);
+  margin: 0 1em 0 0;
+}
+
+.food-name::before {
+  content: "";
+  display: inline-block;
+  background-size: 1em 1em;
+  height: 1em;
+  width: 1em;
+  background-image: var(--icon);
+}
+
+.food-duration-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+.food-duration {
+  position: relative;
+  height: 0.5em;
+  border-radius: 0.5em;
+  width: min(calc(var(--days) * 15px), 100%);
+  background-color: var(--color);
+}
+
+.food-duration::after {
+  content: var(--time);
+  position: absolute;
+  right: 0;
+  transform: translateY(-100%);
+}
+
+.vegetable {
+  --color: #008000;
+  --icon: url(assets/vegetable.png);
+}
+.meat {
+  --color: #D60700;
+  --icon: url(assets/meat.png);
+}
+.grains {
+  --color: #E66400;
+  --icon: url(assets/grain.png)
+}
+.dairy {
+  --color: #0083C9;
+  --icon: url(assets/dairy.png)
+}
+.fruit {
+  --color: #640078;
+  --icon: url(assets/fruit.png)
 }
 
 .hidden {
@@ -124,6 +193,5 @@ p {
 
   button {
     font-size: 35px;
-    /* padding: 10px 20px; */
   }
 }
