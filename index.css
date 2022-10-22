@@ -1,3 +1,57 @@
 body {
   margin: 0;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+#header, #footer a {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#header {
+  margin: 2.5vh 0;
+}
+
+#footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 7.5vh;
+  color: lightgray;
+}
+
+#logo {
+  max-height: 15vh;
+}
+
+#footer-logo {
+  filter: grayscale(1);
+  height: 1em;
+  margin-right: 0.5em;
+}
+
+#footer a {
+  /* font-weight: bold; */
+  color: lightgray;
+  text-decoration: none;
+}
+
+.container {
+  background-color: #fafafa;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  margin: 0 5vw;
+  /* TEMP BELOW, REMOVE */
+  min-height: 60vh;
+}
+
+.hr {
+  background-color: lightgray;
+  width: 80vw;
+  height: 1px;
+  margin-bottom: 2em;
 }
