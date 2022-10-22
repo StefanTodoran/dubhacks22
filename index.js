@@ -21,8 +21,15 @@
         }
       })
     }, options);
-    
+
     const dynamic_elements = document.querySelectorAll('.dynamic-item');
     dynamic_elements.forEach((element) => observer.observe(element));
+
+
+    // input:
+    // food item -> mapped to expiration date
+
+    // output:
+    // visualize that data
   }
 })();
