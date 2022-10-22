@@ -8,12 +8,14 @@ body {
 
 button {
   font-family: 'Quicksand', sans-serif;
-  font-size: large;
   border: 1px solid var(--main-color);
   border-radius: 1em;
+  font-size: 50px;
+  padding: 10px 20px;
   color: var(--main-color);
   background-color: #F9B63000;
   transition: background-color 0.5s ease, color 0.5s ease;
+  cursor: pointer;
 }
 
 button:hover {
@@ -23,6 +25,26 @@ button:hover {
 
 p {
   max-width: 60em;
+}
+
+#scan-btn {
+  position: absolute; 
+  top: 50%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#description {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 0 5vw;
+  padding: 5vmin 2.5vmin;
+}
+
+#description div {
+  padding: 0 2.5vmin;
 }
 
 #header, #footer a, #footer div {
@@ -68,11 +90,19 @@ p {
   opacity: 0.5;
 }
 
-.container {
+#visualizer {
+  position: relative;
+  border: 1px solid #e0e0e000;
+  border-radius: 5px;
+  padding-top: 2.5vmin;
+  margin: 0 5vw;
+  min-height: 15vh;
+  transition: border 0.5s ease, background-color 0.5s ease, padding 0.5s ease;
+}
+
+#visualizer.active {
   background-color: #fdfdfd;
   border: 1px solid #e0e0e0;
-  border-radius: 5px;
-  margin: 0 5vw;
   padding: 5vmin 5vmin;
 }
 
@@ -81,4 +111,19 @@ p {
   width: 80vw;
   height: 1px;
   margin-bottom: 2em;
+}
+
+.hidden {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  #description {
+    flex-direction: column;
+  }
+
+  button {
+    font-size: 35px;
+    /* padding: 10px 20px; */
+  }
 }

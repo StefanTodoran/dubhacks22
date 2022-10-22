@@ -31,12 +31,6 @@
     // const dynamic_elements = document.querySelectorAll('.dynamic-item');
     // dynamic_elements.forEach((element) => observer.observe(element));
 
-    // const testList:FoodItem[] = [
-    //   {name: "Carrots", group: "Vegetable", days: 21, fridge: true, tip: ""},
-    //   {name: "Broccoli", group: "Vegetable", days: 5, fridge: true, tip: ""},
-    //   {name: "Milk", group: "Dairy", days: 7, fridge: true}
-    // ];
-
     const testList:FoodItem[] = [
       {name: "Carrots", group: "Vegetable", fridge: 21, pantry: 7},
       {name: "Broccoli", group: "Vegetable", fridge: 5, pantry: 2},
@@ -47,7 +41,11 @@
       {name: "Margarine", on_open: 90},
     ];
 
-    displayItems(testList);
+    const scan_btn = document.getElementById('scan-btn');
+    scan_btn.addEventListener('click', () => {
+      displayItems(testList);
+      scan_btn.classList.add('hidden');
+    });
   }
 
   interface FoodItem {
@@ -64,6 +62,9 @@
   }
 
   function displayItems(items: FoodItem[]) {
+    const container = document.getElementById('visualizer');
+    container.classList.add('active');
+
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       console.log(item);

@@ -11,9 +11,15 @@
             { name: "Jam", on_open: 365 },
             { name: "Margarine", on_open: 90 },
         ];
-        displayItems(testList);
+        var scan_btn = document.getElementById('scan-btn');
+        scan_btn.addEventListener('click', function () {
+            displayItems(testList);
+            scan_btn.classList.add('hidden');
+        });
     }
     function displayItems(items) {
+        var container = document.getElementById('visualizer');
+        container.classList.add('active');
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
             console.log(item);
