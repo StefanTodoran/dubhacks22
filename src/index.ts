@@ -44,7 +44,7 @@
     ];
 
     const scan_btn = document.getElementById('scan-btn');
-    displayItems(testList);
+    // displayItems(testList);
     scan_btn.classList.add('hidden');
     scan_btn.addEventListener('click', () => {
     });

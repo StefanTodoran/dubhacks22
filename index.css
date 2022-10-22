@@ -6,7 +6,7 @@ body {
   --dark-color: #604D42;
 }
 
-button {
+.scan-btn {
   font-family: 'Quicksand', sans-serif;
   border: 1px solid var(--main-color);
   border-radius: 1em;
@@ -16,11 +16,21 @@ button {
   background-color: #F9B63000;
   transition: background-color 0.5s ease, color 0.5s ease;
   cursor: pointer;
+  position: absolute; 
+  top: 50%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-button:hover {
+.scan-btn:hover {
   background-color: var(--main-color);
   color: white;
+}
+
+#camera-inp {
+  opacity: 0; 
+  cursor: pointer;
+  position: absolute;
 }
 
 p {
@@ -32,13 +42,6 @@ p {
   width: 80vw;
   height: 1px;
   margin-bottom: 2em;
-}
-
-#scan-btn {
-  position: absolute; 
-  top: 50%; 
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 #description {
@@ -128,7 +131,7 @@ p {
   align-items: center;
   color: var(--color);
   margin: 0 1em 0 0;
-  min-width: 12em;
+  min-width: 8em;
 }
 
 .food-name::before {
@@ -192,12 +195,15 @@ p {
     flex-direction: column;
   }
 
-  button {
+  .scan-btn {
     font-size: 35px;
   }
 
   .food-name {
-    min-width: 6em;
     font-size: 14px;
+  }
+
+  .food-duration::after {
+    font-size: 10px;
   }
 }
