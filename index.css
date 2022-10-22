@@ -128,6 +128,7 @@ p {
   align-items: center;
   color: var(--color);
   margin: 0 1em 0 0;
+  min-width: 12em;
 }
 
 .food-name::before {
@@ -148,17 +149,17 @@ p {
 
 .food-duration {
   position: relative;
-  height: 0.5em;
-  border-radius: 0.5em;
-  width: min(calc(var(--days) * 15px), 100%);
+  height: 2em;
+  border-radius: 2em;
+  width: min(calc(var(--length) * 20%), 100%);
   background-color: var(--color);
 }
 
 .food-duration::after {
-  content: var(--time);
+  color: white;
+  content: var(--days);
   position: absolute;
-  right: 0;
-  transform: translateY(-100%);
+  right: 1em;
 }
 
 .vegetable {
@@ -193,5 +194,10 @@ p {
 
   button {
     font-size: 35px;
+  }
+
+  .food-name {
+    min-width: 6em;
+    font-size: 14px;
   }
 }

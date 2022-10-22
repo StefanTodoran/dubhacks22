@@ -44,9 +44,9 @@
     ];
 
     const scan_btn = document.getElementById('scan-btn');
+    displayItems(testList);
+    scan_btn.classList.add('hidden');
     scan_btn.addEventListener('click', () => {
-      displayItems(testList);
-      scan_btn.classList.add('hidden');
     });
 
     setupCamera();
@@ -76,7 +76,7 @@
       const node:HTMLElement = template.cloneNode(true);
 
       node.classList.remove('hidden');
-      node.querySelector('h2').textContent = item.name;
+      node.querySelector('h2').textContent = nbsp(item.name);
       if (item.group) {
         node.classList.add(item.group);
       }
@@ -95,10 +95,16 @@
     console.log(node, type, duration);
     const indicator:HTMLElement = node.querySelector("." + type);
     if (duration) {
-      indicator.style.setProperty('--days', duration.toString());
-      indicator.style.setProperty('--time', duration.toString() + " days");
+      const length = (duration ** 0.5).toString();
+      indicator.style.setProperty('--length', length);
+      const display_duration = nbsp('"' + duration.toString() + ' days"');
+      indicator.style.setProperty('--days', display_duration);
     } else {
       indicator.classList.add('hidden');
     }
+  }
+
+  function nbsp(string: string) {
+    return string.replace(/ /g, '\u00a0');
   }
 })();
