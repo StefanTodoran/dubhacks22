@@ -5,8 +5,9 @@
     "removeComments": true,
     "preserveConstEnums": true,
     "outFile": "build/tsc.js",
-    "sourceMap": true
+    "sourceMap": true,
+    "allowJs": true
   },
-  "include": ["src/*.ts"],
+  "include": ["src/*.ts", "src/*.js"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }
