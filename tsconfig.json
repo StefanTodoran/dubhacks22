@@ -6,7 +6,8 @@
     "preserveConstEnums": true,
     "outFile": "build/tsc.js",
     "sourceMap": true,
-    "allowJs": true
+    "allowJs": true,
+    "lib": [ "es2015", "dom" ]
   },
   "include": ["src/*.ts", "src/*.js"],
   "exclude": ["node_modules", "**/*.spec.ts"]

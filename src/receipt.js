@@ -1,18 +1,15 @@
-const {createWorker} = Tesseract;
-
-const worker = createWorker({
-    logger: console.log,
-});
-
-async function tesseract_main() {
+async function parseReceipt(img_element, logger) {
+    const worker = Tesseract.createWorker({
+        logger: logger,
+    });
+    
     await worker.load();
     await worker.loadLanguage('eng');
     await worker.initialize('eng');
-    const { data: { text } } = await worker.recognize('receipts/4.jpg');
+    const data = await worker.recognize(img_element);
     //const { data: { text } } = await worker.recognize('https://tesseract.projectnaptha.com/img/eng_bw.png');
-    console.log(text);
+    console.log(data);
     await worker.terminate();
+    return data.data;
 }
-
-//main();
 

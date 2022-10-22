@@ -46,6 +46,8 @@
       displayItems(testList);
       scan_btn.classList.add('hidden');
     });
+
+    setupCamera();
   }
 
   interface FoodItem {
