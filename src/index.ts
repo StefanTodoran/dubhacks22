@@ -8,7 +8,13 @@
    * on page load (include changing from one page to another).
    */
   function init() {
-    let options = {
+    interface Options {
+      root: any;
+      rootMargin: string;
+      threshold: number;
+    }
+
+    let options:Options = {
       root: null,
       rootMargin: '0px',
       threshold: 0.4
@@ -31,5 +37,7 @@
 
     // output:
     // visualize that data
+
+    console.log("test");
   }
 })();

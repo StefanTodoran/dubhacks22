@@ -1,6 +1,28 @@
 body {
   margin: 0;
-  font-family: 'Nunito Sans', sans-serif;
+  font-family: 'Quicksand', sans-serif;
+
+  --main-color: #F9B630;
+  --dark-color: #604D42;
+}
+
+button {
+  font-family: 'Quicksand', sans-serif;
+  font-size: large;
+  border: 1px solid var(--main-color);
+  border-radius: 1em;
+  color: var(--main-color);
+  background-color: #F9B63000;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+button:hover {
+  background-color: var(--main-color);
+  color: white;
+}
+
+p {
+  max-width: 60em;
 }
 
 #header, #footer a, #footer div {
@@ -21,6 +43,7 @@ body {
   align-items: center;
 
   margin-top: 7.5vh;
+  margin-bottom: 10vh;
   color: lightgray;
 }
 
@@ -50,8 +73,7 @@ body {
   border: 1px solid #e0e0e0;
   border-radius: 5px;
   margin: 0 5vw;
-  /* TEMP BELOW, REMOVE */
-  min-height: 60vh;
+  padding: 5vmin 5vmin;
 }
 
 .hr {
