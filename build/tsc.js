@@ -77,12 +77,7 @@ function init() {
         { name: "Bread", raw: "BREAD", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
         { name: "Milk", raw: "MILK", group: "dairy", on_open_fridge: 1, fridge: 7 },
     ];
-    var test = [
-        { title: "Long Girthy Schmeat Pie", utilized: ["large sausage", "potatoe", "apple"], img: "assets/rt1.jpg", time: 3, url: "https://www.allrecipes.com/recipe/76296/meat-pie/" },
-        { title: "Fruit Salad", utilized: ["carrots", "apples", "lemons", "berries", "watermelon"], img: "assets/rt1.jpg", time: 3, url: "https://www.delish.com/cooking/recipe-ideas/a19609963/easy-fruit-salad-recipe/" }
-    ];
     displayFoodItems(examples, "Example Data Visualization");
-    displayRecipes(test);
     setupCamera();
     var show_more = document.getElementById('show-more-btn');
     var demo = document.getElementById('demo');
@@ -157,6 +152,7 @@ function displayFoodItems(food_items, message) {
     container.insertBefore(text, container.firstChild);
 }
 function queryRecipes(food_items) {
+    console.log("queryRecipes()");
     if (food_items.length == 0) {
         return;
     }
@@ -187,6 +183,7 @@ function queryRecipes(food_items) {
         .then(function (response) { return processRecipes(JSON.parse(JSON.stringify(response.hits))); });
 }
 function processRecipes(recipe_objs) {
+    console.log("Processing recipes...");
     var recipes = [];
     for (var _i = 0, recipe_objs_1 = recipe_objs; _i < recipe_objs_1.length; _i++) {
         var recipe_obj = recipe_objs_1[_i];
@@ -205,7 +202,7 @@ function processRecipes(recipe_objs) {
         recipes.push(recipe_item);
     }
     console.log(recipes);
-    return recipes;
+    displayRecipes(recipes);
 }
 function addDuration(node, type, duration) {
     var indicator = node.querySelector("." + type);

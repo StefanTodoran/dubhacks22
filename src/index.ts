@@ -152,6 +152,8 @@ function displayFoodItems(food_items: FoodItem[], message: string = "Your Data")
 }
 
 function queryRecipes(food_items: FoodItem[]) {
+  console.log("queryRecipes()");
+
   if (food_items.length == 0) {
     return;
   }
@@ -181,6 +183,8 @@ function queryRecipes(food_items: FoodItem[]) {
 }
 
 function processRecipes(recipe_objs: any) {
+  console.log("Processing recipes...");
+
   let recipes: RecipeItem[] = []
   for (let recipe_obj of recipe_objs) {
     let recipe = recipe_obj.recipe;
@@ -198,7 +202,7 @@ function processRecipes(recipe_objs: any) {
     recipes.push(recipe_item);
   }
   console.log(recipes);
-  return recipes;
+  displayRecipes(recipes);
 }
 
 /**

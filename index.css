@@ -66,13 +66,14 @@ button {
   border: 1px solid black;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.75s ease, visibility 0.75s ease, border 0.75s ease;
+  transition: opacity 0.75s ease, visibility 0.75s ease, border 0.75s ease, padding 0.75s ease;
 }
 
 #demo.shown {
   border: 1px solid white;
   visibility: visible;
   opacity: 1;
+  padding-bottom: min(25px, 5vmin);
 }
 
 #demo-grid p {
@@ -382,6 +383,7 @@ p {
   color: var(--dark-color);
   padding-bottom: 2vh;
   overflow: hidden;
+  margin-bottom: 1em;
 }
 
 .recipe-name {
@@ -454,6 +456,10 @@ a:hover {
 
   #icons h1 {
     display: none;
+  }
+
+  #demo {
+    padding-bottom: 0 !important;
   }
 }
 
