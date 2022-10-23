@@ -56,12 +56,14 @@ function setupCamera() {
                     return [4, parseReceipt(files[0], textboxLogger)];
                 case 1:
                     data = _a.sent();
-                    textbox.innerText = "Result: " + data.text;
+                    textbox.innerText = data.text;
+                    parse_data(data.text);
                     _a.label = 2;
                 case 2: return [2];
             }
         });
     }); });
+    return null;
 }
 var wasmInstance;
 var memory;
@@ -112,7 +114,7 @@ function init() {
         { name: "Bread", raw: "BREAD", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
         { name: "Milk", raw: "MILK", group: "dairy", on_open_fridge: 1, fridge: 7 },
     ];
-    displayItems(examples, "Example Data Visualization");
+    displayFoodItems(examples, "Example Data Visualization");
     setupCamera();
     var show_more = document.getElementById('show-more-btn');
     var demo = document.getElementById('demo');
@@ -132,29 +134,47 @@ function displayRecipes(items, message) {
     var template = document.getElementById('recipe-template');
     container.innerHTML = "";
     container.appendChild(template);
-    for (var i = 0; i < items.length; i++) {
+    var _loop_1 = function (i) {
         var item = items[i];
         var node = template.cloneNode(true);
         node.classList.remove('hidden');
         node.id = "";
         node.querySelector('h2.recipe-name').textContent = item.title;
-        node.querySelector('span').textContent = nbsp(" (") + item.time + ")";
-        node.querySelector('a.recipe-url').href = item.url;
+        node.querySelector('span').textContent = nbsp(" (") + item.time + " mins)";
+        node.querySelector('.recipe-img').setAttribute('src', item.img);
+        node.querySelector('.recipe-url').setAttribute('href', item.url);
+        node.addEventListener('click', function () {
+            window.open(item.url, '_blank');
+        });
+        var utilized = "Includes ";
+        for (var j = 0; j <= Math.min(10, item.utilized.length); j++) {
+            if (item.utilized[j]) {
+                utilized += item.utilized[j].toLowerCase();
+                if (j < Math.min(10, item.utilized.length)) {
+                    utilized += ", ";
+                }
+            }
+        }
+        node.querySelector('p').textContent = utilized;
         container.insertBefore(node, template);
+    };
+    for (var i = 0; i < items.length; i++) {
+        _loop_1(i);
     }
     var text = document.createElement('h2');
     text.innerText = message;
     text.style.textAlign = "center";
     container.insertBefore(text, container.firstChild);
+    container.classList.remove('hidden');
 }
-function displayItems(items, message) {
+function displayFoodItems(food_items, message) {
     if (message === void 0) { message = "Your Data"; }
     var container = document.getElementById('visualizer');
     var template = document.getElementById('food-item-template');
     container.innerHTML = "";
     container.appendChild(template);
-    for (var i = 0; i < items.length; i++) {
-        var item = items[i];
+    for (var i = 0; i < food_items.length; i++) {
+        var item = food_items[i];
         var node = template.cloneNode(true);
         node.classList.remove('hidden');
         node.id = "";
@@ -178,6 +198,56 @@ function displayItems(items, message) {
     text.innerText = message;
     text.style.textAlign = "center";
     container.insertBefore(text, container.firstChild);
+}
+function queryRecipes(food_items) {
+    if (food_items.length == 0) {
+        return;
+    }
+    var food_item1 = null;
+    var min_days_left = Number.MAX_SAFE_INTEGER;
+    for (var _i = 0, food_items_1 = food_items; _i < food_items_1.length; _i++) {
+        var food_item = food_items_1[_i];
+        if (food_item.days_left < min_days_left) {
+            food_item1 = food_item;
+            min_days_left = food_item.days_left;
+        }
+    }
+    var food_item2 = null;
+    min_days_left = Number.MAX_SAFE_INTEGER;
+    for (var _a = 0, food_items_2 = food_items; _a < food_items_2.length; _a++) {
+        var food_item = food_items_2[_a];
+        if (food_item.group != food_item1.group && food_item.days_left < min_days_left) {
+            food_item2 = food_item;
+            min_days_left = food_item.days_left;
+        }
+    }
+    var food_names = [food_item1.name];
+    if (food_item2) {
+        food_names.push(food_item2.name);
+    }
+    fetch('https://api.edamam.com/search?q=' + food_names.join('+') + '&app_id=95184d17&app_key=0f50ed3c9420a4de48414fe67d08b4bc')
+        .then(function (response) { return response.json(); })
+        .then(function (response) { return processRecipes(JSON.parse(JSON.stringify(response.hits))); });
+}
+function processRecipes(recipe_objs) {
+    var recipes = [];
+    for (var _i = 0, recipe_objs_1 = recipe_objs; _i < recipe_objs_1.length; _i++) {
+        var recipe_obj = recipe_objs_1[_i];
+        var recipe = recipe_obj.recipe;
+        var ingredients = [];
+        for (var i = 0; i < recipe.ingredients.length; i++) {
+            ingredients.push(recipe.ingredients[i].food);
+        }
+        var recipe_item = {
+            title: recipe.label,
+            utilized: ingredients,
+            img: recipe.image,
+            time: Math.max(recipe.totalTime, 10),
+            url: recipe.url
+        };
+        recipes.push(recipe_item);
+    }
+    displayRecipes(recipes);
 }
 function addDuration(node, type, duration) {
     var indicator = node.querySelector("." + type);
@@ -206,9 +276,12 @@ function quoted(string) {
 var RECEIPT = "\nSee back of rece jour chance\nto win 1000 154 ERTvikEa0G\ng Walmart 3i\n118511102 Mar JAHIE BRODKSHIRE\nBBgRs yfanEMQDMI gs\nST8 05483 00y 00000 R 009 e 06976\nTATER TOTS 001312000026 F 2.36 0\nHARD/PROV/DC 007874219410 F 2.68 0\nSNACK BARS 002190848816 F 4.98 T\nHRI CL CHS 003120806000 F 6.88 0\nHRI CL CHS 003120806000 F 6.88 0\nHRI CL CHS 003120806000 F 6.88 0\n** VOIDED ENTRY**\nHRT CL CHS 003120506000 F 58.80\nHRI 12 U SG 003120836000 F 6.88 0\nHRI CL PEP 003120807000 F 5.88 0\nEARBUDS 068113100946 488 X\nSC BCN CHDDR 007874202906 F 6.98 0\nABF THINBRST 022461710972 F 97.20\nPOTATO 007874219410 F 26.80\nDV RSE OTL W 001111101220 i\nAPPLE 3 BAG 0B4747300184 F 6.47 N\nSTOK LT SUT 004127102774 F 4.42 T J\nPEANUT BUTTR 005160026499 F 6.44 0 1\nAVO VERDE 061611206143 F 2.98 N\nROLLS P o BT 18\nBAGELS 001376402801 F 41.86 0\nGV SLTDERS 007874201525 2.98 X\nACCESSORY 007616161216 01.97 X\nCHEEZE IT 002410063623 F 40.00\nUAS 459 YOU SAVED 054\nRITZ 004400088210 F 2.78 N\nRUFFLES 002840020942 F 2.50 N\nGV HNY GRNS 007874207263 F 1.28 N\nSUBTOTAL 13944\nTAX 1 7000 458\nTOTAL 14402\nCASH TEND 16002\nCHANGE DUE 600\nITENS SOLD 26\nTCH ovrs EGTF 107z ij gfsa 5\nMM\no\nAU T\n04727719 1216946\nScan with Walnart ap to save recelpts\nmiE\ni\nmE\n";
 var keywords_to_food_items = [];
 var final_food_items = [];
-fetch('data/foodkeeper.json', { mode: 'no-cors' })
-    .then(function (response) { return response.json(); })
-    .then(function (food_data) { return process_food_data(JSON.parse(JSON.stringify(food_data))); });
+function parse_data(raw_receipt) {
+    console.log(raw_receipt);
+    fetch('data/foodkeeper.json', { mode: 'no-cors' })
+        .then(function (response) { return response.json(); })
+        .then(function (food_data) { return process_food_data(JSON.parse(JSON.stringify(food_data)), raw_receipt); });
+}
 function get_days(max_time, metric) {
     if (JSON.stringify(metric).includes("Day")) {
         return max_time;
@@ -250,7 +323,7 @@ function get_category(category_id_object) {
         return "default";
     }
 }
-function process_food_data(food_data) {
+function process_food_data(food_data, raw_receipt) {
     for (var _i = 0, _a = food_data.sheets[2].data; _i < _a.length; _i++) {
         var food_entry = _a[_i];
         var food_name = food_entry[2]["Name"];
@@ -259,29 +332,46 @@ function process_food_data(food_data) {
         if (food_category != "default") {
             food_item.group = food_category;
         }
+        food_item.days_left = 0;
         if (food_entry[6] && !JSON.stringify(food_entry[6]).includes(null)) {
-            food_item.pantry = get_days(food_entry[6]["Pantry_Max"], food_entry[7]);
+            var num_days = get_days(food_entry[6]["Pantry_Max"], food_entry[7]);
+            food_item.pantry = num_days;
+            food_item.days_left += num_days;
         }
         else if (food_entry[10] && !JSON.stringify(food_entry[10]).includes(null)) {
-            food_item.pantry = get_days(food_entry[10]["DOP_Pantry_Max"], food_entry[11]);
+            var num_days = get_days(food_entry[10]["DOP_Pantry_Max"], food_entry[11]);
+            food_item.pantry = num_days;
+            food_item.days_left += num_days;
         }
         if (food_entry[14] && !JSON.stringify(food_entry[14]).includes(null)) {
-            food_item.on_open_pantry = get_days(food_entry[14]["Pantry_After_Opening_Max"], food_entry[15]);
+            var num_days = get_days(food_entry[14]["Pantry_After_Opening_Max"], food_entry[15]);
+            food_item.on_open_pantry = num_days;
+            food_item.days_left += num_days;
         }
         if (food_entry[17] && !JSON.stringify(food_entry[17]).includes(null)) {
-            food_item.fridge = get_days(food_entry[17]["Refrigerate_Max"], food_entry[18]);
+            var num_days = get_days(food_entry[17]["Refrigerate_Max"], food_entry[18]);
+            food_item.fridge = num_days;
+            food_item.days_left += num_days;
         }
         else if (food_entry[21] && !JSON.stringify(food_entry[21]).includes(null)) {
-            food_item.fridge = get_days(food_entry[21]["DOP_Refrigerate_Max"], food_entry[22]);
+            var num_days = get_days(food_entry[21]["DOP_Refrigerate_Max"], food_entry[22]);
+            food_item.fridge = num_days;
+            food_item.days_left += num_days;
         }
         if (food_entry[25] && !JSON.stringify(food_entry[25]).includes(null)) {
-            food_item.on_open_fridge = get_days(food_entry[25]["Refrigerate_After_Opening_Max"], food_entry[26]);
+            var num_days = get_days(food_entry[25]["Refrigerate_After_Opening_Max"], food_entry[26]);
+            food_item.on_open_fridge = num_days;
+            food_item.days_left += num_days;
         }
         if (food_entry[31] && !JSON.stringify(food_entry[31]).includes(null)) {
-            food_item.freezer = get_days(food_entry[31]["Freeze_Max"], food_entry[32]);
+            var num_days = get_days(food_entry[31]["Freeze_Max"], food_entry[32]);
+            food_item.freezer = num_days;
+            food_item.days_left += num_days;
         }
         else if (food_entry[35] && !JSON.stringify(food_entry[35]).includes(null)) {
-            food_item.freezer = get_days(food_entry[35]["DOP_Freeze_Max"], food_entry[36]);
+            var num_days = get_days(food_entry[35]["DOP_Freeze_Max"], food_entry[36]);
+            food_item.freezer = num_days;
+            food_item.days_left += num_days;
         }
         if (!food_item.pantry && !food_item.fridge && !food_item.freezer &&
             !food_item.on_open_pantry && !food_item.on_open_fridge) {
@@ -304,7 +394,7 @@ function process_food_data(food_data) {
             keywords_to_food_items.push([filtered_keywords, food_item]);
         }
     }
-    process_receipt(RECEIPT);
+    process_receipt(raw_receipt);
 }
 var INSERTION_COST = 1;
 var DELETION_COST = 4;
@@ -403,19 +493,10 @@ function process_receipt(receipt) {
     }
     var scan_btn = document.getElementById('scan-btn');
     scan_btn.addEventListener('click', function () {
-        displayItems(final_food_items);
+        displayFoodItems(final_food_items);
+        queryRecipes(final_food_items);
     });
 }
-var food_names = ["shrimp", "bagel"];
-function query_recipes(food_names) {
-    fetch('https://api.edamam.com/search?q=' + food_names.join('+') + '&app_id=95184d17&app_key=0f50ed3c9420a4de48414fe67d08b4bc')
-        .then(function (response) { return response.json(); })
-        .then(function (response) { return process_recipes(response.hits); });
-}
-function process_recipes(recipes) {
-    console.log(recipes);
-}
-query_recipes(food_names);
 function visImage(elem, image) {
     return __awaiter(this, void 0, void 0, function () {
         var copy, _a;
@@ -581,7 +662,6 @@ function loadAndProcessImageCanvas(img_element) {
                     context.drawImage(tmpBitmap, 0, 0, width, height);
                     delete tmpBitmap;
                     blurred = context.getImageData(0, 0, width, height);
-                    visImageCan(blurred);
                     maskimage = new ImageData(width, height);
                     for (i = 0; i < width * height; i++) {
                         thresh = blurred.data[i * 4] - 50;
@@ -591,7 +671,6 @@ function loadAndProcessImageCanvas(img_element) {
                         maskimage.data[i * 4 + 2] = val;
                         maskimage.data[i * 4 + 3] = 255;
                     }
-                    visImageCan(maskimage);
                     return [4, createImageBitmap(maskimage)];
                 case 5:
                     tmpBitmap = _a.sent();

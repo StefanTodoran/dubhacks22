@@ -54,9 +54,12 @@ var keywords_to_food_items: any[] = [];
 
 var final_food_items: FoodItem[] = [];
 
-fetch('data/foodkeeper.json', {mode: 'no-cors'})
-  .then((response) => response.json())
-  .then((food_data) => process_food_data(JSON.parse(JSON.stringify(food_data))));
+function parse_data(raw_receipt: string) {
+  console.log(raw_receipt);
+  fetch('data/foodkeeper.json', {mode: 'no-cors'})
+    .then((response) => response.json())
+    .then((food_data) => process_food_data(JSON.parse(JSON.stringify(food_data)), raw_receipt));
+}
 
 function get_days(max_time: number, metric: string) {
   if (JSON.stringify(metric).includes("Day")) {
@@ -91,7 +94,7 @@ function get_category(category_id_object: any) {
   }
 }
 
-function process_food_data(food_data: any) {
+function process_food_data(food_data: any, raw_receipt: string) {
   for (let food_entry of food_data.sheets[2].data) {
     // find expiration by iterating through storage types for 1st non-null
     let food_name: string = food_entry[2]["Name"];
@@ -102,26 +105,44 @@ function process_food_data(food_data: any) {
       food_item.group = food_category;
     }
 
+    food_item.days_left = 0;
+
     if (food_entry[6] && !JSON.stringify(food_entry[6]).includes(null)) {
-      food_item.pantry = get_days(food_entry[6]["Pantry_Max"], food_entry[7]);
+      let num_days = get_days(food_entry[6]["Pantry_Max"], food_entry[7]);
+      food_item.pantry = num_days;
+      food_item.days_left += num_days; 
     } else if (food_entry[10] && !JSON.stringify(food_entry[10]).includes(null)) {
-      food_item.pantry = get_days(food_entry[10]["DOP_Pantry_Max"], food_entry[11]);
+      let num_days = get_days(food_entry[10]["DOP_Pantry_Max"], food_entry[11]);
+      food_item.pantry = num_days;
+      food_item.days_left += num_days;
     }
     if (food_entry[14] && !JSON.stringify(food_entry[14]).includes(null)) {
-      food_item.on_open_pantry = get_days(food_entry[14]["Pantry_After_Opening_Max"], food_entry[15]);
+      let num_days = get_days(food_entry[14]["Pantry_After_Opening_Max"], food_entry[15]);
+      food_item.on_open_pantry = num_days;
+      food_item.days_left += num_days;
     }
     if (food_entry[17] && !JSON.stringify(food_entry[17]).includes(null)) {
-      food_item.fridge = get_days(food_entry[17]["Refrigerate_Max"], food_entry[18]);
+      let num_days = get_days(food_entry[17]["Refrigerate_Max"], food_entry[18]);
+      food_item.fridge = num_days;
+      food_item.days_left += num_days;
     } else if (food_entry[21] && !JSON.stringify(food_entry[21]).includes(null)) {
-      food_item.fridge = get_days(food_entry[21]["DOP_Refrigerate_Max"], food_entry[22]);
+      let num_days = get_days(food_entry[21]["DOP_Refrigerate_Max"], food_entry[22]);
+      food_item.fridge = num_days;
+      food_item.days_left += num_days;
     }
     if (food_entry[25] && !JSON.stringify(food_entry[25]).includes(null)) {
-      food_item.on_open_fridge = get_days(food_entry[25]["Refrigerate_After_Opening_Max"], food_entry[26]);
+      let num_days = get_days(food_entry[25]["Refrigerate_After_Opening_Max"], food_entry[26]);
+      food_item.on_open_fridge = num_days;
+      food_item.days_left += num_days;
     }
     if (food_entry[31] && !JSON.stringify(food_entry[31]).includes(null)) {
-      food_item.freezer = get_days(food_entry[31]["Freeze_Max"], food_entry[32]);
+      let num_days = get_days(food_entry[31]["Freeze_Max"], food_entry[32]);
+      food_item.freezer = num_days;
+      food_item.days_left += num_days;
     } else if (food_entry[35] && !JSON.stringify(food_entry[35]).includes(null)) {
-      food_item.freezer = get_days(food_entry[35]["DOP_Freeze_Max"], food_entry[36]);
+      let num_days = get_days(food_entry[35]["DOP_Freeze_Max"], food_entry[36]);
+      food_item.freezer = num_days;
+      food_item.days_left += num_days;
     }
     if (!food_item.pantry && !food_item.fridge && !food_item.freezer &&
         !food_item.on_open_pantry && !food_item.on_open_fridge) {
@@ -146,7 +167,7 @@ function process_food_data(food_data: any) {
     }
   }
 
-  process_receipt(RECEIPT);
+  process_receipt(raw_receipt);
 }
 
 var INSERTION_COST = 1;
@@ -272,7 +293,8 @@ function process_receipt(receipt: string) {
 
   const scan_btn = document.getElementById('scan-btn');
   scan_btn.addEventListener('click', () => {
-    displayItems(final_food_items);
+    displayFoodItems(final_food_items);
+    queryRecipes(final_food_items);
   });
 }
 

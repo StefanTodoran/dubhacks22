@@ -1,3 +1,7 @@
+html, body {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   font-family: 'Quicksand', sans-serif;
@@ -66,13 +70,14 @@ button {
   border: 1px solid black;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.75s ease, visibility 0.75s ease, border 0.75s ease;
+  transition: opacity 0.75s ease, visibility 0.75s ease, border 0.75s ease, padding 0.75s ease;
 }
 
 #demo.shown {
   border: 1px solid white;
   visibility: visible;
   opacity: 1;
+  padding-bottom: min(25px, 5vmin);
 }
 
 #demo-grid p {
@@ -85,10 +90,6 @@ button {
   max-height: min(300px, 20vmin);
   max-width: min(300px, 20vmin);
   margin-right: 10px;
-}
-
-p {
-  max-width: 60em;
 }
 
 .hr {
@@ -110,7 +111,7 @@ p {
   padding: 0 2.5vmin;
 }
 
-#header, #footer a, #footer div, .recipe-title-line {
+#header, #footer a, #footer div {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -148,6 +149,7 @@ p {
 
 .footer-icon {
   filter: grayscale(1);
+  opacity: 0.5;
   height: 1em;
   margin: 0 0.5em;
 }
@@ -208,6 +210,7 @@ p {
 
 /* FOOD ITEM STYLES */
 .food-item {
+  display: flex;
   flex-direction: column;
   margin-bottom: 1em;
 
@@ -216,24 +219,15 @@ p {
   --icon: url(assets/default.png);
 }
 
-.food-item:hover {
+.food-item:hover, .recipe-item:hover {
   background-color: #f0f0f0;
   border: 1px solid #999999;
 }
 
-.recipe-item:hover {
-  background-color: #f9f9f9;
-  border: 1px solid #d9d9d9;
-}
-
 .food-item, .recipe-item {
-  display: flex;
   padding: 1vh 1vw;
   border-radius: 10px;
   transition: border 0.5s ease, background-color 0.5s ease;
-}
-
-.food-item {
   background-color: #f9f9f9;
   border: 1px solid #d9d9d9;
 }
@@ -386,11 +380,11 @@ p {
 
 /* RECIPE ITEM STYLES */
 .recipe-item {
-  flex-direction: column;
-  align-items: flex-start;
-  border: 1px solid #00000000;
+  position: relative;
   color: var(--dark-color);
   padding-bottom: 2vh;
+  overflow: hidden;
+  margin-bottom: 1em;
 }
 
 .recipe-name {
@@ -398,12 +392,19 @@ p {
   margin: 0 1em 0 0;
 }
 
+.recipe-item p {
+  margin-bottom: 0;
+}
+
 .recipe-item:hover {
   cursor: pointer;
 }
 
-.recipe-item .icon {
-  filter: grayscale(0.8);
+.recipe-img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
 }
 
 a {
@@ -430,7 +431,7 @@ a:hover {
     padding: 2.5vmin 0;
   }
 
-  .food-name {
+  .food-name, .recipe-name {
     font-size: 22px;
     margin: 0;
   }
@@ -457,6 +458,10 @@ a:hover {
   #icons h1 {
     display: none;
   }
+
+  #demo {
+    padding-bottom: 0 !important;
+  }
 }
 
 @media screen and (max-width: 768px) {
@@ -476,6 +481,10 @@ a:hover {
 
   .food-name {
     font-size: 18px;
+  }
+
+  .recipe-name {
+    font-size:  20px;
   }
 
   .food-raw {
