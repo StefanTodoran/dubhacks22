@@ -324,13 +324,12 @@ p {
   }
 
   .food-duration-container {
-    margin-left: 1.75em;
-    width: calc(100% - 1.5em);
+    width: calc(100% - 2em);
   }
 
   .food-duration-container.double-len {
-    margin-left: 3.75em;
-    width: calc(100% - 3.75em);
+    margin-left: 4em;
+    width: calc(100% - 4em);
   }
 }
 
