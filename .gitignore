@@ -5,3 +5,5 @@ node_modules/
 *.tsbuildinfo
 
 /build/tsc.js.map
+
+.DS_Store
