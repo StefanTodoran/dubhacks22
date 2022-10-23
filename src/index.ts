@@ -44,6 +44,8 @@ interface RecipeItem {
   url: string, // link to the recipe
 }
 
+var MAX_RECIPES = 5;
+
 /**
  * Takes a list of RecipeItems and displays them in the recipe list with appropraite icons
  * and description, as well as a link. Clears the container.
@@ -78,7 +80,7 @@ function displayRecipes(recipe_items: RecipeItem[], message: string = "Your Reci
     for (let j = 0; j <= Math.min(10, item.utilized.length); j++) {
       if (item.utilized[j]) {
         utilized += item.utilized[j].toLowerCase();
-        if (j < Math.min(10, item.utilized.length)) {
+        if (j < Math.min(item.utilized.length, MAX_RECIPES)) {
           utilized += ", ";
         }
       }
