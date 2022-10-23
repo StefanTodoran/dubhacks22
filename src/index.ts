@@ -19,7 +19,13 @@ function init() {
     { name: "Milk", raw: "MILK", group: "dairy", on_open_fridge: 1, fridge: 7 },
   ];
 
+  const test: RecipeItem[] = [
+    { title: "Long Girthy Schmeat Pie", utilized: ["large sausage", "potatoe", "apple"], img: "assets/rt1.jpg", time: 3, url: "https://www.allrecipes.com/recipe/76296/meat-pie/" },
+    { title: "Fruit Salad", utilized: ["carrots", "apples", "lemons", "berries", "watermelon"], img: "assets/rt1.jpg", time: 3, url: "https://www.delish.com/cooking/recipe-ideas/a19609963/easy-fruit-salad-recipe/" }
+  ]
+
   displayItems(examples, "Example Data Visualization");
+  displayRecipes(test);
   setupCamera();
 
   const show_more = document.getElementById('show-more-btn');
@@ -36,9 +42,9 @@ function init() {
 
 interface RecipeItem {
   title: string,
-  utilized: FoodItem[], // specific food items user used in this recipe
-  categories: string[], // food categories present in this recipe
+  utilized: string[], // specific food items user used in this recipe
   time: number, // time to make in hours
+  img: string,
   url: string, // link to the recipe
 }
 
@@ -67,7 +73,12 @@ function displayRecipes(items: RecipeItem[], message: string = "Your Recipes") {
     node.querySelector('span').textContent = nbsp(" (") + item.time + ")";
     // @ts-ignore stupid whore typescript I'm literally querying for an <a> tag...
     node.querySelector('a.recipe-url').href = item.url;
-    // node.querySelector('p').textContent = item.utilized;
+
+    let utilized = "Includes"
+    for (let j = 0; j < Math.min(10, item.utilized.length); j++) {
+      utilized += " " + item.utilized[j];
+    }
+    node.querySelector('p').textContent = utilized;
 
     // insert after template
     container.insertBefore(node, template);
@@ -77,6 +88,7 @@ function displayRecipes(items: RecipeItem[], message: string = "Your Recipes") {
   text.innerText = message;
   text.style.textAlign = "center";
   container.insertBefore(text, container.firstChild);
+  container.classList.remove('hidden');
 }
 
 interface FoodItem {
