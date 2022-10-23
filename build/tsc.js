@@ -44,10 +44,14 @@ function setupCamera() {
         loader_txt.textContent = nbsp(status.status + '...');
         loader.style.setProperty('--progress', status.progress);
         if (status.status === 'recognizing text' && status.progress === 1) {
-            for (var i = 0; i < scan_btns.length; i++) {
-                scan_btns[i].classList.remove('hidden');
-            }
-            loader.classList.add('hidden');
+            loader.classList.add('fade-out');
+            setTimeout(function () {
+                for (var i = 0; i < scan_btns.length; i++) {
+                    scan_btns[i].classList.remove('hidden');
+                }
+                loader.classList.add('hidden');
+                loader.classList.remove('fade-out');
+            }, 5000);
         }
     };
     var on_click = function (event) { return __awaiter(_this, void 0, void 0, function () {
@@ -602,7 +606,6 @@ function loadAndProcessImageCanvas(img_element) {
                     }
                     delete imageBitmap;
                     image = context.getImageData(0, 0, width, height);
-                    console.log(width);
                     for (i = 0; i < width * height; i++) {
                         average = (image.data[i * 4 + 0] + image.data[i * 4 + 1] + image.data[i * 4 + 2]) / 3;
                         image.data[i * 4 + 0] = average;
@@ -682,7 +685,6 @@ function parseReceipt(img_element, logger) {
                     return [4, worker.recognize(dataurl)];
                 case 5:
                     data = _a.sent();
-                    console.log(data);
                     return [4, worker.terminate()];
                 case 6:
                     _a.sent();

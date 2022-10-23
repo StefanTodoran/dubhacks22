@@ -14,17 +14,67 @@ body {
 
 #loader {
   position: relative;
-  width: calc(80vw * var(--progress));
-  height: 1em;
-  border-radius: 1em;
+  width: max(2em, calc(80vw * var(--progress)));
+  height: 2em;
+  border-radius: 2em;
   background-color: #F9B63099;
 }
+
 #loader-text {
   color: var(--main-color);
   position: absolute;
   top: 0;
   left: 50%;
   transform: translate(-50%, -200%);
+}
+
+#loader::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  display: inline-block;
+  background-image: url(assets/orange.svg);
+
+  background-size: 2em 2em;
+  height: 2em;
+  width: 2em;
+
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: none;
+  }
+  25% {
+    transform: scale(1.1);
+  }
+  0% {
+    transform: none;
+  }
+  75% {
+    transform: scale(0.9);
+  }
+}
+
+#loader.fade-out {
+  animation: fade-out 5s forwards;
+  background-color: #ABD14899;
+}
+#loader.fade-out::before {
+  background-image: url(assets/lime.svg);
+}
+#loader.fade-out #loader-text {
+  color: #ABD148;
+}
+
+@keyframes fade-out {
+  0%, 80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 .row {
