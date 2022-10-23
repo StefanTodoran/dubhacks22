@@ -1,6 +1,6 @@
 # frijma
 
-#### Website: https://todoran.dev/frijma
+### Website: https://todoran.dev/frijma
 
 #### A web app dedicated to reducing global food waste, one receipt at a time.
 
