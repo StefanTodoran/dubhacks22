@@ -6,7 +6,8 @@ function setupCamera() : string {
     const scan_btns = document.querySelectorAll('.scan-btn');
 
     const loaderProgress = (status: any) => {
-        loader_txt.textContent = nbsp(status.status + '...');
+        const percent = Math.floor((status.progress / 1) * 100);
+        loader_txt.textContent = nbsp(status.status + `... (${percent}%)`);
         loader.style.setProperty('--progress', status.progress);
 
         if (status.status === 'recognizing text' && status.progress === 1) {
