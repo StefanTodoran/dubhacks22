@@ -8,29 +8,8 @@
    * on page load (include changing from one page to another).
    */
   function init() {
-    // interface Options {
-    //   root: any;
-    //   rootMargin: string;
-    //   threshold: number;
-    // }
-
-    // let options:Options = {
-    //   root: null,
-    //   rootMargin: '0px',
-    //   threshold: 0.4
-    // };
-
-    // const observer = new IntersectionObserver((entries) => {
-    //   entries.forEach((entry) => {
-    //     if (entry.isIntersecting) {
-    //       entry.target.classList.add('shown');
-    //     }
-    //   })
-    // }, options);
-
-    // const dynamic_elements = document.querySelectorAll('.dynamic-item');
-    // dynamic_elements.forEach((element) => observer.observe(element));
-
+    
+    // DELETE THIS!!
     const testList:FoodItem[] = [
       {name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2},
       {name: "Milk", group: "dairy", fridge: 7},
@@ -44,12 +23,22 @@
     ];
 
     const scan_btn = document.getElementById('scan-btn');
-    scan_btn.addEventListener('click', () => {
-    });
+    scan_btn.addEventListener('click', () => {});
     scan_btn.classList.add('hidden');
     displayItems(testList);
 
     setupCamera();
+  }
+
+  interface RecipeItem {
+    title: string,
+    utilized: FoodItem[], // specific food items user used in this recipe
+    categories: string[], // food categories present in this recipe
+    time: number, // time to make in hours
+  }
+
+  function displayRecipes(items: RecipeItem[]) {
+    console.log("Not Yet Implemented!");
   }
 
   interface FoodItem {
@@ -65,6 +54,11 @@
     tip?: string,
   }
 
+  /**
+   * Takes a list of FoodItems and displays them in the visualizer with appropraite icons
+   * as a bar graph of the duration that they keep in various environments. Clears the visualizer.
+   * @param items The list of food items
+   */
   function displayItems(items: FoodItem[]) {
     const container = document.getElementById('visualizer');
     const template = document.getElementById('template');
@@ -95,6 +89,13 @@
     }
   }
 
+  /**
+   * Sets up a food-duration bar inside a food-item, or if the food duration is unset,
+   * hides the corresponding div.
+   * @param node A food-item div, a clone of the foot-item template
+   * @param type A duration type, one of the four options in the FoodItem interface 
+   * @param duration The actual value stored for that duration in the FoodItem object, can be null
+   */
   function addDuration(node: HTMLElement, type: string, duration: number) {
     const indicator:HTMLElement = node.querySelector("." + type);
     if (duration) {
@@ -107,6 +108,7 @@
     }
   }
 
+  // Replaces spaces with non breaking spaces.
   function nbsp(string: string) {
     return string.replace(/ /g, '\u00a0');
   }
