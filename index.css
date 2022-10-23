@@ -25,7 +25,7 @@ button {
   padding: 2px 8px;
 }
 
-#scan-btn, button {
+.scan-btn, button {
   font-family: 'Quicksand', sans-serif;
   border: 1px solid var(--main-color);
   border-radius: 1em;
@@ -35,12 +35,12 @@ button {
   cursor: pointer;
 }
 
-#scan-btn {
+.scan-btn {
   font-size: 50px;
   padding: 5px 20px;
 }
 
-#scan-btn:hover, button:hover {
+.scan-btn:hover, button:hover {
   background-color: var(--main-color);
   color: white;
 }
@@ -418,7 +418,7 @@ a:hover {
   text-decoration: underline;
 }
 
-.hidden {
+.hidden, .mobile-version {
   display: none;
 }
 
@@ -465,6 +465,14 @@ a:hover {
 }
 
 @media screen and (max-width: 768px) {
+  .mobile-version {
+    display: flex;
+  }
+
+  .desktop-version {
+    display: none;
+  }
+
   .food-duration-container {
     margin-left: 2em;
     width: calc(100% - 2em);
@@ -475,7 +483,7 @@ a:hover {
     width: calc(100% - 4em);
   }
 
-  #scan-btn {
+  .scan-btn {
     font-size: 35px;
   }
 

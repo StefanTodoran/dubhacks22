@@ -290,11 +290,13 @@ function process_receipt(receipt: string) {
     }
   }
 
-  const scan_btn = document.getElementById('scan-btn');
-  scan_btn.addEventListener('click', () => {
-    displayFoodItems(final_food_items);
-    queryRecipes(final_food_items);
-  });
+  const scan_btns = document.querySelectorAll('.scan-btn');
+  for (let i = 0; i < scan_btns.length; i++) {
+      scan_btns[i].addEventListener('click', () => {
+        displayFoodItems(final_food_items);
+        queryRecipes(final_food_items);
+      });
+  }
 }
 
 //  0. "ID"
