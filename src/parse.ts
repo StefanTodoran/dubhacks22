@@ -5,34 +5,34 @@ g Walmart 3i
 118511102 Mar JAHIE BRODKSHIRE
 BBgRs yfanEMQDMI gs
 ST8 05483 00y 00000 R 009 e 06976
-TATER TOTS 001312000026 F 236 0
-HARD/PROV/DC 007874219410 F 268 0
-SNACK BARS 002190848816 F 498 T
-HRI CL CHS 003120806000 F 688 0
-HRI CL CHS 003120806000 F 688 0
-HRI CL CHS 003120806000 F 688 0
+TATER TOTS 001312000026 F 2.36 0
+HARD/PROV/DC 007874219410 F 2.68 0
+SNACK BARS 002190848816 F 4.98 T
+HRI CL CHS 003120806000 F 6.88 0
+HRI CL CHS 003120806000 F 6.88 0
+HRI CL CHS 003120806000 F 6.88 0
 ** VOIDED ENTRY**
-HRT CL CHS 003120506000 F 5880
-HRI 12 U SG 003120836000 F 688 0
-HRI CL PEP 003120807000 F 588 0
+HRT CL CHS 003120506000 F 58.80
+HRI 12 U SG 003120836000 F 6.88 0
+HRI CL PEP 003120807000 F 5.88 0
 EARBUDS 068113100946 488 X
-SC BCN CHDDR 007874202906 F 698 0
-ABF THINBRST 022461710972 F 9720
-POTATO 007874219410 F 2680
+SC BCN CHDDR 007874202906 F 6.98 0
+ABF THINBRST 022461710972 F 97.20
+POTATO 007874219410 F 26.80
 DV RSE OTL W 001111101220 i
-APPLE 3 BAG 0B4747300184 F 647 N
-STOK LT SUT 004127102774 F 442 T J
-PEANUT BUTTR 005160026499 F 644 0 1
-AVO VERDE 061611206143 F 298 N
+APPLE 3 BAG 0B4747300184 F 6.47 N
+STOK LT SUT 004127102774 F 4.42 T J
+PEANUT BUTTR 005160026499 F 6.44 0 1
+AVO VERDE 061611206143 F 2.98 N
 ROLLS P o BT 18
-BAGELS 001376402801 F 4186 0
-GV SLTDERS 007874201525 298 X
-ACCESSORY 007616161216 0197 X
-CHEEZE IT 002410063623 F 4000
+BAGELS 001376402801 F 41.86 0
+GV SLTDERS 007874201525 2.98 X
+ACCESSORY 007616161216 01.97 X
+CHEEZE IT 002410063623 F 40.00
 UAS 459 YOU SAVED 054
-RITZ 004400088210 F 278 N
-RUFFLES 002840020942 F 250 N
-GV HNY GRNS 007874207263 F 128 N
+RITZ 004400088210 F 2.78 N
+RUFFLES 002840020942 F 2.50 N
+GV HNY GRNS 007874207263 F 1.28 N
 SUBTOTAL 13944
 TAX 1 7000 458
 TOTAL 14402
@@ -157,7 +157,7 @@ function process_food_data(food_data: any) {
     }
   }
 
-  process_receipt(RECEIPT)
+  process_receipt(RECEIPT);
   //console.log(search("white rice"));
 }
 
@@ -189,11 +189,13 @@ function reconstruction_cost(receipt_name: string, keyword: string) {
   return dp[receipt_name.length][keyword.length];  
 }
 
+var NAME_CONSIDERATION = 0.1;
+
 function search(receipt_name: string) {
   let min_cost = Number.MAX_SAFE_INTEGER;
   let closest_food_item = null;
-  let closest_keywords = null;  // for logging
-  let receipt_words = receipt_name.toLowerCase().split(' ');
+  // let closest_keywords = null;  // for logging
+  let receipt_words = receipt_name.split(' ');
   let receipt_word_count = receipt_words.length;
   for (let [keywords, food_item] of keywords_to_food_items) {
     let total_over_words = 0;
@@ -208,28 +210,30 @@ function search(receipt_name: string) {
       total_over_words += keyword_min_cost;
     }
     let curr_avg_cost = total_over_words / receipt_word_count;
-    if (curr_avg_cost < min_cost) {
+    let name_cost = reconstruction_cost(receipt_name, food_item.name);
+    let weighted_avg_cost = NAME_CONSIDERATION * name_cost + (1 - NAME_CONSIDERATION) * curr_avg_cost;
+    if (weighted_avg_cost < min_cost) {
       closest_food_item = food_item; 
-      min_cost = curr_avg_cost;
-      closest_keywords = keywords;  // for logging
+      min_cost = weighted_avg_cost;
+      // closest_keywords = keywords;  // for logging
     }
   }
 
   // logging stuff
-  console.log(closest_keywords);
-  for (let receipt_word of receipt_words) {
-    let keyword_min_cost = Number.MAX_SAFE_INTEGER;
-    let min_keyword = null;
-    for (let keyword of closest_keywords) {
-      let cost = reconstruction_cost(receipt_word, keyword);
-      if (cost < keyword_min_cost) {
-        keyword_min_cost = cost;
-        min_keyword = keyword;
-      }
-    }
-    console.log(receipt_word + ": " + min_keyword + " - cost: " + keyword_min_cost);
-    closest_food_item.raw = receipt_word
-  }
+  // console.log(receipt_words);
+  // for (let receipt_word of receipt_words) {
+  //   console.log(receipt_word);
+  //   let keyword_min_cost = Number.MAX_SAFE_INTEGER;
+  //   let min_keyword = null;
+  //   for (let keyword of closest_keywords) {
+  //     let cost = reconstruction_cost(receipt_word, keyword);
+  //     if (cost < keyword_min_cost) {
+  //       keyword_min_cost = cost;
+  //       min_keyword = keyword;
+  //     }
+  //   }
+  //   console.log(receipt_word + ": " + min_keyword + " - cost: " + keyword_min_cost);
+  // }
 
   return closest_food_item;
 }
@@ -254,26 +258,24 @@ function process_receipt(receipt: string) {
     }
     let re = new RegExp("^.*[0-9]{1,2}[.][0-9]{2}");
     if (re.test(receipt_line)) {
-      receipt_names.push(receipt_line);
+      receipt_line = receipt_line.replace(/[0-9]/g, '');
+      receipt_line = receipt_line.replace(/(\s.\s|\s.$)/g, '');
+      receipt_line = receipt_line.replace('.', '');
+      receipt_names.push(receipt_line.trim().toLowerCase());
     }
-    // for (let i = 0; i < receipt_line.length; i++) {
-    //   let c = receipt_line.charAt(i);
-    //   if (is_number(c)) {
-    //     break;
-    //   }
-    //   receipt_name += c;
-    // }
-    // if (receipt_name != receipt_line) {
-    //   if (receipt_name.charAt(receipt_name.length - 1) == ' ') {
-    //     receipt_name = receipt_name.slice(0, -1);
-    //   }
-    //   receipt_names.push(receipt_name);
-    // }
   }
-  console.log(receipt_names)
 
   for (let receipt_name of receipt_names) {
-    final_food_items.push(search(receipt_name));
+    let closest_food_item = search(receipt_name);
+    if (closest_food_item.raw == "") {
+      closest_food_item.raw = receipt_name;
+      final_food_items.push(closest_food_item);
+    }
+    let prev_cost = reconstruction_cost(closest_food_item.raw, closest_food_item.name);
+    let curr_cost = reconstruction_cost(receipt_name, closest_food_item.name);
+    if (curr_cost < prev_cost) {
+      closest_food_item.raw = receipt_name;
+    }
   }
 
   const scan_btn = document.getElementById('scan-btn');
