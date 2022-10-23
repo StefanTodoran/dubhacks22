@@ -92,65 +92,93 @@ function process_food_data(food_data: any) {
     }         
 
     let keywords_string: string = food_entry[4]["Keywords"];
-    if (!keywords_string) {
+    if (!keywords_string || keywords_string == '') {
       // if there are no keywords, use the food item name as a keyword
       keywords_to_food_items.push([[food_name], food_item]);
     } else {
-      keywords_to_food_items.push([keywords_string.split(','), food_item]);
+      keywords_string = keywords_string.split(' ').join('');
+      let keywords = keywords_string.split(',');
+      let filtered_keywords = [];
+      for (let keyword of keywords) {
+        if (keyword !== '') {
+          filtered_keywords.push(keyword.toLowerCase());
+        }
+      }
+      keywords_to_food_items.push([filtered_keywords, food_item]);
     }
   }
-  console.log(keywords_to_food_items)
-
-  console.log(reconstruction_cost("crt", "dips"));
-  // search("crt");
+  console.log(search("white rice"));
 }
 
-const DELETION_COST = 10;
+var INSERTION_COST = 1;
+var DELETION_COST = 10;
 
-function reconstruction_cost(rec_name: string, keyword: string) {
+function reconstruction_cost(receipt_name: string, keyword: string) {
   let dp: number[][] = [];
-  for (let i = 0; i < rec_name.length + 1; i++) {
+  for (let i = 0; i < receipt_name.length + 1; i++) {
     dp.push(new Array(keyword.length + 1).fill(0));
   }
-  for (let i = 0; i < rec_name.length + 1; i++) {
+  for (let i = 0; i < receipt_name.length + 1; i++) {
     for (let j = 0; j < keyword.length + 1; j++) {
-      console.log(JSON.stringify(dp));
       if (i == 0) {
-        dp[i][j] = j;
+        dp[i][j] = INSERTION_COST * j;
       } else if (j == 0) {
         dp[i][j] = DELETION_COST * i;
-      } else if (rec_name.charAt(i - 1) == rec_name.charAt(j - 1)) {
+      } else if (receipt_name.charAt(i - 1) == keyword.charAt(j - 1)) {
         dp[i][j] = dp[i - 1][j - 1];
       } else {
         dp[i][j] = Math.min(
-          1 + dp[i][j - 1],
+          INSERTION_COST + dp[i][j - 1],
           DELETION_COST + dp[i - 1][j],
-          DELETION_COST + 1 + dp[i - 1][j - 1]
+          INSERTION_COST + DELETION_COST + dp[i - 1][j - 1]
         );
       }
     }
   }
-  return dp[rec_name.length][keyword.length];  
+  return dp[receipt_name.length][keyword.length];  
 }
 
-function search(rec_name: string) {
+function search(receipt_name: string) {
   let min_cost = Number.MAX_SAFE_INTEGER;
   let closest_food_item = null;
+  let closest_keywords = null;  // for logging
+  let receipt_words = receipt_name.toLowerCase().split(' ');
+  let receipt_word_count = receipt_words.length;
   for (let [keywords, food_item] of keywords_to_food_items) {
-    let curr_min_cost = Number.MAX_SAFE_INTEGER;
-    for (let keyword of keywords) {
-      let cost = reconstruction_cost(rec_name, keyword);
-      if (cost < curr_min_cost) {
-        curr_min_cost = cost;
+    let total_over_words = 0;
+    for (let receipt_word of receipt_words) {
+      let keyword_min_cost = Number.MAX_SAFE_INTEGER;
+      for (let keyword of keywords) {
+        let cost = reconstruction_cost(receipt_word, keyword);
+        if (cost < keyword_min_cost) {
+          keyword_min_cost = cost;
+        }
       }
+      total_over_words += keyword_min_cost;
     }
-    if (curr_min_cost < min_cost) {
+    let curr_avg_cost = total_over_words / receipt_word_count;
+    if (curr_avg_cost < min_cost) {
       closest_food_item = food_item; 
-      min_cost = curr_min_cost;
+      min_cost = curr_avg_cost;
+      closest_keywords = keywords;  // for logging
     }
   }
-  console.log(closest_food_item);
-  console.log(min_cost);
+
+  // logging stuff
+  console.log(closest_keywords);
+  for (let receipt_word of receipt_words) {
+    let keyword_min_cost = Number.MAX_SAFE_INTEGER;
+    let min_keyword = null;
+    for (let keyword of closest_keywords) {
+      let cost = reconstruction_cost(receipt_word, keyword);
+      if (cost < keyword_min_cost) {
+        keyword_min_cost = cost;
+        min_keyword = keyword;
+      }
+    }
+    console.log(receipt_word + ": " + min_keyword);
+  }
+
   return closest_food_item;
 }
 
