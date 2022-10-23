@@ -50,7 +50,6 @@ i
 mE
 `
 
-
 var keywords_to_food_items: any[] = [];
 
 var final_food_items: FoodItem[] = [];
@@ -58,11 +57,8 @@ var final_food_items: FoodItem[] = [];
 fetch('data/foodkeeper.json', {mode: 'no-cors'})
   .then((response) => response.json())
   .then((food_data) => process_food_data(JSON.parse(JSON.stringify(food_data))));
-  //.then((response) => {console.log})
 
 function get_days(max_time: number, metric: string) {
-  //console.log(metric);
-  
   if (JSON.stringify(metric).includes("Day")) {
     return max_time;
   } else if (JSON.stringify(metric).includes("Week")) {
@@ -74,14 +70,12 @@ function get_days(max_time: number, metric: string) {
   } else if (JSON.stringify(metric).includes("Hour")) {
     return 1; // someone will know if the food is bad if it only lasts hours
   } else {
-    console.log(metric)
-    console.log("this should never be called!");
+    console.log("this should never be called! metric: " + metric);
   }
 }
 
 function get_category(category_id_object: any) {
   let category_id = category_id_object["Category_ID"];
-
   if ((category_id >= 10 && category_id <= 17) || (category_id >= 20 && category_id <= 22)) {
     return "meat"
   } else if (category_id == 19 || category_id == 24) {
@@ -98,11 +92,6 @@ function get_category(category_id_object: any) {
 }
 
 function process_food_data(food_data: any) {
-  // let food = JSON.parse(JSON.stringify(food_entry))
-  // console.log("-------------------")
-  // console.log(JSON.stringify(food.Pantry_Max))
-  // console.log("-------------------")
-
   for (let food_entry of food_data.sheets[2].data) {
     // find expiration by iterating through storage types for 1st non-null
     let food_name: string = food_entry[2]["Name"];
@@ -136,7 +125,7 @@ function process_food_data(food_data: any) {
     }
     if (!food_item.pantry && !food_item.fridge && !food_item.freezer &&
         !food_item.on_open_pantry && !food_item.on_open_fridge) {
-      console.log("This item doesn't have storage info")
+      // this item doesn't have storage info
       continue;
     }    
 
@@ -158,7 +147,6 @@ function process_food_data(food_data: any) {
   }
 
   process_receipt(RECEIPT);
-  //console.log(search("white rice"));
 }
 
 var INSERTION_COST = 1;
@@ -248,8 +236,6 @@ function is_number(char : string) {
 
 function process_receipt(receipt: string) {
   let receipt_lines = receipt.split('\n');
-  console.log(receipt_lines);
-
   let receipt_names: string[] = [];
   for (let receipt_line of receipt_lines) {
     //let receipt_name = "";
