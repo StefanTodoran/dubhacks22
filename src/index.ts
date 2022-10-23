@@ -32,7 +32,7 @@
     const container = document.getElementById('visualizer');
     const template = document.getElementById('template');
     const text = document.createElement('h2');
-    text.innerText = "Example Data Visualization:";
+    text.innerText = "Example Data Visualization";
     text.style.textAlign = "center";
     container.insertBefore(text, template);
   }
@@ -42,6 +42,7 @@
     utilized: FoodItem[], // specific food items user used in this recipe
     categories: string[], // food categories present in this recipe
     time: number, // time to make in hours
+    url: string, // link to the recipe
   }
 
   function displayRecipes(items: RecipeItem[]) {

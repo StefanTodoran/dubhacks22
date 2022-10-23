@@ -82,7 +82,7 @@ function setupCamera() {
         var container = document.getElementById('visualizer');
         var template = document.getElementById('template');
         var text = document.createElement('h2');
-        text.innerText = "Example Data Visualization:";
+        text.innerText = "Example Data Visualization";
         text.style.textAlign = "center";
         container.insertBefore(text, template);
     }
@@ -96,7 +96,6 @@ function setupCamera() {
         container.appendChild(template);
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
-            console.log("========================\n\n\n", item.name, item);
             var node = template.cloneNode(true);
             node.classList.remove('hidden');
             node.querySelector('h2').textContent = nbsp(item.name);
@@ -138,22 +137,23 @@ fetch('data/foodkeeper.json', { mode: 'no-cors' })
     .then(function (response) { return response.json(); })
     .then(function (food_data) { return process_food_data(JSON.parse(JSON.stringify(food_data))); });
 function get_days(max_time, metric) {
-    if (JSON.stringify(metric).includes("Days")) {
+    if (JSON.stringify(metric).includes("Day")) {
         return max_time;
     }
-    else if (JSON.stringify(metric).includes("Weeks")) {
+    else if (JSON.stringify(metric).includes("Week")) {
         return max_time * 7;
     }
-    else if (JSON.stringify(metric).includes("Months")) {
+    else if (JSON.stringify(metric).includes("Month")) {
         return max_time * 30;
     }
-    else if (JSON.stringify(metric).includes("Years")) {
+    else if (JSON.stringify(metric).includes("Year")) {
         return max_time * 365;
     }
-    else if (JSON.stringify(metric).includes("Hours")) {
+    else if (JSON.stringify(metric).includes("Hour")) {
         return 1;
     }
     else {
+        console.log(metric);
         console.log("this should never be called!");
     }
 }
@@ -193,11 +193,17 @@ function process_food_data(food_data) {
         else if (food_entry[10] && !JSON.stringify(food_entry[10]).includes(null)) {
             food_item.pantry = get_days(food_entry[10]["DOP_Pantry_Max"], food_entry[11]);
         }
+        if (food_entry[14] && !JSON.stringify(food_entry[14]).includes(null)) {
+            food_item.on_open_pantry = get_days(food_entry[14]["Pantry_After_Opening_Max"], food_entry[15]);
+        }
         if (food_entry[17] && !JSON.stringify(food_entry[17]).includes(null)) {
             food_item.fridge = get_days(food_entry[17]["Refrigerate_Max"], food_entry[18]);
         }
         else if (food_entry[21] && !JSON.stringify(food_entry[21]).includes(null)) {
             food_item.fridge = get_days(food_entry[21]["DOP_Refrigerate_Max"], food_entry[22]);
+        }
+        if (food_entry[25] && !JSON.stringify(food_entry[25]).includes(null)) {
+            food_item.on_open_fridge = get_days(food_entry[25]["Refrigerate_After_Opening_Max"], food_entry[26]);
         }
         if (food_entry[31] && !JSON.stringify(food_entry[31]).includes(null)) {
             food_item.freezer = get_days(food_entry[31]["Freeze_Max"], food_entry[32]);
@@ -205,7 +211,8 @@ function process_food_data(food_data) {
         else if (food_entry[35] && !JSON.stringify(food_entry[35]).includes(null)) {
             food_item.freezer = get_days(food_entry[35]["DOP_Freeze_Max"], food_entry[36]);
         }
-        if (!food_item.pantry && !food_item.fridge && !food_item.freezer) {
+        if (!food_item.pantry && !food_item.fridge && !food_item.freezer &&
+            !food_item.on_open_pantry && !food_item.on_open_fridge) {
             console.log("This item doesn't have storage info");
             continue;
         }
