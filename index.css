@@ -55,7 +55,7 @@ p {
   padding: 0 2.5vmin;
 }
 
-#header, #footer a, #footer div {
+#header, #footer a, #footer div, .recipe-title-line {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -298,8 +298,25 @@ p {
 }
 
 /* RECIPE ITEM STYLES */
+.recipe-item {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .recipe-item:hover {
   cursor: pointer;
+}
+
+.recipe-item .icon {
+  filter: grayscale(0.8);
+}
+
+a {
+  transition: transform 0.5s ease;
+}
+
+a:hover {
+  transform: scale(1.1);
 }
 
 .hidden {

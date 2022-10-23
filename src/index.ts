@@ -6,7 +6,6 @@ window.addEventListener('load', init);
  */
 function init() {
 
-  // DELETE THIS!!
   const examples: FoodItem[] = [
     { name: "Apples", group: "fruit", pantry: 12, fridge: 24 },
     { name: "Carrots", group: "vegetable", fridge: 21, pantry: 7 },
@@ -19,9 +18,6 @@ function init() {
     { name: "Bread", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
     { name: "Milk", group: "dairy", fridge: 7 },
   ];
-
-  const scan_btn = document.getElementById('scan-btn');
-  scan_btn.addEventListener('click', () => { });
 
   displayItems(examples);
   setupCamera();
@@ -39,6 +35,7 @@ function init() {
     utilized: FoodItem[], // specific food items user used in this recipe
     categories: string[], // food categories present in this recipe
     time: number, // time to make in hours
+    url: string, // link to the recipe
   }
 
 function displayRecipes(items: RecipeItem[]) {
@@ -47,6 +44,7 @@ function displayRecipes(items: RecipeItem[]) {
 
 interface FoodItem {
   name: string,
+  raw: string, // raw text from receipt
 
   // until expiration in days, provide at least 1
   pantry?: number,
@@ -81,11 +79,10 @@ function displayItems(items: FoodItem[]) {
 
     node.classList.remove('hidden');
     node.id = "";
-    node.querySelector('h2').textContent = nbsp(item.name);
+    node.querySelector('h2').textContent = item.name;
     if (item.group) {
       node.classList.add(item.group);
     }
-
 
     let has_double = false;
 
@@ -123,8 +120,7 @@ function addDuration(node: HTMLElement, type: string, duration: number) {
     indicator.style.setProperty('--days', display_duration);
     return true;
   } else {
-    indicator.classList.add('hidden');
-    // node.querySelector('.food-duration-container').removeChild(indicator);
+    node.querySelector('.food-duration-container').removeChild(indicator);
     return false;
   }
 }

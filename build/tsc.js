@@ -1,4 +1,3 @@
-'use strict';
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -60,79 +59,80 @@ function setupCamera() {
         });
     }); });
 }
-(function () {
-    window.addEventListener('load', init);
-    function init() {
-        var examples = [
-            { name: "Apples", group: "fruit", pantry: 12, fridge: 24 },
-            { name: "Carrots", group: "vegetable", fridge: 21, pantry: 7 },
-            { name: "Margarine", fridge: 124, on_open_fridge: 62 },
-            { name: "Minced Beef", group: "meat", fridge: 2, freezer: 5 },
-            { name: "Pancake Mix", group: "grains", pantry: 19, on_open_pantry: 12 },
-            { name: "Yogurt", group: "dairy", fridge: 7, freezer: 31, on_open_fridge: 3 },
-            { name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2 },
-            { name: "Jam", on_open_fridge: 365 },
-            { name: "Bread", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
-            { name: "Milk", group: "dairy", fridge: 7 },
-        ];
-        var scan_btn = document.getElementById('scan-btn');
-        scan_btn.addEventListener('click', function () { });
-        displayItems(examples);
-        setupCamera();
-        var container = document.getElementById('visualizer');
-        var template = document.getElementById('template');
-        var text = document.createElement('h2');
-        text.innerText = "Example Data Visualization";
-        text.style.textAlign = "center";
-        container.insertBefore(text, template);
-    }
-    function displayRecipes(items) {
-        console.log("Not Yet Implemented!");
-    }
-    function displayItems(items) {
-        var container = document.getElementById('visualizer');
-        var template = document.getElementById('template');
-        container.innerHTML = "";
-        container.appendChild(template);
-        for (var i = 0; i < items.length; i++) {
-            var item = items[i];
-            var node = template.cloneNode(true);
-            node.classList.remove('hidden');
-            node.querySelector('h2').textContent = nbsp(item.name);
-            if (item.group) {
-                node.classList.add(item.group);
-            }
-            var has_double = false;
-            addDuration(node, "pantry", item.pantry);
-            has_double = addDuration(node, "on_open_pantry", item.on_open_pantry);
-            addDuration(node, "fridge", item.fridge);
-            has_double = addDuration(node, "on_open_fridge", item.on_open_fridge) || has_double;
-            addDuration(node, "freezer", item.freezer);
-            if (has_double) {
-                node.querySelector('.food-duration-container').classList.add('double-len');
-            }
-            container.insertBefore(node, template);
+window.addEventListener('load', init);
+function init() {
+    var examples = [
+        { name: "Apples", group: "fruit", pantry: 12, fridge: 24 },
+        { name: "Carrots", group: "vegetable", fridge: 21, pantry: 7 },
+        { name: "Margarine", fridge: 124, on_open_fridge: 62 },
+        { name: "Minced Beef", group: "meat", fridge: 2, freezer: 5 },
+        { name: "Pancake Mix", group: "grains", pantry: 19, on_open_pantry: 12 },
+        { name: "Yogurt", group: "dairy", fridge: 7, freezer: 31, on_open_fridge: 3 },
+        { name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2 },
+        { name: "Jam", on_open_fridge: 365 },
+        { name: "Bread", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
+        { name: "Milk", group: "dairy", fridge: 7 },
+    ];
+    displayItems(examples);
+    setupCamera();
+    var container = document.getElementById('visualizer');
+    var template = document.getElementById('template');
+    var text = document.createElement('h2');
+    text.innerText = "Example Data Visualization:";
+    text.style.textAlign = "center";
+    container.insertBefore(text, template);
+}
+function displayRecipes(items) {
+    console.log("Not Yet Implemented!");
+}
+function displayItems(items) {
+    var container = document.getElementById('visualizer');
+    var template = document.getElementById('template');
+    container.innerHTML = "";
+    container.appendChild(template);
+    for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        console.log(item);
+        var node = template.cloneNode(true);
+        node.classList.remove('hidden');
+        node.id = "";
+        node.querySelector('h2').textContent = item.name;
+        if (item.group) {
+            node.classList.add(item.group);
         }
-    }
-    function addDuration(node, type, duration) {
-        var indicator = node.querySelector("." + type);
-        if (duration) {
-            var length_1 = (Math.pow(duration, 0.5)).toString();
-            indicator.style.setProperty('--length', length_1);
-            var display_duration = nbsp('"' + duration.toString() + ' days"');
-            indicator.style.setProperty('--days', display_duration);
-            return true;
+        var has_double = false;
+        addDuration(node, "pantry", item.pantry);
+        has_double = addDuration(node, "on_open_pantry", item.on_open_pantry);
+        addDuration(node, "fridge", item.fridge);
+        has_double = addDuration(node, "on_open_fridge", item.on_open_fridge) || has_double;
+        addDuration(node, "freezer", item.freezer);
+        if (has_double) {
+            node.querySelector('.food-duration-container').classList.add('double-len');
         }
-        else {
-            node.querySelector('.food-duration-container').removeChild(indicator);
-            return false;
-        }
+        container.insertBefore(node, template);
     }
-    function nbsp(string) {
-        return string.replace(/ /g, '\u00a0');
+}
+function addDuration(node, type, duration) {
+    var indicator = node.querySelector("." + type);
+    console.log(node, type, duration);
+    if (duration) {
+        var length_1 = (Math.pow(duration, 0.5)).toString();
+        indicator.style.setProperty('--length', length_1);
+        var display_duration = nbsp('"' + duration.toString() + ' days"');
+        indicator.style.setProperty('--days', display_duration);
+        return true;
     }
-})();
+    else {
+        node.querySelector('.food-duration-container').removeChild(indicator);
+        return false;
+    }
+}
+function nbsp(string) {
+    return string.replace(/ /g, '\u00a0');
+}
+var RECEIPT = "Wal ke\nalmart - <.\nSave money. Live better.\n(813) 932-0562\nManaser COLLEEN BRICKEY\n8885 N FLORIDA AVE\nTAMPA FL 33604\nST# 5221 OP# 00001061 TE# 06 TR# 05332\nBREAD 007225003712 F 2.88 N\nBREAD 007225003712 F 2.88 N\nGV PNT BUTTR 007874237003 F 3.84 N\nGV PNT BUTTR 007874237003 F 3.84 N\nGV PNT BUTTR 007874237003 F 3.84 N\nGV PNT BUTTR 007874237003 F 3.84 N\nGV PARM 160Z 007874201510 F 4.98 0\nGV CHNK CHKN 007874206784 F 1.98 N\nGV CHNK CHKN 007874206784 F 1.98 N\n12 CT NITRIL 073191913822 2.78 X\nFOLGERS 002550000377 F 10.48 N\nSC TWIST UP 007874222682 F 0.84 X\nEGGS 060638871459 F 1.88 0\nSUBTOTAL 46.04\nTAX 1 7.000 % 0.26\nTOTAL 46.30\nDEBIT TEND 46.30\nCHANGE DUE 0.00\nEFT DEBIT PAY FROM PRIMARY\nACCOUNT : 5259\n46.30 TOTAL PURCHASE\nPAYMENT DECLINED DEBIT NOT AVAILABLE\n11/06/11 02:21:54\nEFT DEBIT PAY FROM PRIMARY\nACCOUNT : 5269\n46.30 TOTAL PURCHASE\nREF # 131000195280\nNETWORK ID. 0071 APPR CODE 297664\n11/06/11 02:22:54\nS\nLavaway is back for Electronics,\nToys, and Jewelry. 10/17/11-12/16/11\n11/06/11 02:22:59";
 var keywords_to_food_items = [];
+var final_food_items = [];
 fetch('data/foodkeeper.json', { mode: 'no-cors' })
     .then(function (response) { return response.json(); })
     .then(function (food_data) { return process_food_data(JSON.parse(JSON.stringify(food_data))); });
@@ -233,7 +233,7 @@ function process_food_data(food_data) {
             keywords_to_food_items.push([filtered_keywords, food_item]);
         }
     }
-    console.log(search("white rice"));
+    process_receipt(RECEIPT);
 }
 var INSERTION_COST = 1;
 var DELETION_COST = 10;
@@ -304,6 +304,36 @@ function search(receipt_name) {
         console.log(receipt_word + ": " + min_keyword);
     }
     return closest_food_item;
+}
+function is_letter(char) {
+    return char.toLowerCase() != char.toUpperCase();
+}
+function process_receipt(receipt) {
+    var receipt_lines = receipt.split('\n');
+    console.log(receipt_lines);
+    var receipt_names = [];
+    for (var _i = 0, receipt_lines_1 = receipt_lines; _i < receipt_lines_1.length; _i++) {
+        var receipt_line = receipt_lines_1[_i];
+        var receipt_name = "";
+        for (var i = 0; i < receipt_line.length; i++) {
+            var c = receipt_line.charAt(i);
+            if (!is_letter(c) && c != ' ') {
+                break;
+            }
+            receipt_name += c;
+        }
+        if (receipt_name != receipt_line) {
+            if (receipt_name.charAt(receipt_name.length - 1) == ' ') {
+                receipt_name = receipt_name.slice(0, -1);
+            }
+            receipt_names.push(receipt_name);
+        }
+    }
+    for (var _a = 0, receipt_names_1 = receipt_names; _a < receipt_names_1.length; _a++) {
+        var receipt_name = receipt_names_1[_a];
+        final_food_items.push(search(receipt_name));
+    }
+    displayItems(final_food_items);
 }
 function parseReceipt(img_element, logger) {
     return __awaiter(this, void 0, void 0, function () {

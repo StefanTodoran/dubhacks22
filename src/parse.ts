@@ -1,18 +1,3 @@
-interface FoodItem {
-  name: string,
-  
-  // until expiration in days, provide at least 1
-  pantry?: number,
-  fridge?: number,
-  freezer?: number,
-  on_open_fridge?: number,
-  on_open_pantry?: number,
-  
-  group?: string, // food type 
-  tip?: string,
-  no_data?: boolean, // no expiration data
-}
-
 const RECEIPT : string = `Wal ke
 almart - <.
 Save money. Live better.
