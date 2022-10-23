@@ -65,12 +65,21 @@ function displayRecipes(items: RecipeItem[], message: string = "Your Recipes") {
     node.id = "";
     node.querySelector('h2.recipe-name').textContent = item.title;
     node.querySelector('span').textContent = nbsp(" (") + item.time + " mins)";
-    node.querySelector('.recipe-url').setAttribute('href', item.url);
     node.querySelector('.recipe-img').setAttribute('src', item.img);
+    
+    node.querySelector('.recipe-url').setAttribute('href', item.url);
+    node.addEventListener('click', () => {
+      window.open(item.url, '_blank');
+    });
 
-    let utilized = "Includes"
-    for (let j = 0; j < Math.min(10, item.utilized.length); j++) {
-      utilized += " " + item.utilized[j];
+    let utilized = "Includes "
+    for (let j = 0; j <= Math.min(10, item.utilized.length); j++) {
+      if (item.utilized[j]) {
+        utilized += item.utilized[j].toLowerCase();
+        if (j < Math.min(10, item.utilized.length)) {
+          utilized += ", ";
+        }
+      }
     }
     node.querySelector('p').textContent = utilized;
 
@@ -152,8 +161,6 @@ function displayFoodItems(food_items: FoodItem[], message: string = "Your Data")
 }
 
 function queryRecipes(food_items: FoodItem[]) {
-  console.log("queryRecipes()");
-
   if (food_items.length == 0) {
     return;
   }
@@ -183,8 +190,6 @@ function queryRecipes(food_items: FoodItem[]) {
 }
 
 function processRecipes(recipe_objs: any) {
-  console.log("Processing recipes...");
-
   let recipes: RecipeItem[] = []
   for (let recipe_obj of recipe_objs) {
     let recipe = recipe_obj.recipe;
@@ -201,7 +206,6 @@ function processRecipes(recipe_objs: any) {
     }
     recipes.push(recipe_item);
   }
-  console.log(recipes);
   displayRecipes(recipes);
 }
 

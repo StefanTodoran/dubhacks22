@@ -97,21 +97,32 @@ function displayRecipes(items, message) {
     var template = document.getElementById('recipe-template');
     container.innerHTML = "";
     container.appendChild(template);
-    for (var i = 0; i < items.length; i++) {
+    var _loop_1 = function (i) {
         var item = items[i];
         var node = template.cloneNode(true);
         node.classList.remove('hidden');
         node.id = "";
         node.querySelector('h2.recipe-name').textContent = item.title;
         node.querySelector('span').textContent = nbsp(" (") + item.time + " mins)";
-        node.querySelector('.recipe-url').setAttribute('href', item.url);
         node.querySelector('.recipe-img').setAttribute('src', item.img);
-        var utilized = "Includes";
-        for (var j = 0; j < Math.min(10, item.utilized.length); j++) {
-            utilized += " " + item.utilized[j];
+        node.querySelector('.recipe-url').setAttribute('href', item.url);
+        node.addEventListener('click', function () {
+            window.open(item.url, '_blank');
+        });
+        var utilized = "Includes ";
+        for (var j = 0; j <= Math.min(10, item.utilized.length); j++) {
+            if (item.utilized[j]) {
+                utilized += item.utilized[j].toLowerCase();
+                if (j < Math.min(10, item.utilized.length)) {
+                    utilized += ", ";
+                }
+            }
         }
         node.querySelector('p').textContent = utilized;
         container.insertBefore(node, template);
+    };
+    for (var i = 0; i < items.length; i++) {
+        _loop_1(i);
     }
     var text = document.createElement('h2');
     text.innerText = message;
@@ -152,7 +163,6 @@ function displayFoodItems(food_items, message) {
     container.insertBefore(text, container.firstChild);
 }
 function queryRecipes(food_items) {
-    console.log("queryRecipes()");
     if (food_items.length == 0) {
         return;
     }
@@ -183,7 +193,6 @@ function queryRecipes(food_items) {
         .then(function (response) { return processRecipes(JSON.parse(JSON.stringify(response.hits))); });
 }
 function processRecipes(recipe_objs) {
-    console.log("Processing recipes...");
     var recipes = [];
     for (var _i = 0, recipe_objs_1 = recipe_objs; _i < recipe_objs_1.length; _i++) {
         var recipe_obj = recipe_objs_1[_i];
@@ -201,7 +210,6 @@ function processRecipes(recipe_objs) {
         };
         recipes.push(recipe_item);
     }
-    console.log(recipes);
     displayRecipes(recipes);
 }
 function addDuration(node, type, duration) {
