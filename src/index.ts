@@ -77,14 +77,13 @@ function displayRecipes(recipe_items: RecipeItem[], message: string = "Your Reci
     });
 
     let utilized = "Includes "
-    for (let j = 0; j <= Math.min(10, item.utilized.length); j++) {
+    for (let j = 0; j < Math.min(10, item.utilized.length); j++) {
       if (item.utilized[j]) {
-        utilized += item.utilized[j].toLowerCase();
-        if (j < Math.min(item.utilized.length, MAX_RECIPES)) {
-          utilized += ", ";
-        }
+        utilized += item.utilized[j].toLowerCase() + ", ";
       }
     }
+    utilized.slice(0, -2);
+    utilized += "...";
     node.querySelector('p').textContent = utilized;
 
     // insert after template

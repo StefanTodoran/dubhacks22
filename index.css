@@ -63,6 +63,7 @@ body {
 }
 #loader.fade-out::before {
   background-image: url(assets/lime.svg);
+  animation: none;
 }
 #loader.fade-out #loader-text {
   color: #ABD148;
@@ -328,7 +329,7 @@ button {
   font-size: 14px;
 }
 
-.food-name::before, .food-duration::before {
+.food-name::before, .food-duration::before, .recipe-name::before {
   content: "";
   display: inline-block;
   background-image: var(--icon);
@@ -472,10 +473,17 @@ button {
 .recipe-name {
   color: var(--main-color);
   margin: 0 1em 0 0;
+  --icon: url(assets/dish.png);
+  max-width: 70vw;
+}
+
+.recipe-name::before {
+  transform: translateY(30%);
 }
 
 .recipe-item p {
   margin-bottom: 0;
+  max-width: 70vw;
 }
 
 .recipe-item:hover {
@@ -486,6 +494,7 @@ button {
   position: absolute;
   top: 0;
   right: 0;
+  bottom: 0;
   height: 100%;
 }
 
@@ -623,5 +632,14 @@ a:hover {
     margin-right: 3px;
     max-width: min(300px, 20vmin);
     max-height: 125px;
+  }
+
+  .recipe-img {
+    max-height: 25vw;
+    max-width: 25vw;
+    /* top: unset; */
+    /* bottom: 0; */
+    border: 1px solid black;
+    border-radius: 5px;
   }
 }

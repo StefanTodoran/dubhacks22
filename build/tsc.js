@@ -82,41 +82,6 @@ function setupCamera() {
     }
     return null;
 }
-var wasmInstance;
-var memory;
-var curMemIndex = 0;
-var processImage;
-function loadWasm(expectedMem) {
-    return __awaiter(this, void 0, void 0, function () {
-        var response, bytes, instance;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4, fetch('wasm/image.wasm')];
-                case 1:
-                    response = _a.sent();
-                    return [4, response.arrayBuffer()];
-                case 2:
-                    bytes = _a.sent();
-                    return [4, WebAssembly.instantiate(bytes)];
-                case 3:
-                    instance = (_a.sent()).instance;
-                    wasmInstance = instance;
-                    memory = instance.exports.memory;
-                    processImage = instance.exports.processImage;
-                    while (memory.buffer.byteLength < expectedMem) {
-                        memory.grow(1);
-                    }
-                    return [2];
-            }
-        });
-    });
-}
-function allocImage(neededMemory) {
-    var newarr = new Uint8Array(memory.buffer, curMemIndex, neededMemory);
-    var prevIndex = curMemIndex;
-    curMemIndex += neededMemory;
-    return { image: newarr, handle: prevIndex };
-}
 window.addEventListener('load', init);
 function init() {
     var examples = [
@@ -165,14 +130,13 @@ function displayRecipes(recipe_items, message) {
             window.open(item.url, '_blank');
         });
         var utilized = "Includes ";
-        for (var j = 0; j <= Math.min(10, item.utilized.length); j++) {
+        for (var j = 0; j < Math.min(10, item.utilized.length); j++) {
             if (item.utilized[j]) {
-                utilized += item.utilized[j].toLowerCase();
-                if (j < Math.min(item.utilized.length, MAX_RECIPES)) {
-                    utilized += ", ";
-                }
+                utilized += item.utilized[j].toLowerCase() + ", ";
             }
         }
+        utilized.slice(0, -2);
+        utilized += "...";
         node.querySelector('p').textContent = utilized;
         container.insertBefore(node, template);
     };
