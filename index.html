@@ -23,7 +23,7 @@
   </section>
 
   <section id="description">
-    <div>
+    <div style="flex: 1">
       <h1>Why Frijma</h1>
       <p>
         According to the USDA, it is estimated that nearly 40% of the U.S. food supply is wasted every single year.
@@ -33,30 +33,57 @@
         an individual consumer level. That's where frijma comes in.
       </p>
     </div>
-    <div>
+    <div style="flex: 1">
       <h1>How It Works</h1>
       <p>
-        By combining computer vision, clever algorithms to reconstruct words from acronyms, and U.S. government food
+        By combining computer vision, clever algorithms to reconstruct words from abbreviations, and U.S. government food
         keeping data, frijma is able to parse any receipt and help users visualize data about their food. Our app can
-        then provide recepies that specifically target the food the user already has, so there is no need to go out to
+        then provide recipes that specifically target the food the user already has, so there is no need to go out to
         the store and buy more when perfectly usable food is available at home!
       </p>
     </div>
+    <div id="icons">
+      <div class="icon-container" style="column-span: all;"><img class="icon" src="assets/question.png"/> How long food keeps when:</div>
+      <div><!-- scuffed hack so that the above div is on its own row --></div> 
+      <div class="icon-container"><img class="icon" src="assets/pantry.png"/> Placed&nbsp;in&nbsp;Pantry</div>
+      <div class="icon-container"><img class="icon" src="assets/fridge.png"/> Cooled&nbsp;in&nbsp;Fridge</div>
+      <div class="icon-container"><img class="icon" src="assets/freezer.png"/> Frozen&nbsp;in&nbsp;Freezer</div>
+      <div class="icon-container"><img class="icon" src="assets/on_open.png"/> Once&nbsp;Opened</div>
+    </div>
   </section>
 
-  <section id="visualizer">
+  <div style="display: flex; flex-direction: row; justify-content: center;">
     <label id="scan-btn">
-      Scan&nbsp;Now
+      Scan
       <input id="camera-inp" type="file" accept="image/*" , capture />
     </label>
+  </div>
+  <section id="visualizer">
     <div class="food-item hidden" id="template">
-      <h2 class="food-name"></h2>
-      <div class="food-duration-container">
-        <div class="food-duration pantry"></div>
-        <div class="food-duration fridge"></div>
-        <div class="food-duration freezer"></div>
-        <div class="food-duration on_open"></div>
+      <div class="food-item-title">
+        <h2 class="food-name"></h2>
+        <h3 class="food-raw"></h3>
       </div>
+      <div class="food-duration-container">
+        <div class="food-duration pantry" title="Placed in pantry"></div>
+        <div class="food-duration on_open_pantry" title="In pantry once opened"></div>
+        <div class="food-duration fridge" title="Cooled in fridge"></div>
+        <div class="food-duration on_open_fridge" title="In fridge once opened"></div>
+        <div class="food-duration freezer" title="Frozen in freezer"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="recipes" class="hidden_">
+    <h2 style="text-align: center;">Your Recipes</h2>
+    <div class="recipe-item hidden_" id="template">
+      <div class="recipe-title-line">
+        <h2 style="margin-right: 1em;">Recipe Title Here</h2>
+        <img class="icon" src="assets/grain.png"/>
+        <img class="icon" src="assets/vegetable.png"/>
+        <img class="icon" src="assets/meat.png"/>
+      </div>
+      <a class="recipe-url" href="https://www.allrecipes.com/recipe/76296/meat-pie/">Let's Cook!</a>
     </div>
   </section>
 
