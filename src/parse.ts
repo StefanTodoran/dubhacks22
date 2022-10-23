@@ -18,70 +18,62 @@ var food_items: FoodItem[] = [];
 fetch('data/foodkeeper.json', {mode: 'no-cors'})
     .then((response) => response.json())
     .then((food_data) => process_food_data(JSON.parse(JSON.stringify(food_data))));
+    //.then((response) => {console.log})
 
     
 function get_days(max_time: number, metric: string) {
-    console.log(metric);
-    console.log(`Type: ${typeof metric}`);
-    console.log(String(metric));
-    console.log(`Type: ${typeof String(metric)}`);
-    console.log(JSON.stringify(metric));
-    console.log(`Type: ${typeof JSON.stringify(metric)}`);
-    console.log(JSON.stringify(metric))
-    if (String(metric) == "Days") {
-        console.log("yes1");
+    //console.log(metric);
+    
+    if (JSON.stringify(metric).includes("Days")) {
         return max_time;
-    } else if (JSON.stringify(metric) == "Weeks") {
-        console.log("yes2");
+    } else if (JSON.stringify(metric).includes("Weeks")) {
         return max_time * 7;
-    } else if (String(metric) == "Months") {
-        console.log("yes3");
+    } else if (JSON.stringify(metric).includes("Months")) {
         return max_time * 30;
-    } else if (String(metric) == "Years") {
-        console.log("yes4");
+    } else if (JSON.stringify(metric).includes("Years")) {
         return max_time * 365;
+    } else if (JSON.stringify(metric).includes("Hours")) {
+        return 1; // someone will know if the food is bad if it only lasts hours
     } else {
         console.log("this should never be called!");
     }
 }
 
 function process_food_data(food_data: any) {
-    const testList:FoodItem[] = [
-        {name: "Carrots", group: "Vegetable", fridge: 21, pantry: 7},
-        {name: "Broccoli", group: "Vegetable", fridge: 5, pantry: 2},
-        {name: "Milk", group: "Dairy", fridge: 7},
-        {name: "Bread", group: "Grains", pantry: 4, fridge: 14},
-        {name: "Pancake Mix", group: "Grains", pantry: 12},
-        {name: "Jam", on_open: 365},
-        {name: "Margarine", on_open: 90},
-      ];
+    // let food = JSON.parse(JSON.stringify(food_entry))
+    // console.log("-------------------")
+    // console.log(JSON.stringify(food.Pantry_Max))
+    // console.log("-------------------")
 
-      
     for (let food_entry of food_data.sheets[2].data) {
         // find expiration by iterating through storage types for 1st non-null
-        let food_item: FoodItem = {name: food_entry.Name};
+        let food_item: FoodItem = {name: food_entry[2]["Name"]};
         console.log(food_entry);
+        console.log(JSON.stringify(food_entry[2]["Name"]));
 
-        if (food_entry[6] != null) {
-            food_item.pantry = get_days(food_entry[6], food_entry[7]);
-        } else if (food_entry[10] != null) {
-            food_item.pantry = get_days(food_entry[10], food_entry[11]);
-        } else if (food_entry[17] != null) {
-            food_item.fridge = get_days(food_entry[17], food_entry[18]);
-        } else if (food_entry[21] != null) {
-            food_item.fridge = get_days(food_entry[21], food_entry[22]);
-        } else if (food_entry[31] != null) {
-            food_item.freezer = get_days(food_entry[31], food_entry[32]);
-        } else if (food_entry[35] != null) {
-            food_item.freezer = get_days(food_entry[35], food_entry[36]);
-        } else {
-            console.log("this should never print!")
+        if (food_entry[6] && !JSON.stringify(food_entry[6]).includes(null)) {
+            food_item.pantry = get_days(food_entry[6]["Pantry_Max"], food_entry[7]);
+        } else if (food_entry[10] && !JSON.stringify(food_entry[10]).includes(null)) {
+            food_item.pantry = get_days(food_entry[10]["DOP_Pantry_Max"], food_entry[11]);
+        }
+        if (food_entry[17] && !JSON.stringify(food_entry[17]).includes(null)) {
+            food_item.fridge = get_days(food_entry[17]["Refrigerate_Max"], food_entry[18]);
+        } else if (food_entry[21] && !JSON.stringify(food_entry[21]).includes(null)) {
+            food_item.fridge = get_days(food_entry[21]["DOP_Refrigerate_Max"], food_entry[22]);
+        }
+        if (food_entry[31] && !JSON.stringify(food_entry[31]).includes(null)) {
+            food_item.freezer = get_days(food_entry[31]["Freeze_Max"], food_entry[32]);
+        } else if (food_entry[35] && !JSON.stringify(food_entry[35]).includes(null)) {
+            food_item.freezer = get_days(food_entry[35]["DOP_Freeze_Max"], food_entry[36]);
+        }
+        if (!food_item.pantry && !food_item.fridge && !food_item.freezer) {
+            console.log("This item doesn't have storage info")
             continue;
         }         
 
         food_items.push(food_item);
     }
-    //console.log(food_items);
+    console.log(food_items);
 }
 
 //  0. "ID"
