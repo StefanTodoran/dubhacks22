@@ -64,22 +64,28 @@ function setupCamera() {
     window.addEventListener('load', init);
     function init() {
         var testList = [
-            { name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2 },
+            { name: "Apples", group: "fruit", pantry: 12, fridge: 24 },
+            { name: "Jam", on_open: 365 },
+            { name: "Carrots", group: "vegetable", fridge: 21, pantry: 7 },
+            { name: "Minced Beef", group: "meat", fridge: 2, freezer: 5 },
+            { name: "Pancake Mix", group: "grains", pantry: 19, on_open: 12 },
             { name: "Milk", group: "dairy", fridge: 7 },
             { name: "Bread", group: "grains", pantry: 4, fridge: 14, freezer: 21, on_open: 15 },
-            { name: "Minced Beef", group: "meat", fridge: 2, freezer: 5 },
-            { name: "Jam", on_open: 365 },
-            { name: "Pancake Mix", group: "grains", pantry: 12 },
-            { name: "Carrots", group: "vegetable", fridge: 21, pantry: 7 },
             { name: "Margarine", on_open: 90 },
-            { name: "Apples", group: "fruit", pantry: 12, fridge: 24 },
+            { name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2 },
         ];
         var scan_btn = document.getElementById('scan-btn');
-        scan_btn.addEventListener('click', function () {
-        });
-        scan_btn.classList.add('hidden');
+        scan_btn.addEventListener('click', function () { });
         displayItems(testList);
         setupCamera();
+        var container = document.getElementById('visualizer');
+        var template = document.getElementById('template');
+        var text = document.createElement('h2');
+        text.innerText = "Example Data Visualization:";
+        container.insertBefore(text, template);
+    }
+    function displayRecipes(items) {
+        console.log("Not Yet Implemented!");
     }
     function displayItems(items) {
         var container = document.getElementById('visualizer');
@@ -99,7 +105,7 @@ function setupCamera() {
             addDuration(node, "fridge", item.fridge);
             addDuration(node, "freezer", item.freezer);
             addDuration(node, "on_open", item.on_open);
-            container.insertBefore(node, template.nextSibling);
+            container.insertBefore(node, template);
         }
     }
     function addDuration(node, type, duration) {

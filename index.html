@@ -35,7 +35,7 @@
     <div style="flex: 1">
       <h1>How It Works</h1>
       <p>
-        By combining computer vision, clever algorithms to reconstruct words from acronyms, and U.S. government food
+        By combining computer vision, clever algorithms to reconstruct words from abbreviations, and U.S. government food
         keeping data, frijma is able to parse any receipt and help users visualize data about their food. Our app can
         then provide recipes that specifically target the food the user already has, so there is no need to go out to
         the store and buy more when perfectly usable food is available at home!
@@ -51,11 +51,13 @@
     </div>
   </section>
 
-  <section id="visualizer">
+  <div style="display: flex; flex-direction: row; justify-content: center;">
     <label id="scan-btn">
-      Scan&nbsp;Now
+      Scan
       <input id="camera-inp" type="file" accept="image/*" , capture />
     </label>
+  </div>
+  <section id="visualizer">
     <div class="food-item hidden" id="template">
       <h2 class="food-name"></h2>
       <div class="food-duration-container">

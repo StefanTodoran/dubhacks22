@@ -11,23 +11,28 @@
     
     // DELETE THIS!!
     const testList:FoodItem[] = [
-      {name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2},
+      {name: "Apples", group: "fruit", pantry: 12, fridge: 24},
+      {name: "Jam", on_open: 365},
+      {name: "Carrots", group: "vegetable", fridge: 21, pantry: 7},
+      {name: "Minced Beef", group: "meat", fridge: 2, freezer: 5},
+      {name: "Pancake Mix", group: "grains", pantry: 19, on_open: 12},
       {name: "Milk", group: "dairy", fridge: 7},
       {name: "Bread", group: "grains", pantry: 4, fridge: 14, freezer: 21, on_open: 15},
-      {name: "Minced Beef", group: "meat", fridge: 2, freezer: 5},
-      {name: "Jam", on_open: 365},
-      {name: "Pancake Mix", group: "grains", pantry: 12},
-      {name: "Carrots", group: "vegetable", fridge: 21, pantry: 7},
       {name: "Margarine", on_open: 90},
-      {name: "Apples", group: "fruit", pantry: 12, fridge: 24},
+      {name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2},
     ];
 
     const scan_btn = document.getElementById('scan-btn');
     scan_btn.addEventListener('click', () => {});
-    scan_btn.classList.add('hidden');
-    displayItems(testList);
 
+    displayItems(testList);
     setupCamera();
+
+    const container = document.getElementById('visualizer');
+    const template = document.getElementById('template');
+    const text = document.createElement('h2');
+    text.innerText = "Example Data Visualization:";
+    container.insertBefore(text, template);
   }
 
   interface RecipeItem {
@@ -85,7 +90,7 @@
       addDuration(node, "on_open", item.on_open);
 
       // insert after template
-      container.insertBefore(node, template.nextSibling);
+      container.insertBefore(node, template);
     }
   }
 

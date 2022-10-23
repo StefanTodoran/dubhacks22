@@ -13,14 +13,11 @@ body {
   border-radius: 1em;
   font-size: 50px;
   padding: 5px 20px;
+  /* margin-bottom: 25px; */
   color: var(--main-color);
   background-color: #F9B63000;
   transition: background-color 0.5s ease, color 0.5s ease;
   cursor: pointer;
-  position: absolute; 
-  top: 50%; 
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 #scan-btn:hover {
@@ -107,7 +104,7 @@ p {
   border: 1px solid #e0e0e000;
   border-radius: 5px;
   padding-top: 2.5vmin;
-  margin: 0 5vw;
+  margin: 5vh 5vw;
   min-height: 15vh;
   transition: border 0.5s ease, background-color 0.5s ease, padding 0.5s ease;
 }
