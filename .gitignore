@@ -4,4 +4,4 @@ node_modules/
 # TypeScript cache
 *.tsbuildinfo
 
-/build/
+/build/tsc.js.map

@@ -131,6 +131,7 @@ p {
   flex-direction: row;
   align-items: center;
   color: var(--color);
+  border-right: 1px solid lightgray;
   margin: 0 1em 0 0;
   min-width: 8em;
 }
@@ -155,7 +156,8 @@ p {
   position: relative;
   height: 2em;
   border-radius: 2em;
-  width: min(calc(var(--length) * 20%), 100%);
+  margin: 1px 0;
+  width: min(calc(var(--length) * 10%), 100%);
   background-color: var(--color);
 }
 
@@ -201,10 +203,14 @@ p {
   }
 
   .food-name {
-    font-size: 14px;
+    font-size: 18px;
   }
 
   .food-duration::after {
     font-size: 10px;
+  }
+
+  .food-item {
+    flex-direction: column;
   }
 }

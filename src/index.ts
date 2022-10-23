@@ -32,13 +32,13 @@
     // dynamic_elements.forEach((element) => observer.observe(element));
 
     const testList:FoodItem[] = [
-      {name: "Carrots", group: "vegetable", fridge: 21, pantry: 7},
-      {name: "Minced Beef", group: "meat", fridge: 2, freezer: 5},
       {name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2},
       {name: "Milk", group: "dairy", fridge: 7},
       {name: "Bread", group: "grains", pantry: 4, fridge: 14},
+      {name: "Minced Beef", group: "meat", fridge: 2, freezer: 5},
       {name: "Jam", on_open: 365},
       {name: "Pancake Mix", group: "grains", pantry: 12},
+      {name: "Carrots", group: "vegetable", fridge: 21, pantry: 7},
       {name: "Margarine", on_open: 90},
       {name: "Apples", group: "fruit", pantry: 12, fridge: 24},
     ];
