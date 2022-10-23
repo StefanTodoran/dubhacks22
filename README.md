@@ -1,11 +1,8 @@
-# frijma
-
-### Website: https://todoran.dev/frijma
-
+# [frjima](https://todoran.dev/frijma)
 
 ------------------------------------
 
-Note: when using the website, take receipt pictures with your phone held sideways (landscape)
+Note: when using the website, take receipt pictures with your phone held sideways (landscape) for best results.
 
 --------------------------------------
 <br/>
