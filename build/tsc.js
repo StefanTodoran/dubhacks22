@@ -80,7 +80,7 @@ function init() {
     var text = document.createElement('h2');
     text.innerText = "Example Data Visualization:";
     text.style.textAlign = "center";
-    container.insertBefore(text, template);
+    container.insertBefore(text, container.firstChild);
 }
 function displayRecipes(items) {
     console.log("Not Yet Implemented!");
