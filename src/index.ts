@@ -7,16 +7,16 @@ window.addEventListener('load', init);
 function init() {
 
   const examples: FoodItem[] = [
-    { name: "Apples", group: "fruit", pantry: 12, fridge: 24 },
-    { name: "Carrots", group: "vegetable", fridge: 21, pantry: 7 },
-    { name: "Margarine", fridge: 124, on_open_fridge: 62 },
-    { name: "Minced Beef", group: "meat", fridge: 2, freezer: 5 },
-    { name: "Pancake Mix", group: "grains", pantry: 19, on_open_pantry: 12 },
-    { name: "Yogurt", group: "dairy", fridge: 7, freezer: 31, on_open_fridge: 3 },
-    { name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2 },
-    { name: "Jam", on_open_fridge: 365 },
-    { name: "Bread", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
-    { name: "Milk", group: "dairy", fridge: 7 },
+    { name: "Apples", raw: "APPL", group: "fruit", pantry: 12, fridge: 24 },
+    { name: "Carrots", raw: "CRT", group: "vegetable", fridge: 21, pantry: 7 },
+    { name: "Margarine", raw: "MARGRN", fridge: 124, on_open_fridge: 62 },
+    { name: "Minced Beef", raw: "MNCED BEEF", group: "meat", fridge: 2, freezer: 5 },
+    { name: "Pancake Mix", raw: "PNCK MIX", group: "grains", pantry: 19, on_open_pantry: 12 },
+    { name: "Yogurt", raw: "YOGURT", group: "dairy", fridge: 7, freezer: 31, on_open_fridge: 3 },
+    { name: "Broccoli", raw: "BRCLI", group: "vegetable", fridge: 5, pantry: 2 },
+    { name: "Jam", raw: "JAM", on_open_fridge: 365 },
+    { name: "Bread", raw: "BREAD", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
+    { name: "Milk", raw: "MILK", group: "dairy", fridge: 7 },
   ];
 
   displayItems(examples);
