@@ -136,12 +136,18 @@ function parseReceipt(img_element, logger) {
                     return [4, worker.initialize('eng')];
                 case 3:
                     _a.sent();
-                    return [4, worker.recognize(img_element)];
+                    return [4, worker.setParameters({
+                            tessedit_pageseg_mode: Tesseract.PSM.SINGLE_COLUMN,
+                            tessedit_char_whitelist: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
+                        })];
                 case 4:
+                    _a.sent();
+                    return [4, worker.recognize(img_element)];
+                case 5:
                     data = _a.sent();
                     console.log(data);
                     return [4, worker.terminate()];
-                case 5:
+                case 6:
                     _a.sent();
                     return [2, data.data];
             }
