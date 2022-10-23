@@ -20,6 +20,7 @@ fetch('data/foodkeeper.json')
 
     
 function get_days(max_time: number, metric: string) {
+    return 0;
     console.log(metric);
     console.log(`Type: ${typeof metric}`);
     console.log(String(metric));
@@ -59,7 +60,7 @@ function process_food_data(food_data: any) {
     for (let food_entry of food_data.sheets[2].data) {
         // find expiration by iterating through storage types for 1st non-null
         let food_item: FoodItem = {name: food_entry.Name};
-        console.log(food_entry);
+        //console.log(food_entry);
 
         if (food_entry[6] != null) {
             food_item.pantry = get_days(food_entry[6], food_entry[7]);
