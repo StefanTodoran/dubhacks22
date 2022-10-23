@@ -13,7 +13,51 @@ interface FoodItem {
   no_data?: boolean, // no expiration data
 }
 
+const RECEIPT : string = `Wal ke
+almart - <.
+Save money. Live better.
+(813) 932-0562
+Manaser COLLEEN BRICKEY
+8885 N FLORIDA AVE
+TAMPA FL 33604
+ST# 5221 OP# 00001061 TE# 06 TR# 05332
+BREAD 007225003712 F 2.88 N
+BREAD 007225003712 F 2.88 N
+GV PNT BUTTR 007874237003 F 3.84 N
+GV PNT BUTTR 007874237003 F 3.84 N
+GV PNT BUTTR 007874237003 F 3.84 N
+GV PNT BUTTR 007874237003 F 3.84 N
+GV PARM 160Z 007874201510 F 4.98 0
+GV CHNK CHKN 007874206784 F 1.98 N
+GV CHNK CHKN 007874206784 F 1.98 N
+12 CT NITRIL 073191913822 2.78 X
+FOLGERS 002550000377 F 10.48 N
+SC TWIST UP 007874222682 F 0.84 X
+EGGS 060638871459 F 1.88 0
+SUBTOTAL 46.04
+TAX 1 7.000 % 0.26
+TOTAL 46.30
+DEBIT TEND 46.30
+CHANGE DUE 0.00
+EFT DEBIT PAY FROM PRIMARY
+ACCOUNT : 5259
+46.30 TOTAL PURCHASE
+PAYMENT DECLINED DEBIT NOT AVAILABLE
+11/06/11 02:21:54
+EFT DEBIT PAY FROM PRIMARY
+ACCOUNT : 5269
+46.30 TOTAL PURCHASE
+REF # 131000195280
+NETWORK ID. 0071 APPR CODE 297664
+11/06/11 02:22:54
+S
+Lavaway is back for Electronics,
+Toys, and Jewelry. 10/17/11-12/16/11
+11/06/11 02:22:59`
+
 var keywords_to_food_items: any[] = [];
+
+var final_food_items: FoodItem[] = [];
 
 fetch('data/foodkeeper.json', {mode: 'no-cors'})
   .then((response) => response.json())
@@ -116,7 +160,9 @@ function process_food_data(food_data: any) {
       keywords_to_food_items.push([filtered_keywords, food_item]);
     }
   }
-  console.log(search("white rice"));
+
+  process_receipt(RECEIPT)
+  //console.log(search("white rice"));
 }
 
 var INSERTION_COST = 1;
@@ -189,6 +235,38 @@ function search(receipt_name: string) {
   }
 
   return closest_food_item;
+}
+
+function is_letter(char : string) {
+  return char.toLowerCase() != char.toUpperCase();
+}
+
+function process_receipt(receipt: string) {
+  let receipt_lines = receipt.split('\n');
+  console.log(receipt_lines);
+
+  let receipt_names: string[] = [];
+  for (let receipt_line of receipt_lines) {
+    let receipt_name = "";
+    for (let i = 0; i < receipt_line.length; i++) {
+      let c = receipt_line.charAt(i);
+      if (!is_letter(c) && c != ' ') {
+        break;
+      }
+      receipt_name += c;
+    }
+    if (receipt_name != receipt_line) {
+      if (receipt_name.charAt(receipt_name.length - 1) == ' ') {
+        receipt_name = receipt_name.slice(0, -1);
+      }
+      receipt_names.push(receipt_name);
+    }
+  }
+
+  for (let receipt_name of receipt_names) {
+    final_food_items.push(search(receipt_name));
+  }
+  displayItems(final_food_items);
 }
 
 //  0. "ID"
