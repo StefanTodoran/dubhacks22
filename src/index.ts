@@ -61,7 +61,7 @@
     freezer?: number,
     on_open?: number,
     
-    group?: string, // food type 
+    group?: string, // fruit, vegetable, dairy, grains, or meat
     tip?: string,
   }
 
@@ -104,7 +104,6 @@
       indicator.style.setProperty('--days', display_duration);
     } else {
       indicator.remove();
-      // indicator.classList.add('hidden');
     }
   }
 
