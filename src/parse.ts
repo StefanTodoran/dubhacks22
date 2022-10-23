@@ -227,6 +227,10 @@ function is_letter(char : string) {
   return char.toLowerCase() != char.toUpperCase();
 }
 
+function is_number(char : string) {
+  return !isNaN(parseInt(char, 10));
+}
+
 function process_receipt(receipt: string) {
   let receipt_lines = receipt.split('\n');
   console.log(receipt_lines);
@@ -236,7 +240,7 @@ function process_receipt(receipt: string) {
     let receipt_name = "";
     for (let i = 0; i < receipt_line.length; i++) {
       let c = receipt_line.charAt(i);
-      if (!is_letter(c) && c != ' ') {
+      if (is_number(c)) {
         break;
       }
       receipt_name += c;
