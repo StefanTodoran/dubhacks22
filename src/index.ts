@@ -49,6 +49,7 @@
       displayItems(testList);
     });
 
+    document.getElementById('textbox').innerText = 'very first start point';
     setupCamera();
   }
 

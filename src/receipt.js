@@ -42,7 +42,7 @@
 
 async function visImage(elem, image) {
     let copy = image.clone();
-    copy.resize(300,300);
+    copy.resize(500,500);
     elem.src = await copy.getBase64Async('image/png');
 }
 
@@ -50,9 +50,12 @@ async function visImage(elem, image) {
 async function loadAndProcessImage(img_element) {
     const debugImage = document.getElementById('debug-img');
     const debugImage2 = document.getElementById('debug-img2');
+    const debugTxt = document.getElementById('textbox');
 
+    debugTxt.innerText = "starting";
     let image = await Jimp.read(await img_element.arrayBuffer())
 
+    debugTxt.innerText = "read the image in";
     //visImage(debugImage, image);
     
     const imageBytes = image.bitmap.data.byteLength;
@@ -60,6 +63,7 @@ async function loadAndProcessImage(img_element) {
     
     let blurred = image.clone();
     blurred.blur(100);
+    debugTxt.innerText = "blurred";
 
     let maskimage = image.clone();
 
@@ -75,6 +79,7 @@ async function loadAndProcessImage(img_element) {
         maskimage.bitmap.data[i*4+3] = 255;
     }
 
+    debugTxt.innerText = "done";
     //if (memory === undefined) {
     //    await loadWasm(imageBytes*2);
     //}
@@ -98,17 +103,25 @@ async function loadAndProcessImage(img_element) {
     //image.bitmap.data.set(outimage);
     //console.log('compied back');
     image = maskimage
+    visImage(debugImage2, image);
+    return image
     
     console.log(image);
     let processedBuffer = await image.getBufferAsync('image/png');
-    //visImage(debugImage2, image);
+    visImage(debugImage2, image);
     //debugImage.src = await image.getBase64Async('image/png');
     return processedBuffer;
 }
 
 
 async function parseReceipt(img_element, logger) {
-    let processedBuffer = img_element//await loadAndProcessImage(img_element);
+    let image = await loadAndProcessImage(img_element);
+    let imagedata = new ImageData(new Uint8ClampedArray(image.bitmap.data.buffer), image.bitmap.width, image.bitmap.height);
+
+    const text = OCRAD(imagedata);
+    return {text: text};
+    
+    let processedBuffer = await loadAndProcessImage(img_element);
     
     const worker = Tesseract.createWorker({
         logger: logger,
