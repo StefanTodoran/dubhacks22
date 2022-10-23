@@ -59,12 +59,10 @@ async function visImageCan(image) {
 async function loadAndProcessImage(img_element) {
     const debugImage = document.getElementById('debug-img');
     const debugImage2 = document.getElementById('debug-img2');
-    const debugTxt = document.getElementById('textbox');
+    const debug = document.getElementById('loader');
 
-    debugTxt.innerText = "starting";
     let image = await Jimp.read(await img_element.arrayBuffer())
 
-    debugTxt.innerText = "read the image in";
     //visImage(debugImage, image);
     
     const imageBytes = image.bitmap.data.byteLength;
@@ -74,7 +72,6 @@ async function loadAndProcessImage(img_element) {
     let blurred = image.clone();
     blurred.blur(100);
     visImage(debugImage, blurred);
-    debugTxt.innerText = "blurred";
 
     let maskimage = image.clone();
 
@@ -90,7 +87,6 @@ async function loadAndProcessImage(img_element) {
         maskimage.bitmap.data[i*4+3] = 255;
     }
 
-    debugTxt.innerText = "done";
     //if (memory === undefined) {
     //    await loadWasm(imageBytes*2);
     //}
@@ -142,7 +138,7 @@ function rotateImage(image) {
 async function loadAndProcessImageCanvas(img_element) {
     const debugImage = document.getElementById('debug-img');
     const debugImage2 = document.getElementById('debug-img2');
-    const debugTxt = document.getElementById('textbox');
+    const debug = document.getElementById('loader');
 
     let imageBitmap = await createImageBitmap(img_element);
 
@@ -268,8 +264,6 @@ async function loadAndProcessImageCanvas(img_element) {
     delete tmpBitmap;
     
     let data = canvas.toDataURL('image/png');
-    
-    debugTxt.innerText = "done";
 
     delete context;
     delete canvas;

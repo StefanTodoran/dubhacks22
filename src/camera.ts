@@ -1,24 +1,30 @@
 
 function setupCamera() : string {
-    document.getElementById('textbox').innerText = 'sjkdkfsdlfsd';
     const imageInps:any = document.querySelectorAll('.camera-inp'); // there are 2
-    const textbox = document.getElementById('textbox');
+    const loader = document.getElementById('loader');
 
-    const textboxLogger = (status: any) => {
-        textbox.classList.remove('hidden');
-        textbox.innerText = "Loading... " + status.status + "   " + status.progress;
+    const loaderProgress = (status: any) => {
+        const scan_btns = document.querySelectorAll('.scan-btn');
+        for (let i = 0; i < scan_btns.length; i++) {
+            scan_btns[i].classList.add('hidden');
+        }
+        loader.classList.remove('hidden');
+        loader.style.setProperty('--status', quoted(nbsp(status.status + '...')));
+        loader.style.setProperty('--progress', status.progress);
+
+        if (status.status === 'recognizing text' && status.progress === 1) {
+            for (let i = 0; i < scan_btns.length; i++) {
+                scan_btns[i].classList.remove('hidden');
+            }
+            loader.classList.add('hidden');
+        }
     }
     
-    document.getElementById('textbox').innerText = 'adding event listener';
     const on_click: Function = async (event: any) => {
-        document.getElementById('textbox').innerText = 'in event listere';
         let files = event.target.files;
         if (files.length > 0) {
-            textbox.innerText = 'Loading...';
-            let data = await parseReceipt(files[0], textboxLogger);
-            textbox.innerText = data.text;
+            let data = await parseReceipt(files[0], loaderProgress);
             parse_data(data.text);
-            //return data.text;
         }
     }
 

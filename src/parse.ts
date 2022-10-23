@@ -228,7 +228,6 @@ function process_receipt(receipt: string) {
 
     displayFoodItems(final_food_items);
     queryRecipes(final_food_items);
-    console.log(final_food_items);
 }
 
 //  0. "ID"
