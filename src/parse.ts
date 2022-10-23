@@ -121,7 +121,7 @@ function process_food_data(food_data: any, raw_receipt: string) {
 }
 
 var INSERTION_COST = 1;
-var DELETION_COST = 4;
+var DELETION_COST = 3;
 
 function reconstruction_cost(receipt_name: string, keyword: string) {
     let dp: number[][] = [];
@@ -188,7 +188,7 @@ function is_number(char: string) {
     return !isNaN(parseInt(char, 10));
 }
 
-const MAX_COST = 1.05;
+const MAX_COST = 1;
 
 function process_receipt(receipt: string) {
     let receipt_lines = receipt.toLowerCase().split('\n');
