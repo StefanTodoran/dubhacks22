@@ -4,23 +4,39 @@ body {
   overflow-x: hidden;
 
   --main-color: #F9B630;
+  --main-dark: #de9608;
   --dark-color: #604D42;
 }
 
-#scan-btn {
+.row {
+  display: flex; 
+  flex-direction: row; 
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  margin-bottom: 1.5em;
+  font-size: 16px;
+  padding: 2px 8px;
+}
+
+#scan-btn, button {
   font-family: 'Quicksand', sans-serif;
   border: 1px solid var(--main-color);
   border-radius: 1em;
-  font-size: 50px;
-  padding: 5px 20px;
-  /* margin-bottom: 25px; */
   color: var(--main-color);
   background-color: #F9B63000;
   transition: background-color 0.5s ease, color 0.5s ease;
   cursor: pointer;
 }
 
-#scan-btn:hover {
+#scan-btn {
+  font-size: 50px;
+  padding: 5px 20px;
+}
+
+#scan-btn:hover, button:hover {
   background-color: var(--main-color);
   color: white;
 }
@@ -29,6 +45,46 @@ body {
   opacity: 0;
   display: none;
   position: absolute;
+}
+
+#demo-grid {
+  display: grid; 
+  grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr;
+  max-width: 20vw;
+  padding: 5px 5px;
+  margin: 0 20px;
+}
+
+#demo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid black;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.75s ease, visibility 0.75s ease, border 0.75s ease;
+}
+
+#demo.shown {
+  border: 1px solid white;
+  visibility: visible;
+  opacity: 1;
+}
+
+#demo-grid p {
+  margin: 0;
+  font-size: 14px;
+}
+
+#demo-img {
+  user-select: none;
+  max-height: min(300px, 20vmin);
+  max-width: min(300px, 20vmin);
+  margin-right: 10px;
 }
 
 p {
@@ -46,12 +102,11 @@ p {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
   margin: 0 5vw;
   padding: 5vmin 2.5vmin;
 }
 
-#description div {
+#description > div {
   padding: 0 2.5vmin;
 }
 
@@ -66,13 +121,15 @@ p {
   margin: 2.5vh 0;
 }
 
-#footer, .food-item-title {
+#footer, #icons {
   display: flex;
   flex-direction: column;
 }
 
 .food-item-title {
-  justify-content: flex-end;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 #footer {
@@ -107,21 +164,24 @@ p {
   opacity: 0.5;
 }
 
+#visualizer, #recipes, #demo-grid {
+  background-color: #fdfdfd;
+  border: 1px solid #e0e0e0;
+}
+
 #visualizer, #recipes {
   position: relative;
-  border: 1px solid #e0e0e000;
   border-radius: 5px;
   margin: 5vh 5vw;
   min-height: 15vh;
   transition: border 0.5s ease, background-color 0.5s ease, padding 0.5s ease;
-  background-color: #fdfdfd;
-  border: 1px solid #e0e0e0;
   padding: 1vmin 2.5vmin;
 }
 
 #icons {
   padding: 0 !important;
   margin-left: 2vw;
+  /* justify-content: center; */
 }
 
 .icon {
@@ -148,7 +208,7 @@ p {
 
 /* FOOD ITEM STYLES */
 .food-item {
-  flex-direction: row;
+  flex-direction: column;
   margin-bottom: 1em;
 
   --color: var(--dark-color);
@@ -156,18 +216,26 @@ p {
   --icon: url(assets/default.png);
 }
 
-.food-item:hover, .recipe-item:hover {
+.food-item:hover {
   background-color: #f0f0f0;
   border: 1px solid #999999;
+}
+
+.recipe-item:hover {
+  background-color: #f9f9f9;
+  border: 1px solid #d9d9d9;
 }
 
 .food-item, .recipe-item {
   display: flex;
   padding: 1vh 1vw;
   border-radius: 10px;
+  transition: border 0.5s ease, background-color 0.5s ease;
+}
+
+.food-item {
   background-color: #f9f9f9;
   border: 1px solid #d9d9d9;
-  transition: border 0.5s ease, background-color 0.5s ease;
 }
 
 .food-name {
@@ -204,8 +272,8 @@ p {
   flex-direction: column;
   justify-content: center;
   border-left: 1px solid lightgray;
-  margin-left: 2em;
-  width: 100%;
+  margin-left: 4em;
+  width: calc(100% - 4em);
 }
 
 .food-duration:first-child {
@@ -241,11 +309,11 @@ p {
   box-sizing: border-box;
 }
 .food-duration.on_open_pantry {
-  background-color: rgba(var(--rgb), 0.25);
+  background-color: rgba(var(--rgb), 0.35);
   --icon: url(assets/pantry_open.png);
 }
 .food-duration.on_open_fridge {
-  background-color: rgba(var(--rgb), 0.25);
+  background-color: rgba(var(--rgb), 0.35);
   --icon: url(assets/fridge_open.png);
 }
 
@@ -278,8 +346,8 @@ p {
   --icon: url(assets/meat.png);
 }
 .grains {
-  --color: #E66400;
-  --rgb: 230, 100, 0;
+  --color: #eda107;
+  --rgb: 237, 161, 7;
   --icon: url(assets/grain.png)
 }
 .dairy {
@@ -320,6 +388,14 @@ p {
 .recipe-item {
   flex-direction: column;
   align-items: flex-start;
+  border: 1px solid #00000000;
+  color: var(--dark-color);
+  padding-bottom: 2vh;
+}
+
+.recipe-name {
+  color: var(--main-color);
+  margin: 0 1em 0 0;
 }
 
 .recipe-item:hover {
@@ -331,11 +407,14 @@ p {
 }
 
 a {
-  transition: transform 0.5s ease;
+  transition: color 0.2s ease;
+  text-decoration: none;
+  color: var(--main-dark);
 }
 
 a:hover {
-  transform: scale(1.1);
+  color: var(--main-color);
+  text-decoration: underline;
 }
 
 .hidden {
@@ -343,6 +422,14 @@ a:hover {
 }
 
 @media screen and (max-width: 1024px) {
+  #description {
+    flex-direction: column;
+  }
+
+  #description > div {
+    padding: 2.5vmin 0;
+  }
+
   .food-name {
     font-size: 22px;
     margin: 0;
@@ -352,35 +439,35 @@ a:hover {
     font-size: 14px;
   }
 
-  .food-item {
-    flex-direction: column;
+  #demo-grid {
+    max-width: 50vw;
   }
-
-  .food-item-title {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .food-duration-container {
-    width: calc(100% - 2em);
-  }
-
-  .food-duration-container.double-len {
-    margin-left: 4em;
-    width: calc(100% - 4em);
-  }
-}
-
-@media screen and (max-width: 768px) {
-  #description {
-    flex-direction: column;
+  
+  #demo-grid p {
+    font-size: 12px;
   }
 
   #icons {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0 2vw;
-    margin: 0;
+    margin: 2em 0;
+  }
+
+  #icons h1 {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .food-duration-container {
+    margin-left: 2em;
+    width: calc(100% - 2em);
+  }
+  
+  .food-duration-container.double-len {
+    margin-left: 4em;
+    width: calc(100% - 4em);
   }
 
   #scan-btn {
@@ -407,5 +494,18 @@ a:hover {
     padding: 0;
     border: none;
     background-color: white;
+  }
+
+  #demo-grid p {
+    font-size: 10px;
+  }
+
+  #demo-grid {
+    padding: 1px 1px;
+    margin: 0 5px;
+  }
+
+  #demo-img {
+    margin-right: 3px;
   }
 }

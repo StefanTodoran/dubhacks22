@@ -4,9 +4,9 @@ to win 1000 154 ERTvikEa0G
 g Walmart 3i
 118511102 Mar JAHIE BRODKSHIRE
 BBgRs yfanEMQDMI gs
-ST8 05483 00y 00000 R 009 e 06.976
+ST8 05483 00y 00000 R 009 e 06976
 TATER TOTS 001312000026 F 2.36 0
-HARD/PROV/DC 007874219410 F 268 0
+HARD/PROV/DC 007874219410 F 2.68 0
 SNACK BARS 002190848816 F 4.98 T
 HRI CL CHS 003120806000 F 6.88 0
 HRI CL CHS 003120806000 F 6.88 0
@@ -18,21 +18,21 @@ HRI CL PEP 003120807000 F 5.88 0
 EARBUDS 068113100946 488 X
 SC BCN CHDDR 007874202906 F 6.98 0
 ABF THINBRST 022461710972 F 97.20
-POTATO 007874219410 F 2680
+POTATO 007874219410 F 26.80
 DV RSE OTL W 001111101220 i
-APPLE 3 BAG 0B4747300184 F 647 N
-STOK LT SUT 004127102774 F 442 T J
-PEANUT BUTTR 005160026499 F 644 0 1
-AVO VERDE 061611206143 F 298 N
+APPLE 3 BAG 0B4747300184 F 6.47 N
+STOK LT SUT 004127102774 F 4.42 T J
+PEANUT BUTTR 005160026499 F 6.44 0 1
+AVO VERDE 061611206143 F 2.98 N
 ROLLS P o BT 18
-BAGELS 001376402801 F 4186 0
-GV SLTDERS 007874201525 298 X
-ACCESSORY 007616161216 0197 X
-CHEEZE IT 002410063623 F 4000
+BAGELS 001376402801 F 41.86 0
+GV SLTDERS 007874201525 2.98 X
+ACCESSORY 007616161216 01.97 X
+CHEEZE IT 002410063623 F 40.00
 UAS 459 YOU SAVED 054
-RITZ 004400088210 F 278 N
-RUFFLES 002840020942 F 250 N
-GV HNY GRNS 007874207263 F 128 N
+RITZ 004400088210 F 2.78 N
+RUFFLES 002840020942 F 2.50 N
+GV HNY GRNS 007874207263 F 1.28 N
 SUBTOTAL 13944
 TAX 1 7000 458
 TOTAL 14402
@@ -50,7 +50,6 @@ i
 mE
 `
 
-
 var keywords_to_food_items: any[] = [];
 
 var final_food_items: FoodItem[] = [];
@@ -58,11 +57,8 @@ var final_food_items: FoodItem[] = [];
 fetch('data/foodkeeper.json', {mode: 'no-cors'})
   .then((response) => response.json())
   .then((food_data) => process_food_data(JSON.parse(JSON.stringify(food_data))));
-  //.then((response) => {console.log})
 
 function get_days(max_time: number, metric: string) {
-  //console.log(metric);
-  
   if (JSON.stringify(metric).includes("Day")) {
     return max_time;
   } else if (JSON.stringify(metric).includes("Week")) {
@@ -74,14 +70,12 @@ function get_days(max_time: number, metric: string) {
   } else if (JSON.stringify(metric).includes("Hour")) {
     return 1; // someone will know if the food is bad if it only lasts hours
   } else {
-    console.log(metric)
-    console.log("this should never be called!");
+    console.log("this should never be called! metric: " + metric);
   }
 }
 
 function get_category(category_id_object: any) {
   let category_id = category_id_object["Category_ID"];
-
   if ((category_id >= 10 && category_id <= 17) || (category_id >= 20 && category_id <= 22)) {
     return "meat"
   } else if (category_id == 19 || category_id == 24) {
@@ -98,11 +92,6 @@ function get_category(category_id_object: any) {
 }
 
 function process_food_data(food_data: any) {
-  // let food = JSON.parse(JSON.stringify(food_entry))
-  // console.log("-------------------")
-  // console.log(JSON.stringify(food.Pantry_Max))
-  // console.log("-------------------")
-
   for (let food_entry of food_data.sheets[2].data) {
     // find expiration by iterating through storage types for 1st non-null
     let food_name: string = food_entry[2]["Name"];
@@ -136,14 +125,14 @@ function process_food_data(food_data: any) {
     }
     if (!food_item.pantry && !food_item.fridge && !food_item.freezer &&
         !food_item.on_open_pantry && !food_item.on_open_fridge) {
-      console.log("This item doesn't have storage info")
+      // this item doesn't have storage info
       continue;
     }    
 
     let keywords_string: string = food_entry[4]["Keywords"];
     if (!keywords_string || keywords_string == '') {
       // if there are no keywords, use the food item name as a keyword
-      keywords_to_food_items.push([[food_name], food_item]);
+      keywords_to_food_items.push([[food_name.toLowerCase()], food_item]);
     } else {
       keywords_string = keywords_string.split(' ').join('');
       let keywords = keywords_string.split(',');
@@ -157,12 +146,11 @@ function process_food_data(food_data: any) {
     }
   }
 
-  process_receipt(RECEIPT)
-  //console.log(search("white rice"));
+  process_receipt(RECEIPT);
 }
 
 var INSERTION_COST = 1;
-var DELETION_COST = 10;
+var DELETION_COST = 4;
 
 function reconstruction_cost(receipt_name: string, keyword: string) {
   let dp: number[][] = [];
@@ -189,11 +177,13 @@ function reconstruction_cost(receipt_name: string, keyword: string) {
   return dp[receipt_name.length][keyword.length];  
 }
 
+var NAME_CONSIDERATION = 0.1;
+
 function search(receipt_name: string) {
   let min_cost = Number.MAX_SAFE_INTEGER;
   let closest_food_item = null;
-  let closest_keywords = null;  // for logging
-  let receipt_words = receipt_name.toLowerCase().split(' ');
+  // let closest_keywords = null;  // for logging
+  let receipt_words = receipt_name.split(' ');
   let receipt_word_count = receipt_words.length;
   for (let [keywords, food_item] of keywords_to_food_items) {
     let total_over_words = 0;
@@ -208,30 +198,32 @@ function search(receipt_name: string) {
       total_over_words += keyword_min_cost;
     }
     let curr_avg_cost = total_over_words / receipt_word_count;
-    if (curr_avg_cost < min_cost) {
+    let name_cost = reconstruction_cost(receipt_name, food_item.name);
+    let true_cost = (NAME_CONSIDERATION * name_cost + (1 - NAME_CONSIDERATION) * curr_avg_cost) / receipt_name.length;
+    if (true_cost < min_cost) {
       closest_food_item = food_item; 
-      min_cost = curr_avg_cost;
-      closest_keywords = keywords;  // for logging
+      min_cost = true_cost;
+      // closest_keywords = keywords;  // for logging
     }
   }
 
   // logging stuff
-  console.log(closest_keywords);
-  for (let receipt_word of receipt_words) {
-    let keyword_min_cost = Number.MAX_SAFE_INTEGER;
-    let min_keyword = null;
-    for (let keyword of closest_keywords) {
-      let cost = reconstruction_cost(receipt_word, keyword);
-      if (cost < keyword_min_cost) {
-        keyword_min_cost = cost;
-        min_keyword = keyword;
-      }
-    }
-    console.log(receipt_word + ": " + min_keyword + " - cost: " + keyword_min_cost);
-    closest_food_item.raw = receipt_word
-  }
+  // console.log(receipt_words);
+  // for (let receipt_word of receipt_words) {
+  //   console.log(receipt_word);
+  //   let keyword_min_cost = Number.MAX_SAFE_INTEGER;
+  //   let min_keyword = null;
+  //   for (let keyword of closest_keywords) {
+  //     let cost = reconstruction_cost(receipt_word, keyword);
+  //     if (cost < keyword_min_cost) {
+  //       keyword_min_cost = cost;
+  //       min_keyword = keyword;
+  //     }
+  //   }
+  //   console.log(receipt_word + ": " + min_keyword + " - cost: " + keyword_min_cost);
+  // }
 
-  return closest_food_item;
+  return [closest_food_item, min_cost];
 }
 
 function is_letter(char : string) {
@@ -242,10 +234,10 @@ function is_number(char : string) {
   return !isNaN(parseInt(char, 10));
 }
 
-function process_receipt(receipt: string) {
-  let receipt_lines = receipt.split('\n');
-  console.log(receipt_lines);
+const MAX_COST = 1;
 
+function process_receipt(receipt: string) {
+  let receipt_lines = receipt.toLowerCase().split('\n');
   let receipt_names: string[] = [];
   for (let receipt_line of receipt_lines) {
     //let receipt_name = "";
@@ -254,26 +246,28 @@ function process_receipt(receipt: string) {
     }
     let re = new RegExp("^.*[0-9]{1,2}[.][0-9]{2}");
     if (re.test(receipt_line)) {
-      receipt_names.push(receipt_line);
+      receipt_line = receipt_line.replace(/[0-9]/g, '');
+      receipt_line = receipt_line.replace(/(\s.\s|\s.$)/g, '');
+      receipt_line = receipt_line.replace('.', '');
+      receipt_names.push(receipt_line.trim());
     }
-    // for (let i = 0; i < receipt_line.length; i++) {
-    //   let c = receipt_line.charAt(i);
-    //   if (is_number(c)) {
-    //     break;
-    //   }
-    //   receipt_name += c;
-    // }
-    // if (receipt_name != receipt_line) {
-    //   if (receipt_name.charAt(receipt_name.length - 1) == ' ') {
-    //     receipt_name = receipt_name.slice(0, -1);
-    //   }
-    //   receipt_names.push(receipt_name);
-    // }
   }
-  console.log(receipt_names)
 
   for (let receipt_name of receipt_names) {
-    final_food_items.push(search(receipt_name));
+    let [food_item, cost] = search(receipt_name);
+    if (cost > MAX_COST) {
+      continue;
+    }
+    if (food_item.raw == "") {
+      food_item.raw = receipt_name;
+      final_food_items.push(food_item);
+      // console.log(food_item.name + ", " + food_item.raw + ": " + cost);
+    }
+    let prev_cost = reconstruction_cost(food_item.raw, food_item.name);
+    let curr_cost = reconstruction_cost(receipt_name, food_item.name);
+    if (curr_cost < prev_cost) {
+      food_item.raw = receipt_name;
+    }
   }
 
   const scan_btn = document.getElementById('scan-btn');

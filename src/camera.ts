@@ -5,6 +5,7 @@ function setupCamera() {
     const textbox = document.getElementById('textbox');
 
     const textboxLogger = (status: any) => {
+        textbox.classList.remove('hidden');
         textbox.innerText = "Loading... " + status.status + "   " + status.progress;
     }
     
