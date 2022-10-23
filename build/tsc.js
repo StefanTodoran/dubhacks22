@@ -491,11 +491,13 @@ function process_receipt(receipt) {
             food_item.raw = receipt_name;
         }
     }
-    var scan_btn = document.getElementById('scan-btn');
-    scan_btn.addEventListener('click', function () {
-        displayFoodItems(final_food_items);
-        queryRecipes(final_food_items);
-    });
+    var scan_btns = document.querySelectorAll('.scan-btn');
+    for (var i = 0; i < scan_btns.length; i++) {
+        scan_btns[i].addEventListener('click', function () {
+            displayFoodItems(final_food_items);
+            queryRecipes(final_food_items);
+        });
+    }
 }
 function visImage(elem, image) {
     return __awaiter(this, void 0, void 0, function () {
