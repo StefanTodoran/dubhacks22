@@ -24,7 +24,7 @@ function init() {
     { title: "Fruit Salad", utilized: ["carrots", "apples", "lemons", "berries", "watermelon"], img: "assets/rt1.jpg", time: 3, url: "https://www.delish.com/cooking/recipe-ideas/a19609963/easy-fruit-salad-recipe/" }
   ]
 
-  displayItems(examples, "Example Data Visualization");
+  displayFoodItems(examples, "Example Data Visualization");
   displayRecipes(test);
   setupCamera();
 
@@ -102,6 +102,8 @@ interface FoodItem {
   on_open_fridge?: number,
   freezer?: number,
 
+  days_left?: number,
+
   group?: string, // fruit, vegetable, dairy, grains, or meat
   tip?: string,
 }
@@ -112,7 +114,7 @@ interface FoodItem {
  * @param items The list of food items
  * @param message Some text to display at the top of the visualizer
  */
-function displayItems(items: FoodItem[], message: string = "Your Data") {
+function displayFoodItems(food_items: FoodItem[], message: string = "Your Data") {
   const container = document.getElementById('visualizer');
   const template = document.getElementById('food-item-template');
 
@@ -120,8 +122,8 @@ function displayItems(items: FoodItem[], message: string = "Your Data") {
   container.innerHTML = "";
   container.appendChild(template);
 
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
+  for (let i = 0; i < food_items.length; i++) {
+    const item = food_items[i];
     // @ts-ignore
     const node: HTMLElement = template.cloneNode(true);
 
@@ -153,6 +155,56 @@ function displayItems(items: FoodItem[], message: string = "Your Data") {
   text.innerText = message;
   text.style.textAlign = "center";
   container.insertBefore(text, container.firstChild);
+}
+
+function queryRecipes(food_items: FoodItem[]) {
+  if (food_items.length == 0) {
+    return;
+  }
+  let food_item1 = null;
+  let min_days_left = Number.MAX_SAFE_INTEGER;
+  for (let food_item of food_items) {
+    if (food_item.days_left < min_days_left) {
+      food_item1 = food_item;
+      min_days_left = food_item.days_left;
+    }
+  }
+  let food_item2 = null;
+  min_days_left = Number.MAX_SAFE_INTEGER;
+  for (let food_item of food_items) {
+    if (food_item.group != food_item1.group && food_item.days_left < min_days_left) {
+      food_item2 = food_item;
+      min_days_left = food_item.days_left;
+    }
+  }
+  let food_names = [food_item1.name];
+  if (food_item2) {
+    food_names.push(food_item2.name);
+  }
+  fetch('https://api.edamam.com/search?q=' + food_names.join('+') + '&app_id=95184d17&app_key=0f50ed3c9420a4de48414fe67d08b4bc')
+    .then((response) => response.json())
+    .then((response) => processRecipes(JSON.parse(JSON.stringify(response.hits))));
+}
+
+function processRecipes(recipe_objs: any) {
+  let recipes: RecipeItem[] = []
+  for (let recipe_obj of recipe_objs) {
+    let recipe = recipe_obj.recipe;
+    let ingredients: string[] = [];
+    for (let i = 0; i < recipe.ingredients.length; i++) {
+      ingredients.push(recipe.ingredients[i].food);
+    }
+    let recipe_item: RecipeItem = {
+      title: recipe.label,
+      utilized: ingredients,
+      img: recipe.image,
+      time: Math.max(recipe.totalTime, 10),  // minimum time is 10 min
+      url: recipe.url
+    }
+    recipes.push(recipe_item);
+  }
+  console.log(recipes);
+  return recipes;
 }
 
 /**

@@ -77,7 +77,7 @@ function init() {
         { name: "Bread", raw: "BREAD", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
         { name: "Milk", raw: "MILK", group: "dairy", on_open_fridge: 1, fridge: 7 },
     ];
-    displayItems(examples, "Example Data Visualization");
+    displayFoodItems(examples, "Example Data Visualization");
     setupCamera();
     var show_more = document.getElementById('show-more-btn');
     var demo = document.getElementById('demo');
@@ -94,14 +94,14 @@ function init() {
 function displayRecipes(items) {
     console.log("Not Yet Implemented!");
 }
-function displayItems(items, message) {
+function displayFoodItems(food_items, message) {
     if (message === void 0) { message = "Your Data"; }
     var container = document.getElementById('visualizer');
     var template = document.getElementById('template');
     container.innerHTML = "";
     container.appendChild(template);
-    for (var i = 0; i < items.length; i++) {
-        var item = items[i];
+    for (var i = 0; i < food_items.length; i++) {
+        var item = food_items[i];
         var node = template.cloneNode(true);
         node.classList.remove('hidden');
         node.id = "";
@@ -125,6 +125,57 @@ function displayItems(items, message) {
     text.innerText = message;
     text.style.textAlign = "center";
     container.insertBefore(text, container.firstChild);
+}
+function queryRecipes(food_items) {
+    if (food_items.length == 0) {
+        return;
+    }
+    var food_item1 = null;
+    var min_days_left = Number.MAX_SAFE_INTEGER;
+    for (var _i = 0, food_items_1 = food_items; _i < food_items_1.length; _i++) {
+        var food_item = food_items_1[_i];
+        if (food_item.days_left < min_days_left) {
+            food_item1 = food_item;
+            min_days_left = food_item.days_left;
+        }
+    }
+    var food_item2 = null;
+    min_days_left = Number.MAX_SAFE_INTEGER;
+    for (var _a = 0, food_items_2 = food_items; _a < food_items_2.length; _a++) {
+        var food_item = food_items_2[_a];
+        if (food_item.group != food_item1.group && food_item.days_left < min_days_left) {
+            food_item2 = food_item;
+            min_days_left = food_item.days_left;
+        }
+    }
+    var food_names = [food_item1.name];
+    if (food_item2) {
+        food_names.push(food_item2.name);
+    }
+    fetch('https://api.edamam.com/search?q=' + food_names.join('+') + '&app_id=95184d17&app_key=0f50ed3c9420a4de48414fe67d08b4bc')
+        .then(function (response) { return response.json(); })
+        .then(function (response) { return processRecipes(JSON.parse(JSON.stringify(response.hits))); });
+}
+function processRecipes(recipe_objs) {
+    var recipes = [];
+    for (var _i = 0, recipe_objs_1 = recipe_objs; _i < recipe_objs_1.length; _i++) {
+        var recipe_obj = recipe_objs_1[_i];
+        var recipe = recipe_obj.recipe;
+        var ingredients = [];
+        for (var i = 0; i < recipe.ingredients.length; i++) {
+            ingredients.push(recipe.ingredients[i].food);
+        }
+        var recipe_item = {
+            title: recipe.label,
+            utilized: ingredients,
+            img: recipe.image,
+            time: Math.max(recipe.totalTime, 10),
+            url: recipe.url
+        };
+        recipes.push(recipe_item);
+    }
+    console.log(recipes);
+    return recipes;
 }
 function addDuration(node, type, duration) {
     var indicator = node.querySelector("." + type);
@@ -206,29 +257,46 @@ function process_food_data(food_data) {
         if (food_category != "default") {
             food_item.group = food_category;
         }
+        food_item.days_left = 0;
         if (food_entry[6] && !JSON.stringify(food_entry[6]).includes(null)) {
-            food_item.pantry = get_days(food_entry[6]["Pantry_Max"], food_entry[7]);
+            var num_days = get_days(food_entry[6]["Pantry_Max"], food_entry[7]);
+            food_item.pantry = num_days;
+            food_item.days_left += num_days;
         }
         else if (food_entry[10] && !JSON.stringify(food_entry[10]).includes(null)) {
-            food_item.pantry = get_days(food_entry[10]["DOP_Pantry_Max"], food_entry[11]);
+            var num_days = get_days(food_entry[10]["DOP_Pantry_Max"], food_entry[11]);
+            food_item.pantry = num_days;
+            food_item.days_left += num_days;
         }
         if (food_entry[14] && !JSON.stringify(food_entry[14]).includes(null)) {
-            food_item.on_open_pantry = get_days(food_entry[14]["Pantry_After_Opening_Max"], food_entry[15]);
+            var num_days = get_days(food_entry[14]["Pantry_After_Opening_Max"], food_entry[15]);
+            food_item.on_open_pantry = num_days;
+            food_item.days_left += num_days;
         }
         if (food_entry[17] && !JSON.stringify(food_entry[17]).includes(null)) {
-            food_item.fridge = get_days(food_entry[17]["Refrigerate_Max"], food_entry[18]);
+            var num_days = get_days(food_entry[17]["Refrigerate_Max"], food_entry[18]);
+            food_item.fridge = num_days;
+            food_item.days_left += num_days;
         }
         else if (food_entry[21] && !JSON.stringify(food_entry[21]).includes(null)) {
-            food_item.fridge = get_days(food_entry[21]["DOP_Refrigerate_Max"], food_entry[22]);
+            var num_days = get_days(food_entry[21]["DOP_Refrigerate_Max"], food_entry[22]);
+            food_item.fridge = num_days;
+            food_item.days_left += num_days;
         }
         if (food_entry[25] && !JSON.stringify(food_entry[25]).includes(null)) {
-            food_item.on_open_fridge = get_days(food_entry[25]["Refrigerate_After_Opening_Max"], food_entry[26]);
+            var num_days = get_days(food_entry[25]["Refrigerate_After_Opening_Max"], food_entry[26]);
+            food_item.on_open_fridge = num_days;
+            food_item.days_left += num_days;
         }
         if (food_entry[31] && !JSON.stringify(food_entry[31]).includes(null)) {
-            food_item.freezer = get_days(food_entry[31]["Freeze_Max"], food_entry[32]);
+            var num_days = get_days(food_entry[31]["Freeze_Max"], food_entry[32]);
+            food_item.freezer = num_days;
+            food_item.days_left += num_days;
         }
         else if (food_entry[35] && !JSON.stringify(food_entry[35]).includes(null)) {
-            food_item.freezer = get_days(food_entry[35]["DOP_Freeze_Max"], food_entry[36]);
+            var num_days = get_days(food_entry[35]["DOP_Freeze_Max"], food_entry[36]);
+            food_item.freezer = num_days;
+            food_item.days_left += num_days;
         }
         if (!food_item.pantry && !food_item.fridge && !food_item.freezer &&
             !food_item.on_open_pantry && !food_item.on_open_fridge) {
@@ -350,19 +418,10 @@ function process_receipt(receipt) {
     }
     var scan_btn = document.getElementById('scan-btn');
     scan_btn.addEventListener('click', function () {
-        displayItems(final_food_items);
+        displayFoodItems(final_food_items);
+        queryRecipes(final_food_items);
     });
 }
-var food_names = ["shrimp", "bagel"];
-function query_recipes(food_names) {
-    fetch('https://api.edamam.com/search?q=' + food_names.join('+') + '&app_id=95184d17&app_key=0f50ed3c9420a4de48414fe67d08b4bc')
-        .then(function (response) { return response.json(); })
-        .then(function (response) { return process_recipes(response.hits); });
-}
-function process_recipes(recipes) {
-    console.log(recipes);
-}
-query_recipes(food_names);
 function visImage(elem, image) {
     return __awaiter(this, void 0, void 0, function () {
         var copy, _a;
