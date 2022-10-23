@@ -105,7 +105,7 @@ p {
   padding: 5vmin 2.5vmin;
 }
 
-#description div {
+#description > div {
   padding: 0 2.5vmin;
 }
 
@@ -120,13 +120,15 @@ p {
   margin: 2.5vh 0;
 }
 
-#footer, .food-item-title, #icons {
+#footer, #icons {
   display: flex;
   flex-direction: column;
 }
 
 .food-item-title {
-  justify-content: flex-end;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 #footer {
@@ -178,7 +180,7 @@ p {
 #icons {
   padding: 0 !important;
   margin-left: 2vw;
-  justify-content: center;
+  /* justify-content: center; */
 }
 
 .icon {
@@ -205,7 +207,7 @@ p {
 
 /* FOOD ITEM STYLES */
 .food-item {
-  flex-direction: row;
+  flex-direction: column;
   margin-bottom: 1em;
 
   --color: var(--dark-color);
@@ -263,6 +265,12 @@ p {
   border-left: 1px solid lightgray;
   margin-left: 2em;
   width: 100%;
+  width: calc(100% - 2em);
+}
+
+.food-duration-container.double-len {
+  margin-left: 4em;
+  width: calc(100% - 4em);
 }
 
 .food-duration:first-child {
@@ -404,6 +412,10 @@ a:hover {
     flex-direction: column;
   }
 
+  #description > div {
+    padding: 2.5vmin 0;
+  }
+
   .food-name {
     font-size: 22px;
     margin: 0;
@@ -411,10 +423,6 @@ a:hover {
 
   .food-duration::after {
     font-size: 14px;
-  }
-
-  .food-item {
-    flex-direction: column;
   }
 
   #demo-grid {
@@ -425,28 +433,19 @@ a:hover {
     font-size: 12px;
   }
 
-  .food-item-title {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .food-duration-container {
-    width: calc(100% - 2em);
-  }
-
-  .food-duration-container.double-len {
-    margin-left: 4em;
-    width: calc(100% - 4em);
-  }
-}
-
-@media screen and (max-width: 768px) {
   #icons {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0 2vw;
     margin: 2em 0;
   }
+
+  #icons h1 {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
 
   #scan-btn {
     font-size: 35px;
