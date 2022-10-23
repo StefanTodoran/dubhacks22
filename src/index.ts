@@ -42,9 +42,15 @@ interface RecipeItem {
   url: string, // link to the recipe
 }
 
+/**
+ * Takes a list of RecipeItems and displays them in the recipe list with appropraite icons
+ * and description, as well as a link. Clears the container.
+ * @param items The list of recipe items
+ * @param message Some text to display at the top of the list
+ */
 function displayRecipes(items: RecipeItem[], message: string = "Your Recipes") {
   const container = document.getElementById('recipes');
-  const template = document.getElementById('template');
+  const template = document.getElementById('recipe-template');
 
   // clear the container except the template child
   container.innerHTML = "";
@@ -96,7 +102,7 @@ interface FoodItem {
  */
 function displayItems(items: FoodItem[], message: string = "Your Data") {
   const container = document.getElementById('visualizer');
-  const template = document.getElementById('template');
+  const template = document.getElementById('food-item-template');
 
   // clear the container except the template child
   container.innerHTML = "";
