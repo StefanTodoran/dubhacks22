@@ -56,12 +56,47 @@ function setupCamera() {
                     return [4, parseReceipt(files[0], textboxLogger)];
                 case 1:
                     data = _a.sent();
-                    textbox.innerText = data.text;
+                    textbox.innerText = "Result: " + data.text;
                     _a.label = 2;
                 case 2: return [2];
             }
         });
     }); });
+}
+var wasmInstance;
+var memory;
+var curMemIndex = 0;
+var processImage;
+function loadWasm(expectedMem) {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, bytes, instance;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4, fetch('wasm/image.wasm')];
+                case 1:
+                    response = _a.sent();
+                    return [4, response.arrayBuffer()];
+                case 2:
+                    bytes = _a.sent();
+                    return [4, WebAssembly.instantiate(bytes)];
+                case 3:
+                    instance = (_a.sent()).instance;
+                    wasmInstance = instance;
+                    memory = instance.exports.memory;
+                    processImage = instance.exports.processImage;
+                    while (memory.buffer.byteLength < expectedMem) {
+                        memory.grow(1);
+                    }
+                    return [2];
+            }
+        });
+    });
+}
+function allocImage(neededMemory) {
+    var newarr = new Uint8Array(memory.buffer, curMemIndex, neededMemory);
+    var prevIndex = curMemIndex;
+    curMemIndex += neededMemory;
+    return { image: newarr, handle: prevIndex };
 }
 window.addEventListener('load', init);
 function init() {
@@ -91,13 +126,31 @@ function init() {
         }
     });
 }
-function displayRecipes(items) {
-    console.log("Not Yet Implemented!");
+function displayRecipes(items, message) {
+    if (message === void 0) { message = "Your Recipes"; }
+    var container = document.getElementById('recipes');
+    var template = document.getElementById('recipe-template');
+    container.innerHTML = "";
+    container.appendChild(template);
+    for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var node = template.cloneNode(true);
+        node.classList.remove('hidden');
+        node.id = "";
+        node.querySelector('h2.recipe-name').textContent = item.title;
+        node.querySelector('span').textContent = nbsp(" (") + item.time + ")";
+        node.querySelector('a.recipe-url').href = item.url;
+        container.insertBefore(node, template);
+    }
+    var text = document.createElement('h2');
+    text.innerText = message;
+    text.style.textAlign = "center";
+    container.insertBefore(text, container.firstChild);
 }
 function displayItems(items, message) {
     if (message === void 0) { message = "Your Data"; }
     var container = document.getElementById('visualizer');
-    var template = document.getElementById('template');
+    var template = document.getElementById('food-item-template');
     container.innerHTML = "";
     container.appendChild(template);
     for (var i = 0; i < items.length; i++) {
@@ -380,6 +433,26 @@ function visImage(elem, image) {
         });
     });
 }
+function visImageCan(image) {
+    return __awaiter(this, void 0, void 0, function () {
+        var can, context, _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    can = document.createElement('canvas');
+                    can.width = 800;
+                    can.height = 800;
+                    context = can.getContext('2d');
+                    _b = (_a = context).drawImage;
+                    return [4, createImageBitmap(image)];
+                case 1:
+                    _b.apply(_a, [_c.sent(), 0, 0, can.width, can.height]);
+                    document.body.appendChild(can);
+                    return [2];
+            }
+        });
+    });
+}
 function loadAndProcessImage(img_element) {
     return __awaiter(this, void 0, void 0, function () {
         var debugImage, debugImage2, debugTxt, image, _a, _b, imageBytes, blurred, maskimage, width, height, i, thresh, val, processedBuffer;
@@ -398,8 +471,10 @@ function loadAndProcessImage(img_element) {
                     debugTxt.innerText = "read the image in";
                     imageBytes = image.bitmap.data.byteLength;
                     console.log('read in image');
+                    image.greyscale();
                     blurred = image.clone();
                     blurred.blur(100);
+                    visImage(debugImage, blurred);
                     debugTxt.innerText = "blurred";
                     maskimage = image.clone();
                     width = image.bitmap.width;
@@ -415,23 +490,131 @@ function loadAndProcessImage(img_element) {
                     debugTxt.innerText = "done";
                     image = maskimage;
                     visImage(debugImage2, image);
-                    console.log(image);
-                    return [4, image.getBufferAsync('image/png')];
+                    return [2, image];
                 case 3:
                     processedBuffer = _c.sent();
+                    visImage(debugImage2, image);
                     return [2, processedBuffer];
+            }
+        });
+    });
+}
+function rotateImage(image) {
+    var width = image.width;
+    var height = image.height;
+    var newImage = new ImageData(height, width);
+    for (var x = 0; x < width; x++) {
+        for (var y = 0; y < height; y++) {
+            newImage.data[(y * width + x) * 4 + 0] = image.data[(x * height + y) * 4 + 0];
+            newImage.data[(y * width + x) * 4 + 1] = image.data[(x * height + y) * 4 + 1];
+            newImage.data[(y * width + x) * 4 + 2] = image.data[(x * height + y) * 4 + 2];
+            newImage.data[(y * width + x) * 4 + 3] = image.data[(x * height + y) * 4 + 3];
+        }
+    }
+    return newImage;
+}
+function loadAndProcessImageCanvas(img_element) {
+    return __awaiter(this, void 0, void 0, function () {
+        var debugImage, debugImage2, debugTxt, imageBitmap, width, height, canvas, context, image, i, average, scale, tmpBitmap, radius, x, y, blurred, maskimage, i, thresh, val, data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    debugImage = document.getElementById('debug-img');
+                    debugImage2 = document.getElementById('debug-img2');
+                    debugTxt = document.getElementById('textbox');
+                    return [4, createImageBitmap(img_element)];
+                case 1:
+                    imageBitmap = _a.sent();
+                    width = imageBitmap.width;
+                    height = imageBitmap.height;
+                    canvas = document.createElement('canvas');
+                    context = canvas.getContext('2d');
+                    if (window.screen.width < window.screen.height && window.screen.width < 1000) {
+                        width = imageBitmap.height;
+                        height = imageBitmap.width;
+                        canvas.width = width;
+                        canvas.height = height;
+                        context.save();
+                        context.translate(width / 2, height / 2);
+                        context.rotate(90 * Math.PI / 180);
+                        context.drawImage(imageBitmap, -imageBitmap.width / 2, -imageBitmap.height / 2);
+                        context.restore();
+                    }
+                    else {
+                        canvas.width = width;
+                        canvas.height = height;
+                        context.drawImage(imageBitmap, 0, 0);
+                    }
+                    delete imageBitmap;
+                    image = context.getImageData(0, 0, width, height);
+                    console.log(width);
+                    for (i = 0; i < width * height; i++) {
+                        average = (image.data[i * 4 + 0] + image.data[i * 4 + 1] + image.data[i * 4 + 2]) / 3;
+                        image.data[i * 4 + 0] = average;
+                        image.data[i * 4 + 1] = average;
+                        image.data[i * 4 + 2] = average;
+                        image.data[i * 4 + 3] = 255;
+                    }
+                    scale = 64;
+                    return [4, createImageBitmap(image)];
+                case 2:
+                    tmpBitmap = _a.sent();
+                    context.imageSmoothingEnabled = true;
+                    context.imageSmoothingQuality = "high";
+                    context.drawImage(tmpBitmap, 0, 0, width / scale, height / scale);
+                    delete tmpBitmap;
+                    return [4, createImageBitmap(context.getImageData(0, 0, width / scale, height / scale))];
+                case 3:
+                    tmpBitmap = _a.sent();
+                    radius = 1;
+                    context.globalCompositeOperation = 'lighten';
+                    for (x = -radius; x <= radius; x++) {
+                        for (y = -radius; y <= radius; y++) {
+                            context.drawImage(tmpBitmap, x, y);
+                        }
+                    }
+                    context.globalCompositeOperation = 'source-over';
+                    delete tmpBitmap;
+                    return [4, createImageBitmap(context.getImageData(0, 0, width / scale, height / scale))];
+                case 4:
+                    tmpBitmap = _a.sent();
+                    context.drawImage(tmpBitmap, 0, 0, width, height);
+                    delete tmpBitmap;
+                    blurred = context.getImageData(0, 0, width, height);
+                    visImageCan(blurred);
+                    maskimage = new ImageData(width, height);
+                    for (i = 0; i < width * height; i++) {
+                        thresh = blurred.data[i * 4] - 50;
+                        val = 255 * (thresh < image.data[i * 4]);
+                        maskimage.data[i * 4 + 0] = val;
+                        maskimage.data[i * 4 + 1] = val;
+                        maskimage.data[i * 4 + 2] = val;
+                        maskimage.data[i * 4 + 3] = 255;
+                    }
+                    visImageCan(maskimage);
+                    return [4, createImageBitmap(maskimage)];
+                case 5:
+                    tmpBitmap = _a.sent();
+                    delete maskimage;
+                    context.drawImage(tmpBitmap, 0, 0);
+                    delete tmpBitmap;
+                    data = canvas.toDataURL('image/png');
+                    debugTxt.innerText = "done";
+                    delete context;
+                    delete canvas;
+                    return [2, data];
             }
         });
     });
 }
 function parseReceipt(img_element, logger) {
     return __awaiter(this, void 0, void 0, function () {
-        var processedBuffer, worker, data;
+        var dataurl, worker, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4, loadAndProcessImage(img_element)];
+                case 0: return [4, loadAndProcessImageCanvas(img_element)];
                 case 1:
-                    processedBuffer = _a.sent();
+                    dataurl = _a.sent();
                     worker = Tesseract.createWorker({
                         logger: logger
                     });
@@ -444,7 +627,7 @@ function parseReceipt(img_element, logger) {
                     return [4, worker.initialize('eng')];
                 case 4:
                     _a.sent();
-                    return [4, worker.recognize(processedBuffer)];
+                    return [4, worker.recognize(dataurl)];
                 case 5:
                     data = _a.sent();
                     console.log(data);

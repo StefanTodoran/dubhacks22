@@ -128,11 +128,13 @@ function rotateImage(image) {
     let width = image.width;
     let height = image.height;
     let newImage = new ImageData(height, width);
-    for (let i = 0; i < width*height; i ++) {   
-        newImage.data[(i%height * width + Math.floor(i/height)) * 4 + 0] = image.data[i*4 + 0];
-        newImage.data[(i%height * width + Math.floor(i/height)) * 4 + 1] = image.data[i*4 + 1];
-        newImage.data[(i%height * width + Math.floor(i/height)) * 4 + 2] = image.data[i*4 + 2];
-        newImage.data[(i%height * width + Math.floor(i/height)) * 4 + 3] = image.data[i*4 + 3];
+    for (let x = 0; x < width; x ++) {
+        for (let y = 0; y < height; y ++) {
+            newImage.data[(y*width + x)*4 + 0] = image.data[(x*height + y)*4 + 0];
+            newImage.data[(y*width + x)*4 + 1] = image.data[(x*height + y)*4 + 1];
+            newImage.data[(y*width + x)*4 + 2] = image.data[(x*height + y)*4 + 2];
+            newImage.data[(y*width + x)*4 + 3] = image.data[(x*height + y)*4 + 3];
+        }
     }
     return newImage;
 }
@@ -144,21 +146,42 @@ async function loadAndProcessImageCanvas(img_element) {
 
     let imageBitmap = await createImageBitmap(img_element);
 
-    const width = imageBitmap.width;
-    const height = imageBitmap.height;
+    let width = imageBitmap.width;
+    let height = imageBitmap.height;
     
     let canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
     
     //visImageCan(imageBitmap);
     let context = canvas.getContext('2d');
     
-    context.filter = 'grayscale(1)';
-    context.drawImage(imageBitmap, 0, 0);
+    //context.filter = 'grayscale(1)';
+    if (window.screen.width < window.screen.height && window.screen.width < 1000) {
+        width = imageBitmap.height;
+        height = imageBitmap.width;
+        
+        canvas.width = width;
+        canvas.height = height;
+
+        context.save();
+        context.translate(width/2, height/2);
+        context.rotate(90*Math.PI/180);
+        context.drawImage(imageBitmap, -imageBitmap.width/2, -imageBitmap.height/2);
+        context.restore();
+    } else {
+        canvas.width = width;
+        canvas.height = height;
+
+        context.drawImage(imageBitmap, 0, 0);
+    }
     delete imageBitmap;
     let image = context.getImageData(0, 0, width, height);
+    console.log(width);
     //image = rotateImage(image);
+    //width = image.width;
+    //height = image.height;
+    //console.log(width);
+    //console.log(image.width);
+    //visImageCan(image);
 
     for (let i = 0; i < width*height; i ++) {
         const average = (image.data[i*4+0] + image.data[i*4+1] + image.data[i*4+2]) / 3;
@@ -223,39 +246,46 @@ async function loadAndProcessImageCanvas(img_element) {
     context.drawImage(tmpBitmap, 0, 0, width, height);
     delete tmpBitmap;
     let blurred = context.getImageData(0, 0, width, height);
-
-    delete context;
-    delete canvas;
     
-    visImageCan(blurred);
+    //visImageCan(blurred);
 
     let maskimage = new ImageData(width, height);
     
     for (let i = 0; i < width*height; i ++) {
-        const thresh = blurred.data[i*4] - 40;
+        const thresh = blurred.data[i*4] - 50;
         const val = 255 * (thresh < image.data[i*4]);
         maskimage.data[i*4+0] = val;
         maskimage.data[i*4+1] = val;
         maskimage.data[i*4+2] = val;
         maskimage.data[i*4+3] = 255;
     }
+    
+    //visImageCan(maskimage);
 
+    tmpBitmap = await createImageBitmap(maskimage);
+    delete maskimage;
+    context.drawImage(tmpBitmap, 0, 0);
+    delete tmpBitmap;
+    
+    let data = canvas.toDataURL('image/png');
+    
     debugTxt.innerText = "done";
 
-    visImageCan(maskimage);
-    return maskimage;
+    delete context;
+    delete canvas;
+
+    return data;
 }
 
 
 async function parseReceipt(img_element, logger) {
     //let image = await loadAndProcessImage(img_element);
     //let imagedata = new ImageData(new Uint8ClampedArray(image.bitmap.data.buffer), image.bitmap.width, image.bitmap.height);
-    let image = await loadAndProcessImageCanvas(img_element);
+    //let image = await loadAndProcessImageCanvas(img_element);
 
-    const text = OCRAD(image);
-    return {text: text};
-    
-    let processedBuffer = await loadAndProcessImage(img_element);
+    //const text = OCRAD(image);
+    //return {text: text};
+    let dataurl = await loadAndProcessImageCanvas(img_element);
     
     const worker = Tesseract.createWorker({
         logger: logger,
@@ -268,7 +298,7 @@ async function parseReceipt(img_element, logger) {
         //tessedit_pageseg_mode: Tesseract.PSM.SINGLE_COLUMN,
     //    tessedit_char_whitelist: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ",
     //});
-    const data = await worker.recognize(processedBuffer);
+    const data = await worker.recognize(dataurl);
     //const { data: { text } } = await worker.recognize('https://tesseract.projectnaptha.com/img/eng_bw.png');
     console.log(data);
     await worker.terminate();
