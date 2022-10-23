@@ -14,20 +14,28 @@ body {
   align-items: center;
 }
 
-#scan-btn {
+button {
+  margin-bottom: 1.5em;
+  font-size: 16px;
+  padding: 2px 8px;
+}
+
+#scan-btn, button {
   font-family: 'Quicksand', sans-serif;
   border: 1px solid var(--main-color);
   border-radius: 1em;
-  font-size: 50px;
-  padding: 5px 20px;
-  /* margin-bottom: 25px; */
   color: var(--main-color);
   background-color: #F9B63000;
   transition: background-color 0.5s ease, color 0.5s ease;
   cursor: pointer;
 }
 
-#scan-btn:hover {
+#scan-btn {
+  font-size: 50px;
+  padding: 5px 20px;
+}
+
+#scan-btn:hover, button:hover {
   background-color: var(--main-color);
   color: white;
 }
@@ -41,9 +49,26 @@ body {
 #demo-grid {
   display: grid; 
   grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr;
-  max-width: 25vw;
+  max-width: 20vw;
   padding: 5px 5px;
   margin: 0 20px;
+}
+
+#demo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#demo.shown {
+  visibility: visible;
+  opacity: 1;
 }
 
 #demo-grid p {
@@ -51,10 +76,11 @@ body {
   font-size: 14px;
 }
 
-.demo-img {
+#demo-img {
   user-select: none;
-  max-height: 300px;
-  max-width: min(300px, 25vw);
+  max-height: min(300px, 20vmin);
+  max-width: min(300px, 20vmin);
+  margin-right: 10px;
 }
 
 p {
@@ -72,7 +98,6 @@ p {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
   margin: 0 5vw;
   padding: 5vmin 2.5vmin;
 }
@@ -92,7 +117,7 @@ p {
   margin: 2.5vh 0;
 }
 
-#footer, .food-item-title {
+#footer, .food-item-title, #icons {
   display: flex;
   flex-direction: column;
 }
@@ -140,7 +165,6 @@ p {
 
 #visualizer, #recipes {
   position: relative;
-  border: 1px solid #e0e0e000;
   border-radius: 5px;
   margin: 5vh 5vw;
   min-height: 15vh;
@@ -151,6 +175,7 @@ p {
 #icons {
   padding: 0 !important;
   margin-left: 2vw;
+  justify-content: center;
 }
 
 .icon {
@@ -372,6 +397,10 @@ a:hover {
 }
 
 @media screen and (max-width: 1024px) {
+  #description {
+    flex-direction: column;
+  }
+
   .food-name {
     font-size: 22px;
     margin: 0;
@@ -381,12 +410,16 @@ a:hover {
     font-size: 14px;
   }
 
-  .food-item, .row {
+  .food-item {
     flex-direction: column;
   }
 
   #demo-grid {
-  max-width: unset;
+    max-width: 50vw;
+  }
+  
+  #demo-grid p {
+    font-size: 12px;
   }
 
   .food-item-title {
@@ -405,15 +438,11 @@ a:hover {
 }
 
 @media screen and (max-width: 768px) {
-  #description {
-    flex-direction: column;
-  }
-
   #icons {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0 2vw;
-    margin: 0;
+    margin: 2em 0;
   }
 
   #scan-btn {
@@ -440,5 +469,18 @@ a:hover {
     padding: 0;
     border: none;
     background-color: white;
+  }
+
+  #demo-grid p {
+    font-size: 10px;
+  }
+
+  #demo-grid {
+    padding: 1px 1px;
+    margin: 0 5px;
+  }
+
+  #demo-img {
+    margin-right: 3px;
   }
 }

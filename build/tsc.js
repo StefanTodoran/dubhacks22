@@ -62,41 +62,6 @@ function setupCamera() {
         });
     }); });
 }
-var wasmInstance;
-var memory;
-var curMemIndex = 0;
-var processImage;
-function loadWasm(expectedMem) {
-    return __awaiter(this, void 0, void 0, function () {
-        var response, bytes, instance;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4, fetch('wasm/image.wasm')];
-                case 1:
-                    response = _a.sent();
-                    return [4, response.arrayBuffer()];
-                case 2:
-                    bytes = _a.sent();
-                    return [4, WebAssembly.instantiate(bytes)];
-                case 3:
-                    instance = (_a.sent()).instance;
-                    wasmInstance = instance;
-                    memory = instance.exports.memory;
-                    processImage = instance.exports.processImage;
-                    while (memory.buffer.byteLength < expectedMem) {
-                        memory.grow(1);
-                    }
-                    return [2];
-            }
-        });
-    });
-}
-function allocImage(neededMemory) {
-    var newarr = new Uint8Array(memory.buffer, curMemIndex, neededMemory);
-    var prevIndex = curMemIndex;
-    curMemIndex += neededMemory;
-    return { image: newarr, handle: prevIndex };
-}
 window.addEventListener('load', init);
 function init() {
     var examples = [
@@ -113,6 +78,17 @@ function init() {
     ];
     displayItems(examples, "Example Data Visualization");
     setupCamera();
+    var show_more = document.getElementById('show-more-btn');
+    var demo = document.getElementById('demo');
+    show_more.addEventListener('click', function () {
+        demo.classList.toggle('shown');
+        if (show_more.textContent == "See More") {
+            show_more.textContent = "Go Back";
+        }
+        else {
+            show_more.textContent = "See More";
+        }
+    });
 }
 function displayRecipes(items) {
     console.log("Not Yet Implemented!");

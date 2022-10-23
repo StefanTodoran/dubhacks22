@@ -23,7 +23,17 @@
   </section>
 
   <section id="description">
-    <div style="flex: 1">
+    <div style="flex: 2">
+      <h1>How It Works</h1>
+      <p>
+        By combining image preprocessing, computer vision, clever algorithms to reconstruct words from abbreviations,
+        and U.S. government food keeping data, frijma is able to parse any receipt and help users visualize data about
+        their food. Our app can then provide recipes that specifically target the food the user already has, so there is
+        no need to go out to the store and buy more when perfectly usable food is available at home!
+      </p>
+      <button id="show-more-btn">See More</button>
+    </div>
+    <div style="flex: 3; position: relative;">
       <h1>Why Frijma</h1>
       <p>
         According to the USDA, it is estimated that nearly 40% of the U.S. food supply is wasted every single year.
@@ -32,15 +42,19 @@
         than carbon dioxide. Unlike many climate issues however, food waste is a problem that can and must be solved at
         an individual consumer level. That's where frijma comes in.
       </p>
-    </div>
-    <div style="flex: 1">
-      <h1>How It Works</h1>
-      <p>
-        By combining image preprocessing, computer vision, clever algorithms to reconstruct words from abbreviations,
-        and U.S. government food keeping data, frijma is able to parse any receipt and help users visualize data about
-        their food. Our app can then provide recipes that specifically target the food the user already has, so there is
-        no need to go out to the store and buy more when perfectly usable food is available at home!
-      </p>
+      <div class="row" id="demo">
+        <img id="demo-img" src="assets/receipt.png" />
+        &rarr;
+        <div id="demo-grid">
+          <p>NAME&nbsp;</p><p>ID#&nbsp;</p><p>AMNT&nbsp;</p><p>DSC&nbsp;</p><p>PRC</p>
+          <p>APPL</p><p>31240686</p><p>9</p><p>NO</p><p>2.99</p>
+          <p>CRT</p><p>10465239</p><p>12</p><p>NO</p><p>1.99</p>
+          <p>MARGRN</p><p>17823649</p><p>1</p><p>NO</p><p>6.29</p>
+          <p>MNCED BEEF</p><p>17823649</p><p>3</p><p>YES</p><p>7.89</p>
+          <p>PNCK MIX</p><p>10293846</p><p>2</p><p>YES</p><p>4.59</p>
+          <p>YOGURT</p><p>98609352</p><p>10</p><p>NO</p><p>22.99</p>
+        </div>
+      </div>
     </div>
     <div id="icons">
       <div class="icon-container" style="column-span: all;"><img class="icon" src="assets/question.png" /> How long food
@@ -54,20 +68,6 @@
       <div class="icon-container"><img class="icon" src="assets/on_open.png" /> Once&nbsp;Opened</div>
     </div>
   </section>
-
-  <div class="row">
-    <img class="demo-img" src="assets/receipt.png" />
-    <div id="demo-grid">
-      <p>NAME&nbsp;</p><p>ID#&nbsp;</p><p>AMNT&nbsp;</p><p>DSC&nbsp;</p><p>PRC</p>
-      <p>APPL</p><p>31240686</p><p>9</p><p>NO</p><p>2.99</p>
-      <p>CRT</p><p>10465239</p><p>12</p><p>NO</p><p>1.99</p>
-      <p>MARGRN</p><p>17823649</p><p>1</p><p>NO</p><p>6.29</p>
-      <p>MNCED BEEF</p><p>17823649</p><p>3</p><p>YES</p><p>7.89</p>
-      <p>PNCK MIX</p><p>10293846</p><p>2</p><p>YES</p><p>4.59</p>
-      <p>YOGURT</p><p>98609352</p><p>10</p><p>NO</p><p>22.99</p>
-    </div>
-    <img class="demo-img" src="assets/data.png" />
-  </div>
 
   <div class="row">
     <label id="scan-btn">
@@ -105,7 +105,7 @@
     </div>
   </section>
 
-  <p id='textbox'></p>
+  <p id='textbox' class="hidden"></p>
   <img src="" id="debug-img" style="width: 100%;" />
   <img src="" id="debug-img2" style="width: 100%;" />
 

@@ -21,6 +21,17 @@ function init() {
 
   displayItems(examples, "Example Data Visualization");
   setupCamera();
+
+  const show_more = document.getElementById('show-more-btn');
+  const demo = document.getElementById('demo');
+  show_more.addEventListener('click', () => {
+    demo.classList.toggle('shown');
+    if (show_more.textContent == "See More") {
+      show_more.textContent = "Go Back";
+    } else {
+      show_more.textContent = "See More";
+    }
+  })
 }
 
 interface RecipeItem {
