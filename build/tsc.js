@@ -118,77 +118,96 @@ function setupCamera() {
         return string.replace(/ /g, '\u00a0');
     }
 })();
-var food_items = [];
+var keywords_to_food_items = [];
 fetch('data/foodkeeper.json', { mode: 'no-cors' })
     .then(function (response) { return response.json(); })
     .then(function (food_data) { return process_food_data(JSON.parse(JSON.stringify(food_data))); });
 function get_days(max_time, metric) {
-    console.log(metric);
-    console.log("Type: ".concat(typeof metric));
-    console.log(String(metric));
-    console.log("Type: ".concat(typeof String(metric)));
-    console.log(JSON.stringify(metric));
-    console.log("Type: ".concat(typeof JSON.stringify(metric)));
-    console.log(JSON.stringify(metric));
-    if (String(metric) == "Days") {
-        console.log("yes1");
+    if (JSON.stringify(metric).includes("Days")) {
         return max_time;
     }
-    else if (JSON.stringify(metric) == "Weeks") {
-        console.log("yes2");
+    else if (JSON.stringify(metric).includes("Weeks")) {
         return max_time * 7;
     }
-    else if (String(metric) == "Months") {
-        console.log("yes3");
+    else if (JSON.stringify(metric).includes("Months")) {
         return max_time * 30;
     }
-    else if (String(metric) == "Years") {
-        console.log("yes4");
+    else if (JSON.stringify(metric).includes("Years")) {
         return max_time * 365;
+    }
+    else if (JSON.stringify(metric).includes("Hours")) {
+        return 1;
     }
     else {
         console.log("this should never be called!");
     }
 }
 function process_food_data(food_data) {
-    var testList = [
-        { name: "Carrots", group: "Vegetable", fridge: 21, pantry: 7 },
-        { name: "Broccoli", group: "Vegetable", fridge: 5, pantry: 2 },
-        { name: "Milk", group: "Dairy", fridge: 7 },
-        { name: "Bread", group: "Grains", pantry: 4, fridge: 14 },
-        { name: "Pancake Mix", group: "Grains", pantry: 12 },
-        { name: "Jam", on_open: 365 },
-        { name: "Margarine", on_open: 90 },
-    ];
     for (var _i = 0, _a = food_data.sheets[2].data; _i < _a.length; _i++) {
         var food_entry = _a[_i];
-        var food_item = { name: food_entry.Name };
-        console.log(food_entry);
-        if (food_entry[6] != null) {
-            food_item.pantry = get_days(food_entry[6], food_entry[7]);
+        var food_name = food_entry[2]["Name"];
+        var food_item = { name: food_name };
+        if (food_entry[6] && !JSON.stringify(food_entry[6]).includes(null)) {
+            food_item.pantry = get_days(food_entry[6]["Pantry_Max"], food_entry[7]);
         }
-        else if (food_entry[10] != null) {
-            food_item.pantry = get_days(food_entry[10], food_entry[11]);
+        else if (food_entry[10] && !JSON.stringify(food_entry[10]).includes(null)) {
+            food_item.pantry = get_days(food_entry[10]["DOP_Pantry_Max"], food_entry[11]);
         }
-        else if (food_entry[17] != null) {
-            food_item.fridge = get_days(food_entry[17], food_entry[18]);
+        if (food_entry[17] && !JSON.stringify(food_entry[17]).includes(null)) {
+            food_item.fridge = get_days(food_entry[17]["Refrigerate_Max"], food_entry[18]);
         }
-        else if (food_entry[21] != null) {
-            food_item.fridge = get_days(food_entry[21], food_entry[22]);
+        else if (food_entry[21] && !JSON.stringify(food_entry[21]).includes(null)) {
+            food_item.fridge = get_days(food_entry[21]["DOP_Refrigerate_Max"], food_entry[22]);
         }
-        else if (food_entry[31] != null) {
-            food_item.freezer = get_days(food_entry[31], food_entry[32]);
+        if (food_entry[31] && !JSON.stringify(food_entry[31]).includes(null)) {
+            food_item.freezer = get_days(food_entry[31]["Freeze_Max"], food_entry[32]);
         }
-        else if (food_entry[35] != null) {
-            food_item.freezer = get_days(food_entry[35], food_entry[36]);
+        else if (food_entry[35] && !JSON.stringify(food_entry[35]).includes(null)) {
+            food_item.freezer = get_days(food_entry[35]["DOP_Freeze_Max"], food_entry[36]);
         }
-        else {
-            console.log("this should never print!");
+        if (!food_item.pantry && !food_item.fridge && !food_item.freezer) {
+            console.log("This item doesn't have storage info");
             continue;
         }
-        food_items.push(food_item);
+        var keywords_string = food_entry[4]["Keywords"];
+        if (!keywords_string) {
+            keywords_to_food_items.push([food_name], food_item);
+        }
+        else {
+            keywords_to_food_items.push(keywords_string.split(','), food_item);
+        }
     }
 }
+var COST_RATIO = 10;
+function reconstruction_cost(abbr, keyword) {
+    var dp = [];
+    for (var i = 0; i < abbr.length + 1; i++) {
+        dp.push(new Array(keyword.length + 1).fill(0));
+    }
+    for (var i = 0; i < abbr.length + 1; i++) {
+        for (var j = 0; j < keyword.length + 1; j++) {
+            if (i == 0) {
+                dp[i][j] = j;
+            }
+            else if (j == 0) {
+                dp[i][j] = COST_RATIO * i;
+            }
+            else if (abbr.charAt(i - 1) == abbr.charAt(j - 1)) {
+                dp[i][j] = dp[i - 1][j - 1];
+            }
+            else {
+                dp[i][j] = Math.min(1 + dp[i][j - 1], COST_RATIO + dp[i - 1][j], 1 + COST_RATIO + dp[i - 1][j - 1]);
+            }
+        }
+    }
+    return dp[abbr.length][keyword.length];
+}
+function search(abbr) {
+    for (var _i = 0, keywords_to_food_items_1 = keywords_to_food_items; _i < keywords_to_food_items_1.length; _i++) {
+        var _a = keywords_to_food_items_1[_i], keywords = _a[0], food_item = _a[1];
+    }
+}
+search("crt");
 function parseReceipt(img_element, logger) {
     return __awaiter(this, void 0, void 0, function () {
         var worker, data;
