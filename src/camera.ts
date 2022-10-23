@@ -10,10 +10,14 @@ function setupCamera() : string {
         loader.style.setProperty('--progress', status.progress);
 
         if (status.status === 'recognizing text' && status.progress === 1) {
-            for (let i = 0; i < scan_btns.length; i++) {
-                scan_btns[i].classList.remove('hidden');
-            }
-            loader.classList.add('hidden');
+            loader.classList.add('fade-out');
+            setTimeout(() => {
+                for (let i = 0; i < scan_btns.length; i++) {
+                    scan_btns[i].classList.remove('hidden');
+                }
+                loader.classList.add('hidden');
+                loader.classList.remove('fade-out');
+            }, 5000);
         }
     }
     

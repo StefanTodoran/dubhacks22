@@ -186,14 +186,13 @@ function is_number(char: string) {
     return !isNaN(parseInt(char, 10));
 }
 
-const MAX_COST = 1;
+const MAX_COST = 1.05;
 
 function process_receipt(receipt: string) {
     let receipt_lines = receipt.toLowerCase().split('\n');
     let receipt_names: string[] = [];
     for (let receipt_line of receipt_lines) {
-        //let receipt_name = "";
-        if (receipt_line.includes("SUBTOTAL")) {
+        if (receipt_line.includes("total")) {
             break;
         }
         let re = new RegExp("(^.*[0-9]{1,2}[.][0-9]{2}|^.*[0-9]{1,2}[\s][0-9]{2})");
@@ -203,12 +202,16 @@ function process_receipt(receipt: string) {
           receipt_line = receipt_line.slice(0, re_result.index);
 
           receipt_line = receipt_line.replace(/[^a-zA-Z, \s]/g, '');
-
           receipt_line = receipt_line.replace(/(\s.\s|\s.$|^.\s)/g, '');
+
+          if (receipt_line == '') {
+            continue;
+          }
 
           receipt_names.push(receipt_line.trim());
         }
     }
+    console.log(receipt_names)
 
     for (let receipt_name of receipt_names) {
         let [food_item, cost] = search(receipt_name);
