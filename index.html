@@ -6,6 +6,7 @@
   <title>frijma</title>
   <meta content="width=device-width, initial-scale=1" name="viewport" />
   <link href="index.css" rel="stylesheet" type="text/css" />
+  <script src="https://unpkg.com/jimp@0.14.0/browser/lib/jimp.js"></script>
   <script src='https://unpkg.com/tesseract.js@v2.0.0-beta.1/dist/tesseract.min.js'></script>
   <script src="build/tsc.js" type="text/javascript"></script>
 
@@ -21,32 +22,39 @@
   </section>
 
   <section id="description">
-    <div>
+    <div style="flex: 1">
       <h1>Why Frijma</h1>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        According to the USDA, it is estimated that nearly 40% of the U.S. food supply is wasted every single year.
+        Aside from the social and humanitarian issues associated with this problem, food waste also contributes to the
+        climate crisis; rotting food in landfills is a major producer of methane, a greenhouse gas 25 times more potent
+        than carbon dioxide. Unlike many climate issues however, food waste is a problem that can and must be solved at
+        an individual consumer level. That's where frijma comes in.
       </p>
     </div>
-    <div>
+    <div style="flex: 1">
       <h1>How It Works</h1>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        By combining computer vision, clever algorithms to reconstruct words from acronyms, and U.S. government food
+        keeping data, frijma is able to parse any receipt and help users visualize data about their food. Our app can
+        then provide recepies that specifically target the food the user already has, so there is no need to go out to
+        the store and buy more when perfectly usable food is available at home!
       </p>
     </div>
+    <div id="icons">
+      <div class="icon-container"><img class="icon" src="assets/pantry.png"/> Kept&nbsp;in&nbsp;Pantry</div>
+      <div class="icon-container"><img class="icon" src="assets/fridge.png"/> Cooled&nbsp;in&nbsp;Fridge</div>
+      <div class="icon-container"><img class="icon" src="assets/freezer.png"/> Frozen&nbsp;in&nbsp;Freezer</div>
+      <div class="icon-container"><img class="icon" src="assets/on_open.png"/> After&nbsp;Opening</div>
+    </div>
   </section>
-  
+
   <section id="visualizer">
     <label id="scan-btn">
       Scan&nbsp;Now
-      <input id="camera-inp" type="file" accept="image/*", capture/>
+      <input id="camera-inp" type="file" accept="image/*" , capture />
     </label>
-    <div class="food-item hidden" id="template"> 
+    <div class="food-item hidden" id="template">
       <h2 class="food-name"></h2>
       <div class="food-duration-container">
         <div class="food-duration pantry"></div>

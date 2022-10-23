@@ -9,6 +9,7 @@ interface FoodItem {
     
     group?: string, // food type 
     tip?: string,
+    no_data?: boolean, // no expiration data
 }
 
 
