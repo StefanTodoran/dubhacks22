@@ -77,7 +77,12 @@ function init() {
         { name: "Bread", raw: "BREAD", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
         { name: "Milk", raw: "MILK", group: "dairy", on_open_fridge: 1, fridge: 7 },
     ];
+    var test = [
+        { title: "Long Girthy Schmeat Pie", utilized: ["large sausage", "potatoe", "apple"], img: "assets/rt1.jpg", time: 3, url: "https://www.allrecipes.com/recipe/76296/meat-pie/" },
+        { title: "Fruit Salad", utilized: ["carrots", "apples", "lemons", "berries", "watermelon"], img: "assets/rt1.jpg", time: 3, url: "https://www.delish.com/cooking/recipe-ideas/a19609963/easy-fruit-salad-recipe/" }
+    ];
     displayFoodItems(examples, "Example Data Visualization");
+    displayRecipes(test);
     setupCamera();
     var show_more = document.getElementById('show-more-btn');
     var demo = document.getElementById('demo');
@@ -91,13 +96,38 @@ function init() {
         }
     });
 }
-function displayRecipes(items) {
-    console.log("Not Yet Implemented!");
+function displayRecipes(items, message) {
+    if (message === void 0) { message = "Your Recipes"; }
+    var container = document.getElementById('recipes');
+    var template = document.getElementById('recipe-template');
+    container.innerHTML = "";
+    container.appendChild(template);
+    for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var node = template.cloneNode(true);
+        node.classList.remove('hidden');
+        node.id = "";
+        node.querySelector('h2.recipe-name').textContent = item.title;
+        node.querySelector('span').textContent = nbsp(" (") + item.time + " mins)";
+        node.querySelector('.recipe-url').setAttribute('href', item.url);
+        node.querySelector('.recipe-img').setAttribute('src', item.img);
+        var utilized = "Includes";
+        for (var j = 0; j < Math.min(10, item.utilized.length); j++) {
+            utilized += " " + item.utilized[j];
+        }
+        node.querySelector('p').textContent = utilized;
+        container.insertBefore(node, template);
+    }
+    var text = document.createElement('h2');
+    text.innerText = message;
+    text.style.textAlign = "center";
+    container.insertBefore(text, container.firstChild);
+    container.classList.remove('hidden');
 }
 function displayFoodItems(food_items, message) {
     if (message === void 0) { message = "Your Data"; }
     var container = document.getElementById('visualizer');
-    var template = document.getElementById('template');
+    var template = document.getElementById('food-item-template');
     container.innerHTML = "";
     container.appendChild(template);
     for (var i = 0; i < food_items.length; i++) {

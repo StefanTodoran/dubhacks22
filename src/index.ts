@@ -19,13 +19,7 @@ function init() {
     { name: "Milk", raw: "MILK", group: "dairy", on_open_fridge: 1, fridge: 7 },
   ];
 
-  const test: RecipeItem[] = [
-    { title: "Long Girthy Schmeat Pie", utilized: ["large sausage", "potatoe", "apple"], img: "assets/rt1.jpg", time: 3, url: "https://www.allrecipes.com/recipe/76296/meat-pie/" },
-    { title: "Fruit Salad", utilized: ["carrots", "apples", "lemons", "berries", "watermelon"], img: "assets/rt1.jpg", time: 3, url: "https://www.delish.com/cooking/recipe-ideas/a19609963/easy-fruit-salad-recipe/" }
-  ]
-
   displayFoodItems(examples, "Example Data Visualization");
-  displayRecipes(test);
   setupCamera();
 
   const show_more = document.getElementById('show-more-btn');
@@ -43,7 +37,7 @@ function init() {
 interface RecipeItem {
   title: string,
   utilized: string[], // specific food items user used in this recipe
-  time: number, // time to make in hours
+  time: number, // time to make in mins
   img: string,
   url: string, // link to the recipe
 }
@@ -70,9 +64,9 @@ function displayRecipes(items: RecipeItem[], message: string = "Your Recipes") {
     node.classList.remove('hidden');
     node.id = "";
     node.querySelector('h2.recipe-name').textContent = item.title;
-    node.querySelector('span').textContent = nbsp(" (") + item.time + ")";
-    // @ts-ignore stupid whore typescript I'm literally querying for an <a> tag...
-    node.querySelector('a.recipe-url').href = item.url;
+    node.querySelector('span').textContent = nbsp(" (") + item.time + " mins)";
+    node.querySelector('.recipe-url').setAttribute('href', item.url);
+    node.querySelector('.recipe-img').setAttribute('src', item.img);
 
     let utilized = "Includes"
     for (let j = 0; j < Math.min(10, item.utilized.length); j++) {

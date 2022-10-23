@@ -208,6 +208,7 @@ p {
 
 /* FOOD ITEM STYLES */
 .food-item {
+  display: flex;
   flex-direction: column;
   margin-bottom: 1em;
 
@@ -222,7 +223,6 @@ p {
 }
 
 .food-item, .recipe-item {
-  display: flex;
   padding: 1vh 1vw;
   border-radius: 10px;
   transition: border 0.5s ease, background-color 0.5s ease;
@@ -379,8 +379,6 @@ p {
 /* RECIPE ITEM STYLES */
 .recipe-item {
   position: relative;
-  flex-direction: column;
-  align-items: flex-start;
   color: var(--dark-color);
   padding-bottom: 2vh;
   overflow: hidden;
