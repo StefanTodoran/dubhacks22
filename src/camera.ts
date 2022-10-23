@@ -6,7 +6,8 @@ function setupCamera() : string {
     const scan_btns = document.querySelectorAll('.scan-btn');
 
     const loaderProgress = (status: any) => {
-        loader_txt.textContent = nbsp(status.status + '...');
+        const percent = Math.floor((status.progress / 1) * 100);
+        loader_txt.textContent = nbsp(status.status + `... (${percent}%)`);
         loader.style.setProperty('--progress', status.progress);
 
         if (status.status === 'recognizing text' && status.progress === 1) {
@@ -27,7 +28,7 @@ function setupCamera() : string {
         }
         loader.classList.remove('hidden');
 
-        const y = loader.getBoundingClientRect().top + window.pageYOffset + -35;
+        const y = document.getElementById('icons').getBoundingClientRect().top + window.pageYOffset + -35;
         window.scrollTo({top: y, behavior: 'smooth'});
 
         let files = event.target.files;

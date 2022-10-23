@@ -119,11 +119,29 @@ button {
 
 #demo-grid {
   display: grid; 
-  grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr;
-  max-width: 20vw;
-  padding: 5px 5px;
+  grid-template-columns: 1.5fr 1.5fr 1fr 1fr 1fr;
+  max-width: 30vw;
+  padding: 0;
   margin: 0 20px;
 }
+
+#demo-grid p:nth-child(5n - 4),
+#demo-grid p:nth-child(5n - 2), 
+#demo-grid p:nth-child(5n) {
+  background-color: #f0f0f0;
+}
+
+/* first 5 children */
+#demo-grid p:nth-child(-n+5) {
+  background-color: #e7e7e7;
+}
+
+#demo-grid p {
+  margin: 0;
+  font-size: 14px;
+  border: 1px solid #ffffff;
+}
+
 
 #demo {
   position: absolute;
@@ -146,15 +164,10 @@ button {
   padding-bottom: min(25px, 5vmin);
 }
 
-#demo-grid p {
-  margin: 0;
-  font-size: 14px;
-}
-
 #demo-img {
   user-select: none;
   max-height: min(300px, 20vmin);
-  max-width: min(300px, 20vmin);
+  max-width: min(300px, 30vmin);
   margin-right: 10px;
 }
 
@@ -232,7 +245,10 @@ button {
   opacity: 0.5;
 }
 
-#visualizer, #recipes, #demo-grid {
+#demo-grid {
+  background-color: #fdfdfd;
+}
+#visualizer, #recipes {
   background-color: #fdfdfd;
   border: 1px solid #e0e0e0;
 }
@@ -249,7 +265,7 @@ button {
 #icons {
   padding: 0 !important;
   margin-left: 2vw;
-  /* justify-content: center; */
+  flex: 1;
 }
 
 .icon {
@@ -494,7 +510,7 @@ a:hover {
   }
 
   #description > div {
-    padding: 2.5vmin 0;
+    padding: 0 0;
   }
 
   .food-name, .recipe-name {
@@ -584,11 +600,16 @@ a:hover {
   }
 
   #demo-grid {
-    padding: 1px 1px;
     margin: 0 5px;
   }
 
   #demo-img {
     margin-right: 3px;
+    max-width: min(300px, 20vmin);
+    max-height: 125px;
+  }
+
+  button {
+    margin-bottom: 6px;
   }
 }
