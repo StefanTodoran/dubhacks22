@@ -84,10 +84,10 @@ p {
   max-height: 15vh;
 }
 
-#footer-logo {
+.footer-icon {
   filter: grayscale(1);
   height: 1em;
-  margin-right: 0.5em;
+  margin: 0 0.5em;
 }
 
 #footer a {
@@ -133,15 +133,15 @@ p {
   color: var(--color);
   border-right: 1px solid lightgray;
   margin: 0 1em 0 0;
-  min-width: 8em;
+  min-width: 10em;
 }
 
 .food-name::before {
   content: "";
   display: inline-block;
-  background-size: 1em 1em;
-  height: 1em;
-  width: 1em;
+  background-size: 2em 2em;
+  height: 2em;
+  width: 2em;
   background-image: var(--icon);
 }
 
@@ -154,9 +154,10 @@ p {
 
 .food-duration {
   position: relative;
-  height: 2em;
-  border-radius: 2em;
+  height: 1.5em;
+  border-radius: 1.5em;
   margin: 1px 0;
+  /* border: 10px double white; */
   width: min(calc(var(--length) * 10%), 100%);
   background-color: var(--color);
 }
@@ -204,6 +205,11 @@ p {
 
   .food-name {
     font-size: 18px;
+    border-right: none;
+  }
+
+  .food-duration {
+    width: min(calc(var(--length) * 20%), 100%);
   }
 
   .food-duration::after {
