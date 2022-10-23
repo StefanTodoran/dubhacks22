@@ -3,7 +3,6 @@
 ### URL: https://todoran.dev/frijma
 
 #### A web app dedicated to reducing global food waste, one receipt at a time.
-<br/>
 
 #### Why frijma
 According to the USDA, it is estimated that nearly 40% of the U.S. food supply is wasted every single year. Aside from the social and humanitarian issues associated with this problem, food waste also contributes to the climate crisis; rotting food in landfills is a major producer of methane, a greenhouse gas 25 times more potent than carbon dioxide. Unlike many climate issues, however, food waste is a problem that can and must be solved at an individual consumer level. This is where frijma comes in.
