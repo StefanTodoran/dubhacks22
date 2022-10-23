@@ -441,13 +441,13 @@ function is_letter(char) {
 function is_number(char) {
     return !isNaN(parseInt(char, 10));
 }
-var MAX_COST = 1;
+var MAX_COST = 1.05;
 function process_receipt(receipt) {
     var receipt_lines = receipt.toLowerCase().split('\n');
     var receipt_names = [];
     for (var _i = 0, receipt_lines_1 = receipt_lines; _i < receipt_lines_1.length; _i++) {
         var receipt_line = receipt_lines_1[_i];
-        if (receipt_line.includes("SUBTOTAL")) {
+        if (receipt_line.includes("total")) {
             break;
         }
         var re = new RegExp("(^.*[0-9]{1,2}[.][0-9]{2}|^.*[0-9]{1,2}[\s][0-9]{2})");
@@ -457,9 +457,13 @@ function process_receipt(receipt) {
             receipt_line = receipt_line.slice(0, re_result.index);
             receipt_line = receipt_line.replace(/[^a-zA-Z, \s]/g, '');
             receipt_line = receipt_line.replace(/(\s.\s|\s.$|^.\s)/g, '');
+            if (receipt_line == '') {
+                continue;
+            }
             receipt_names.push(receipt_line.trim());
         }
     }
+    console.log(receipt_names);
     for (var _a = 0, receipt_names_1 = receipt_names; _a < receipt_names_1.length; _a++) {
         var receipt_name = receipt_names_1[_a];
         var _b = search(receipt_name), food_item = _b[0], cost = _b[1];
