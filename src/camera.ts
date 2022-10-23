@@ -28,7 +28,7 @@ function setupCamera() : string {
         }
         loader.classList.remove('hidden');
 
-        const y = loader.getBoundingClientRect().top + window.pageYOffset + -35;
+        const y = document.getElementById('icons').getBoundingClientRect().top + window.pageYOffset + -35;
         window.scrollTo({top: y, behavior: 'smooth'});
 
         let files = event.target.files;

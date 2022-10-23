@@ -3,6 +3,8 @@ var keywords_to_food_items: any[] = [];
 var final_food_items: FoodItem[] = [];
 
 function parse_data(raw_receipt: string) {
+    keywords_to_food_items = [];
+    final_food_items = [];
     console.log(raw_receipt);
     fetch('data/foodkeeper.json', { mode: 'no-cors' })
         .then((response) => response.json())
@@ -231,6 +233,7 @@ function process_receipt(receipt: string) {
 
     displayFoodItems(final_food_items);
     queryRecipes(final_food_items);
+    final_food_items = [];
 }
 
 //  0. "ID"
