@@ -204,7 +204,7 @@ function process_receipt(receipt: string) {
 
           receipt_line = receipt_line.replace(/[^a-zA-Z, \s]/g, '');
 
-          receipt_line = receipt_line.replace(/(\s.\s|\s.$)/g, '');
+          receipt_line = receipt_line.replace(/(\s.\s|\s.$|^.\s)/g, '');
 
           receipt_names.push(receipt_line.trim());
         }
