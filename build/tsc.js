@@ -41,7 +41,8 @@ function setupCamera() {
     var loader_txt = document.getElementById('loader-text');
     var scan_btns = document.querySelectorAll('.scan-btn');
     var loaderProgress = function (status) {
-        loader_txt.textContent = nbsp(status.status + '...');
+        var percent = Math.floor((status.progress / 1) * 100);
+        loader_txt.textContent = nbsp(status.status + "... (".concat(percent, "%)"));
         loader.style.setProperty('--progress', status.progress);
         if (status.status === 'recognizing text' && status.progress === 1) {
             loader.classList.add('fade-out');
