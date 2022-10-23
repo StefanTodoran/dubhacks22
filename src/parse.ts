@@ -172,25 +172,8 @@ function search(receipt_name: string) {
         if (true_cost < min_cost) {
             closest_food_item = food_item;
             min_cost = true_cost;
-            // closest_keywords = keywords;  // for logging
         }
     }
-
-    // logging stuff
-    // console.log(receipt_words);
-    // for (let receipt_word of receipt_words) {
-    //   console.log(receipt_word);
-    //   let keyword_min_cost = Number.MAX_SAFE_INTEGER;
-    //   let min_keyword = null;
-    //   for (let keyword of closest_keywords) {
-    //     let cost = reconstruction_cost(receipt_word, keyword);
-    //     if (cost < keyword_min_cost) {
-    //       keyword_min_cost = cost;
-    //       min_keyword = keyword;
-    //     }
-    //   }
-    //   console.log(receipt_word + ": " + min_keyword + " - cost: " + keyword_min_cost);
-    // }
 
     return [closest_food_item, min_cost];
 }
@@ -215,10 +198,14 @@ function process_receipt(receipt: string) {
         }
         let re = new RegExp("(^.*[0-9]{1,2}[.][0-9]{2}|^.*[0-9]{1,2}[\s][0-9]{2})");
         if (re.test(receipt_line)) {
-          //receipt_line = receipt_line.replace(/[0-9]/g, '');
-          receipt_line = receipt_line.replace(/[^a-zA-Z]/g, '');
+          let re_money = new RegExp("[0-9]{1,2}[.][0-9]{2}");
+          let re_result = re_money.exec(receipt_line);
+          receipt_line = receipt_line.slice(0, re_result.index);
+
+          receipt_line = receipt_line.replace(/[^a-zA-Z, \s]/g, '');
+
           receipt_line = receipt_line.replace(/(\s.\s|\s.$)/g, '');
-          //receipt_line = receipt_line.replace('.', '');
+
           receipt_names.push(receipt_line.trim());
         }
     }
@@ -231,7 +218,6 @@ function process_receipt(receipt: string) {
         if (food_item.raw == "") {
             food_item.raw = receipt_name;
             final_food_items.push(food_item);
-            // console.log(food_item.name + ", " + food_item.raw + ": " + cost);
         }
         let prev_cost = reconstruction_cost(food_item.raw, food_item.name);
         let curr_cost = reconstruction_cost(receipt_name, food_item.name);
