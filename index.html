@@ -42,10 +42,12 @@
       </p>
     </div>
     <div id="icons">
-      <div class="icon-container"><img class="icon" src="assets/pantry.png"/> Kept&nbsp;in&nbsp;Pantry</div>
+      <div class="icon-container" style="column-span: all;"><img class="icon" src="assets/question.png"/> How long food keeps when:</div>
+      <div><!-- scuffed hack so that the above div is on its own row --></div> 
+      <div class="icon-container"><img class="icon" src="assets/pantry.png"/> Placed&nbsp;in&nbsp;Pantry</div>
       <div class="icon-container"><img class="icon" src="assets/fridge.png"/> Cooled&nbsp;in&nbsp;Fridge</div>
       <div class="icon-container"><img class="icon" src="assets/freezer.png"/> Frozen&nbsp;in&nbsp;Freezer</div>
-      <div class="icon-container"><img class="icon" src="assets/on_open.png"/> After&nbsp;Opening</div>
+      <div class="icon-container"><img class="icon" src="assets/on_open.png"/> Once&nbsp;Opened</div>
     </div>
   </section>
 
@@ -57,10 +59,10 @@
     <div class="food-item hidden" id="template">
       <h2 class="food-name"></h2>
       <div class="food-duration-container">
-        <div class="food-duration pantry"></div>
-        <div class="food-duration fridge"></div>
-        <div class="food-duration freezer"></div>
-        <div class="food-duration on_open"></div>
+        <div class="food-duration pantry" title="Placed in Pantry"></div>
+        <div class="food-duration fridge" title="Cooled in Fridge"></div>
+        <div class="food-duration freezer" title="Frozen in Freezer"></div>
+        <div class="food-duration on_open" title="Once Opened"></div>
       </div>
     </div>
   </section>

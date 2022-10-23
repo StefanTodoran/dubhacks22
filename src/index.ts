@@ -34,7 +34,7 @@
     const testList:FoodItem[] = [
       {name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2},
       {name: "Milk", group: "dairy", fridge: 7},
-      {name: "Bread", group: "grains", pantry: 4, fridge: 14},
+      {name: "Bread", group: "grains", pantry: 4, fridge: 14, freezer: 21, on_open: 15},
       {name: "Minced Beef", group: "meat", fridge: 2, freezer: 5},
       {name: "Jam", on_open: 365},
       {name: "Pancake Mix", group: "grains", pantry: 12},
@@ -45,9 +45,9 @@
 
     const scan_btn = document.getElementById('scan-btn');
     scan_btn.addEventListener('click', () => {
-      scan_btn.classList.add('hidden');
-      displayItems(testList);
     });
+    scan_btn.classList.add('hidden');
+    displayItems(testList);
 
     setupCamera();
   }
@@ -103,7 +103,8 @@
       const display_duration = nbsp('"' + duration.toString() + ' days"');
       indicator.style.setProperty('--days', display_duration);
     } else {
-      indicator.classList.add('hidden');
+      indicator.remove();
+      // indicator.classList.add('hidden');
     }
   }
 

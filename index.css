@@ -81,6 +81,7 @@ p {
 }
 
 #logo {
+  max-width: 90vw;
   max-height: 15vh;
 }
 
@@ -150,6 +151,7 @@ p {
   flex-direction: row;
   margin-bottom: 1em;
   --color: var(--dark-color);
+  --rgb: 96, 77, 66;
   --icon: url(assets/default.png);
 }
 
@@ -159,11 +161,11 @@ p {
   align-items: center;
   color: var(--color);
   border-right: 1px solid lightgray;
-  margin: 0 1em 0 0;
+  margin: 0;
   min-width: 10em;
 }
 
-.food-name::before {
+.food-name::before, .food-duration::before {
   content: "";
   display: inline-block;
   background-size: 2em 2em;
@@ -179,14 +181,41 @@ p {
   width: 100%;
 }
 
+.food-duration:first-child {
+  margin-top: 1em;
+}
+.food-duration:last-child {
+  margin-bottom: 1em;
+}
+
 .food-duration {
   position: relative;
-  height: 1.5em;
-  border-radius: 1.5em;
+  height: 2em;
+  border-radius: 0 2em 2em 0;
+  border-left: none !important;
   margin: 1px 0;
-  /* border: 10px double white; */
   width: min(calc(var(--length) * 10%), 100%);
   background-color: var(--color);
+  --offset: 0px;
+  --icon: url(assets/pantry.png);
+}
+.food-duration.fridge {
+  background-color: rgba(var(--rgb), 0.75);
+  --offset: 6px;
+  --icon: url(assets/fridge.png);
+}
+.food-duration.freezer {
+  background-color: rgba(var(--rgb), 0.5);
+  --offset: 3px;
+  --icon: url(assets/freezer.png);
+}
+.food-duration.fridge, .food-duration.freezer {
+  border: var(--offset) solid var(--color);
+  box-sizing: border-box;
+}
+.food-duration.on_open {
+  background-color: rgba(var(--rgb), 0.25);
+  --icon: url(assets/on_open.png);
 }
 
 .food-duration::after {
@@ -194,26 +223,35 @@ p {
   content: var(--days);
   position: absolute;
   right: 1em;
+  transform: translate(var(--offset), calc(25% - var(--offset)));
+}
+.food-duration::before {
+  transform: translate(-100%, calc(-1 * var(--offset)));
 }
 
 .vegetable {
   --color: #008000;
+  --rgb: 0, 128, 0;
   --icon: url(assets/vegetable.png);
 }
 .meat {
   --color: #D60700;
+  --rgb: 214, 7, 0;
   --icon: url(assets/meat.png);
 }
 .grains {
   --color: #E66400;
+  --rgb: 230, 100, 0;
   --icon: url(assets/grain.png)
 }
 .dairy {
   --color: #0083C9;
+  --rgb: 0, 131, 201;
   --icon: url(assets/dairy.png)
 }
 .fruit {
   --color: #640078;
+  --rgb: 100, 0, 120;
   --icon: url(assets/fruit.png)
 }
 
@@ -271,7 +309,7 @@ p {
   #icons {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0 2em;
+    gap: 0 2vw;
     margin: 0;
   }
 
@@ -281,5 +319,19 @@ p {
 
   .food-name {
     font-size: 18px;
+  }
+
+  .food-duration-container {
+    padding-left: 2em;
+    width: calc(100% - 2em);
+  }
+
+  #visualizer {
+    padding-top: 1vmin;
+    margin: 0 2vw;
+  }
+  
+  #visualizer.active {
+    padding: 2vmin 2vmin;
   }
 }

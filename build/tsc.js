@@ -66,7 +66,7 @@ function setupCamera() {
         var testList = [
             { name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2 },
             { name: "Milk", group: "dairy", fridge: 7 },
-            { name: "Bread", group: "grains", pantry: 4, fridge: 14 },
+            { name: "Bread", group: "grains", pantry: 4, fridge: 14, freezer: 21, on_open: 15 },
             { name: "Minced Beef", group: "meat", fridge: 2, freezer: 5 },
             { name: "Jam", on_open: 365 },
             { name: "Pancake Mix", group: "grains", pantry: 12 },
@@ -76,9 +76,9 @@ function setupCamera() {
         ];
         var scan_btn = document.getElementById('scan-btn');
         scan_btn.addEventListener('click', function () {
-            scan_btn.classList.add('hidden');
-            displayItems(testList);
         });
+        scan_btn.classList.add('hidden');
+        displayItems(testList);
         setupCamera();
     }
     function displayItems(items) {
@@ -111,7 +111,7 @@ function setupCamera() {
             indicator.style.setProperty('--days', display_duration);
         }
         else {
-            indicator.classList.add('hidden');
+            indicator.remove();
         }
     }
     function nbsp(string) {
@@ -208,7 +208,6 @@ function parseReceipt(img_element, logger) {
                 case 3:
                     _a.sent();
                     return [4, worker.setParameters({
-                            tessedit_pageseg_mode: Tesseract.PSM.SINGLE_COLUMN,
                             tessedit_char_whitelist: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
                         })];
                 case 4:
