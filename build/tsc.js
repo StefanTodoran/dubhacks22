@@ -44,6 +44,7 @@ function setupCamera() {
             scan_btns[i].classList.add('hidden');
         }
         loader.classList.remove('hidden');
+        loader.style.setProperty('--status', quoted(nbsp(status.status + '...')));
         loader.style.setProperty('--progress', status.progress);
         if (status.status === 'recognizing text' && status.progress === 1) {
             for (var i = 0; i < scan_btns.length; i++) {
@@ -433,24 +434,21 @@ function is_number(char) {
 var MAX_COST = 1;
 function process_receipt(receipt) {
     var receipt_lines = receipt.toLowerCase().split('\n');
-    console.log(receipt_lines);
     var receipt_names = [];
     for (var _i = 0, receipt_lines_1 = receipt_lines; _i < receipt_lines_1.length; _i++) {
         var receipt_line = receipt_lines_1[_i];
         if (receipt_line.includes("SUBTOTAL")) {
             break;
         }
-        var re = new RegExp("^.*[0-9]{1,2}[.][0-9]{2}");
+        var re = new RegExp("(^.*[0-9]{1,2}[.][0-9]{2}|^.*[0-9]{1,2}[\s][0-9]{2})");
         if (re.test(receipt_line)) {
-            receipt_line = receipt_line.replace(/[0-9]/g, '');
+            receipt_line = receipt_line.replace(/[^a-zA-Z]/g, '');
             receipt_line = receipt_line.replace(/(\s.\s|\s.$)/g, '');
-            receipt_line = receipt_line.replace('.', '');
             receipt_names.push(receipt_line.trim());
         }
     }
     for (var _a = 0, receipt_names_1 = receipt_names; _a < receipt_names_1.length; _a++) {
         var receipt_name = receipt_names_1[_a];
-        console.log(receipt_name);
         var _b = search(receipt_name), food_item = _b[0], cost = _b[1];
         if (cost > MAX_COST) {
             continue;

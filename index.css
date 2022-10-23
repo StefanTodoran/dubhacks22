@@ -13,10 +13,19 @@ body {
 }
 
 #loader {
+  position: relative;
   width: calc(80vw * var(--progress));
   height: 1em;
   border-radius: 1em;
   background-color: #F9B63099;
+}
+#loader::after {
+  color: var(--dark-color);
+  content: var(--status);
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -100%);
 }
 
 .row {

@@ -9,6 +9,7 @@ function setupCamera() : string {
             scan_btns[i].classList.add('hidden');
         }
         loader.classList.remove('hidden');
+        loader.style.setProperty('--status', quoted(nbsp(status.status + '...')));
         loader.style.setProperty('--progress', status.progress);
 
         if (status.status === 'recognizing text' && status.progress === 1) {
