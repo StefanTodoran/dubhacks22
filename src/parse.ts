@@ -54,9 +54,11 @@ var keywords_to_food_items: any[] = [];
 
 var final_food_items: FoodItem[] = [];
 
-fetch('data/foodkeeper.json', {mode: 'no-cors'})
-  .then((response) => response.json())
-  .then((food_data) => process_food_data(JSON.parse(JSON.stringify(food_data))));
+function parse_data(raw_receipt: string) {
+  fetch('data/foodkeeper.json', {mode: 'no-cors'})
+    .then((response) => response.json())
+    .then((food_data) => process_food_data(JSON.parse(JSON.stringify(food_data)), raw_receipt));
+}
 
 function get_days(max_time: number, metric: string) {
   if (JSON.stringify(metric).includes("Day")) {
@@ -91,7 +93,7 @@ function get_category(category_id_object: any) {
   }
 }
 
-function process_food_data(food_data: any) {
+function process_food_data(food_data: any, raw_receipt: string) {
   for (let food_entry of food_data.sheets[2].data) {
     // find expiration by iterating through storage types for 1st non-null
     let food_name: string = food_entry[2]["Name"];
@@ -164,7 +166,7 @@ function process_food_data(food_data: any) {
     }
   }
 
-  process_receipt(RECEIPT);
+  process_receipt(raw_receipt);
 }
 
 var INSERTION_COST = 1;
