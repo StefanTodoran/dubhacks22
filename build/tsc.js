@@ -149,7 +149,7 @@ function nbsp(string) {
 function quoted(string) {
     return '"' + string + '"';
 }
-var RECEIPT = "\nSee back of rece jour chance\nto win 1000 154 ERTvikEa0G\ng Walmart 3i\n118511102 Mar JAHIE BRODKSHIRE\nBBgRs yfanEMQDMI gs\nST8 05483 00y 00000 R 009 e 06.976\nTATER TOTS 001312000026 F 2.36 0\nHARD/PROV/DC 007874219410 F 268 0\nSNACK BARS 002190848816 F 4.98 T\nHRI CL CHS 003120806000 F 6.88 0\nHRI CL CHS 003120806000 F 6.88 0\nHRI CL CHS 003120806000 F 6.88 0\n** VOIDED ENTRY**\nHRT CL CHS 003120506000 F 58.80\nHRI 12 U SG 003120836000 F 6.88 0\nHRI CL PEP 003120807000 F 5.88 0\nEARBUDS 068113100946 488 X\nSC BCN CHDDR 007874202906 F 6.98 0\nABF THINBRST 022461710972 F 97.20\nPOTATO 007874219410 F 2680\nDV RSE OTL W 001111101220 i\nAPPLE 3 BAG 0B4747300184 F 647 N\nSTOK LT SUT 004127102774 F 442 T J\nPEANUT BUTTR 005160026499 F 644 0 1\nAVO VERDE 061611206143 F 298 N\nROLLS P o BT 18\nBAGELS 001376402801 F 4186 0\nGV SLTDERS 007874201525 298 X\nACCESSORY 007616161216 0197 X\nCHEEZE IT 002410063623 F 4000\nUAS 459 YOU SAVED 054\nRITZ 004400088210 F 278 N\nRUFFLES 002840020942 F 250 N\nGV HNY GRNS 007874207263 F 128 N\nSUBTOTAL 13944\nTAX 1 7000 458\nTOTAL 14402\nCASH TEND 16002\nCHANGE DUE 600\nITENS SOLD 26\nTCH ovrs EGTF 107z ij gfsa 5\nMM\no\nAU T\n04727719 1216946\nScan with Walnart ap to save recelpts\nmiE\ni\nmE\n";
+var RECEIPT = "\nSee back of rece jour chance\nto win 1000 154 ERTvikEa0G\ng Walmart 3i\n118511102 Mar JAHIE BRODKSHIRE\nBBgRs yfanEMQDMI gs\nST8 05483 00y 00000 R 009 e 06976\nTATER TOTS 001312000026 F 2.36 0\nHARD/PROV/DC 007874219410 F 2.68 0\nSNACK BARS 002190848816 F 4.98 T\nHRI CL CHS 003120806000 F 6.88 0\nHRI CL CHS 003120806000 F 6.88 0\nHRI CL CHS 003120806000 F 6.88 0\n** VOIDED ENTRY**\nHRT CL CHS 003120506000 F 58.80\nHRI 12 U SG 003120836000 F 6.88 0\nHRI CL PEP 003120807000 F 5.88 0\nEARBUDS 068113100946 488 X\nSC BCN CHDDR 007874202906 F 6.98 0\nABF THINBRST 022461710972 F 97.20\nPOTATO 007874219410 F 26.80\nDV RSE OTL W 001111101220 i\nAPPLE 3 BAG 0B4747300184 F 6.47 N\nSTOK LT SUT 004127102774 F 4.42 T J\nPEANUT BUTTR 005160026499 F 6.44 0 1\nAVO VERDE 061611206143 F 2.98 N\nROLLS P o BT 18\nBAGELS 001376402801 F 41.86 0\nGV SLTDERS 007874201525 2.98 X\nACCESSORY 007616161216 01.97 X\nCHEEZE IT 002410063623 F 40.00\nUAS 459 YOU SAVED 054\nRITZ 004400088210 F 2.78 N\nRUFFLES 002840020942 F 2.50 N\nGV HNY GRNS 007874207263 F 1.28 N\nSUBTOTAL 13944\nTAX 1 7000 458\nTOTAL 14402\nCASH TEND 16002\nCHANGE DUE 600\nITENS SOLD 26\nTCH ovrs EGTF 107z ij gfsa 5\nMM\no\nAU T\n04727719 1216946\nScan with Walnart ap to save recelpts\nmiE\ni\nmE\n";
 var keywords_to_food_items = [];
 var final_food_items = [];
 fetch('data/foodkeeper.json', { mode: 'no-cors' })
@@ -172,8 +172,7 @@ function get_days(max_time, metric) {
         return 1;
     }
     else {
-        console.log(metric);
-        console.log("this should never be called!");
+        console.log("this should never be called! metric: " + metric);
     }
 }
 function get_category(category_id_object) {
@@ -232,7 +231,6 @@ function process_food_data(food_data) {
         }
         if (!food_item.pantry && !food_item.fridge && !food_item.freezer &&
             !food_item.on_open_pantry && !food_item.on_open_fridge) {
-            console.log("This item doesn't have storage info");
             continue;
         }
         var keywords_string = food_entry[4]["Keywords"];
@@ -279,11 +277,11 @@ function reconstruction_cost(receipt_name, keyword) {
     }
     return dp[receipt_name.length][keyword.length];
 }
+var NAME_CONSIDERATION = 0.1;
 function search(receipt_name) {
     var min_cost = Number.MAX_SAFE_INTEGER;
     var closest_food_item = null;
-    var closest_keywords = null;
-    var receipt_words = receipt_name.toLowerCase().split(' ');
+    var receipt_words = receipt_name.split(' ');
     var receipt_word_count = receipt_words.length;
     for (var _i = 0, keywords_to_food_items_1 = keywords_to_food_items; _i < keywords_to_food_items_1.length; _i++) {
         var _a = keywords_to_food_items_1[_i], keywords = _a[0], food_item = _a[1];
@@ -301,27 +299,12 @@ function search(receipt_name) {
             total_over_words += keyword_min_cost;
         }
         var curr_avg_cost = total_over_words / receipt_word_count;
-        if (curr_avg_cost < min_cost) {
+        var name_cost = reconstruction_cost(receipt_name, food_item.name);
+        var weighted_avg_cost = NAME_CONSIDERATION * name_cost + (1 - NAME_CONSIDERATION) * curr_avg_cost;
+        if (weighted_avg_cost < min_cost) {
             closest_food_item = food_item;
-            min_cost = curr_avg_cost;
-            closest_keywords = keywords;
+            min_cost = weighted_avg_cost;
         }
-    }
-    console.log(closest_keywords);
-    for (var _d = 0, receipt_words_2 = receipt_words; _d < receipt_words_2.length; _d++) {
-        var receipt_word = receipt_words_2[_d];
-        var keyword_min_cost = Number.MAX_SAFE_INTEGER;
-        var min_keyword = null;
-        for (var _e = 0, closest_keywords_1 = closest_keywords; _e < closest_keywords_1.length; _e++) {
-            var keyword = closest_keywords_1[_e];
-            var cost = reconstruction_cost(receipt_word, keyword);
-            if (cost < keyword_min_cost) {
-                keyword_min_cost = cost;
-                min_keyword = keyword;
-            }
-        }
-        console.log(receipt_word + ": " + min_keyword + " - cost: " + keyword_min_cost);
-        closest_food_item.raw = receipt_word;
     }
     return closest_food_item;
 }
@@ -333,7 +316,6 @@ function is_number(char) {
 }
 function process_receipt(receipt) {
     var receipt_lines = receipt.split('\n');
-    console.log(receipt_lines);
     var receipt_names = [];
     for (var _i = 0, receipt_lines_1 = receipt_lines; _i < receipt_lines_1.length; _i++) {
         var receipt_line = receipt_lines_1[_i];
@@ -342,19 +324,40 @@ function process_receipt(receipt) {
         }
         var re = new RegExp("^.*[0-9]{1,2}[.][0-9]{2}");
         if (re.test(receipt_line)) {
-            receipt_names.push(receipt_line);
+            receipt_line = receipt_line.replace(/[0-9]/g, '');
+            receipt_line = receipt_line.replace(/(\s.\s|\s.$)/g, '');
+            receipt_line = receipt_line.replace('.', '');
+            receipt_names.push(receipt_line.trim().toLowerCase());
         }
     }
-    console.log(receipt_names);
     for (var _a = 0, receipt_names_1 = receipt_names; _a < receipt_names_1.length; _a++) {
         var receipt_name = receipt_names_1[_a];
-        final_food_items.push(search(receipt_name));
+        var closest_food_item = search(receipt_name);
+        if (closest_food_item.raw == "") {
+            closest_food_item.raw = receipt_name;
+            final_food_items.push(closest_food_item);
+        }
+        var prev_cost = reconstruction_cost(closest_food_item.raw, closest_food_item.name);
+        var curr_cost = reconstruction_cost(receipt_name, closest_food_item.name);
+        if (curr_cost < prev_cost) {
+            closest_food_item.raw = receipt_name;
+        }
     }
     var scan_btn = document.getElementById('scan-btn');
     scan_btn.addEventListener('click', function () {
         displayItems(final_food_items);
     });
 }
+var food_names = ["shrimp", "bagel"];
+function query_recipes(food_names) {
+    fetch('https://api.edamam.com/search?q=' + food_names.join('+') + '&app_id=95184d17&app_key=0f50ed3c9420a4de48414fe67d08b4bc')
+        .then(function (response) { return response.json(); })
+        .then(function (response) { return process_recipes(response.hits); });
+}
+function process_recipes(recipes) {
+    console.log(recipes);
+}
+query_recipes(food_names);
 function visImage(elem, image) {
     return __awaiter(this, void 0, void 0, function () {
         var copy, _a;
