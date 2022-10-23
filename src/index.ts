@@ -42,8 +42,35 @@ interface RecipeItem {
   url: string, // link to the recipe
 }
 
-function displayRecipes(items: RecipeItem[]) {
-  console.log("Not Yet Implemented!");
+function displayRecipes(items: RecipeItem[], message: string = "Your Recipes") {
+  const container = document.getElementById('recipes');
+  const template = document.getElementById('template');
+
+  // clear the container except the template child
+  container.innerHTML = "";
+  container.appendChild(template);
+
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    // @ts-ignore
+    const node: HTMLElement = template.cloneNode(true);
+
+    node.classList.remove('hidden');
+    node.id = "";
+    node.querySelector('h2.recipe-name').textContent = item.title;
+    node.querySelector('span').textContent = nbsp(" (") + item.time + ")";
+    // @ts-ignore stupid whore typescript I'm literally querying for an <a> tag...
+    node.querySelector('a.recipe-url').href = item.url;
+    // node.querySelector('p').textContent = item.utilized;
+
+    // insert after template
+    container.insertBefore(node, template);
+  }
+
+  const text = document.createElement('h2');
+  text.innerText = message;
+  text.style.textAlign = "center";
+  container.insertBefore(text, container.firstChild);
 }
 
 interface FoodItem {
@@ -70,7 +97,6 @@ interface FoodItem {
 function displayItems(items: FoodItem[], message: string = "Your Data") {
   const container = document.getElementById('visualizer');
   const template = document.getElementById('template');
-
 
   // clear the container except the template child
   container.innerHTML = "";

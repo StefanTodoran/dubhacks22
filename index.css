@@ -4,6 +4,7 @@ body {
   overflow-x: hidden;
 
   --main-color: #F9B630;
+  --main-dark: #de9608;
   --dark-color: #604D42;
 }
 
@@ -215,18 +216,26 @@ p {
   --icon: url(assets/default.png);
 }
 
-.food-item:hover, .recipe-item:hover {
+.food-item:hover {
   background-color: #f0f0f0;
   border: 1px solid #999999;
+}
+
+.recipe-item:hover {
+  background-color: #f9f9f9;
+  border: 1px solid #d9d9d9;
 }
 
 .food-item, .recipe-item {
   display: flex;
   padding: 1vh 1vw;
   border-radius: 10px;
+  transition: border 0.5s ease, background-color 0.5s ease;
+}
+
+.food-item {
   background-color: #f9f9f9;
   border: 1px solid #d9d9d9;
-  transition: border 0.5s ease, background-color 0.5s ease;
 }
 
 .food-name {
@@ -263,12 +272,6 @@ p {
   flex-direction: column;
   justify-content: center;
   border-left: 1px solid lightgray;
-  margin-left: 2em;
-  width: 100%;
-  width: calc(100% - 2em);
-}
-
-.food-duration-container.double-len {
   margin-left: 4em;
   width: calc(100% - 4em);
 }
@@ -306,11 +309,11 @@ p {
   box-sizing: border-box;
 }
 .food-duration.on_open_pantry {
-  background-color: rgba(var(--rgb), 0.25);
+  background-color: rgba(var(--rgb), 0.35);
   --icon: url(assets/pantry_open.png);
 }
 .food-duration.on_open_fridge {
-  background-color: rgba(var(--rgb), 0.25);
+  background-color: rgba(var(--rgb), 0.35);
   --icon: url(assets/fridge_open.png);
 }
 
@@ -343,8 +346,8 @@ p {
   --icon: url(assets/meat.png);
 }
 .grains {
-  --color: #E66400;
-  --rgb: 230, 100, 0;
+  --color: #eda107;
+  --rgb: 237, 161, 7;
   --icon: url(assets/grain.png)
 }
 .dairy {
@@ -385,6 +388,14 @@ p {
 .recipe-item {
   flex-direction: column;
   align-items: flex-start;
+  border: 1px solid #00000000;
+  color: var(--dark-color);
+  padding-bottom: 2vh;
+}
+
+.recipe-name {
+  color: var(--main-color);
+  margin: 0 1em 0 0;
 }
 
 .recipe-item:hover {
@@ -396,11 +407,14 @@ p {
 }
 
 a {
-  transition: transform 0.5s ease;
+  transition: color 0.2s ease;
+  text-decoration: none;
+  color: var(--main-dark);
 }
 
 a:hover {
-  transform: scale(1.1);
+  color: var(--main-color);
+  text-decoration: underline;
 }
 
 .hidden {
@@ -446,6 +460,15 @@ a:hover {
 }
 
 @media screen and (max-width: 768px) {
+  .food-duration-container {
+    margin-left: 2em;
+    width: calc(100% - 2em);
+  }
+  
+  .food-duration-container.double-len {
+    margin-left: 4em;
+    width: calc(100% - 4em);
+  }
 
   #scan-btn {
     font-size: 35px;
