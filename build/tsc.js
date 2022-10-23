@@ -63,25 +63,27 @@ function setupCamera() {
 (function () {
     window.addEventListener('load', init);
     function init() {
-        var testList = [
+        var examples = [
             { name: "Apples", group: "fruit", pantry: 12, fridge: 24 },
-            { name: "Jam", on_open: 365 },
             { name: "Carrots", group: "vegetable", fridge: 21, pantry: 7 },
+            { name: "Margarine", fridge: 124, on_open: 62 },
             { name: "Minced Beef", group: "meat", fridge: 2, freezer: 5 },
             { name: "Pancake Mix", group: "grains", pantry: 19, on_open: 12 },
-            { name: "Milk", group: "dairy", fridge: 7 },
-            { name: "Bread", group: "grains", pantry: 4, fridge: 14, freezer: 21, on_open: 15 },
-            { name: "Margarine", on_open: 90 },
+            { name: "Yogurt", group: "dairy", fridge: 7, freezer: 31, on_open: 3 },
             { name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2 },
+            { name: "Jam", on_open: 365 },
+            { name: "Bread", group: "grains", pantry: 4, fridge: 14, on_open: 15 },
+            { name: "Milk", group: "dairy", fridge: 7 },
         ];
         var scan_btn = document.getElementById('scan-btn');
         scan_btn.addEventListener('click', function () { });
-        displayItems(testList);
+        displayItems(examples);
         setupCamera();
         var container = document.getElementById('visualizer');
         var template = document.getElementById('template');
         var text = document.createElement('h2');
         text.innerText = "Example Data Visualization:";
+        text.style.textAlign = "center";
         container.insertBefore(text, template);
     }
     function displayRecipes(items) {
@@ -90,7 +92,6 @@ function setupCamera() {
     function displayItems(items) {
         var container = document.getElementById('visualizer');
         var template = document.getElementById('template');
-        container.classList.add('active');
         container.innerHTML = "";
         container.appendChild(template);
         for (var i = 0; i < items.length; i++) {

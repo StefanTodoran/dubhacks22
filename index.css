@@ -89,6 +89,7 @@ p {
 }
 
 #footer a {
+  font-weight: 600;
   margin: 0 1em;
   color: lightgray;
   text-decoration: none;
@@ -103,16 +104,12 @@ p {
   position: relative;
   border: 1px solid #e0e0e000;
   border-radius: 5px;
-  padding-top: 2.5vmin;
   margin: 5vh 5vw;
   min-height: 15vh;
   transition: border 0.5s ease, background-color 0.5s ease, padding 0.5s ease;
-}
-
-#visualizer.active {
   background-color: #fdfdfd;
   border: 1px solid #e0e0e0;
-  padding: 5vmin 5vmin;
+  padding: 2.5vmin 2.5vmin;
 }
 
 #icons {
@@ -147,6 +144,11 @@ p {
   display: flex;
   flex-direction: row;
   margin-bottom: 1em;
+  padding: 1vh 1vw;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #d9d9d9;
+
   --color: var(--dark-color);
   --rgb: 96, 77, 66;
   --icon: url(assets/default.png);
@@ -296,6 +298,11 @@ p {
   .food-item {
     flex-direction: column;
   }
+
+  .food-duration-container {
+    padding-left: 2em;
+    width: calc(100% - 2em);
+  }
 }
 
 @media screen and (max-width: 768px) {
@@ -318,17 +325,8 @@ p {
     font-size: 18px;
   }
 
-  .food-duration-container {
-    padding-left: 2em;
-    width: calc(100% - 2em);
-  }
-
   #visualizer {
-    padding-top: 1vmin;
-    margin: 0 2vw;
-  }
-  
-  #visualizer.active {
-    padding: 2vmin 2vmin;
+    margin: 3vh 2vw;
+    padding: 1vmin 2vmin;
   }
 }
