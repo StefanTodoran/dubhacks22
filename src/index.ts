@@ -92,7 +92,7 @@
       addDuration(node, "pantry", item.pantry);
       has_double = addDuration(node, "on_open_pantry", item.on_open_pantry);
       addDuration(node, "fridge", item.fridge);
-      has_double = has_double || addDuration(node, "on_open_fridge", item.on_open_fridge);
+      has_double = addDuration(node, "on_open_fridge", item.on_open_fridge) || has_double;
       addDuration(node, "freezer", item.freezer);
 
       if (has_double) {
@@ -114,7 +114,6 @@
    */
   function addDuration(node: HTMLElement, type: string, duration: number) {
     const indicator: HTMLElement = node.querySelector("." + type);
-    console.log(type, duration);
     if (duration) {
       const length = (duration ** 0.5).toString();
       indicator.style.setProperty('--length', length);
@@ -122,9 +121,7 @@
       indicator.style.setProperty('--days', display_duration);
       return true;
     } else {
-      console.log("HIDE");
-      indicator.classList.add('hidden');
-      console.log(indicator);
+      // indicator.classList.add('hidden');
       node.querySelector('.food-duration-container').removeChild(indicator);
       return false;
     }

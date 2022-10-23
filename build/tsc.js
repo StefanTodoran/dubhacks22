@@ -66,13 +66,13 @@ function setupCamera() {
         var examples = [
             { name: "Apples", group: "fruit", pantry: 12, fridge: 24 },
             { name: "Carrots", group: "vegetable", fridge: 21, pantry: 7 },
-            { name: "Margarine", fridge: 124, on_open: 62 },
+            { name: "Margarine", fridge: 124, on_open_fridge: 62 },
             { name: "Minced Beef", group: "meat", fridge: 2, freezer: 5 },
-            { name: "Pancake Mix", group: "grains", pantry: 19, on_open: 12 },
-            { name: "Yogurt", group: "dairy", fridge: 7, freezer: 31, on_open: 3 },
+            { name: "Pancake Mix", group: "grains", pantry: 19, on_open_pantry: 12 },
+            { name: "Yogurt", group: "dairy", fridge: 7, freezer: 31, on_open_fridge: 3 },
             { name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2 },
-            { name: "Jam", on_open: 365 },
-            { name: "Bread", group: "grains", pantry: 4, fridge: 14, on_open: 15 },
+            { name: "Jam", on_open_fridge: 365 },
+            { name: "Bread", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
             { name: "Milk", group: "dairy", fridge: 7 },
         ];
         var scan_btn = document.getElementById('scan-btn');
@@ -96,16 +96,22 @@ function setupCamera() {
         container.appendChild(template);
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
+            console.log("========================\n\n\n", item.name, item);
             var node = template.cloneNode(true);
             node.classList.remove('hidden');
             node.querySelector('h2').textContent = nbsp(item.name);
             if (item.group) {
                 node.classList.add(item.group);
             }
+            var has_double = false;
             addDuration(node, "pantry", item.pantry);
+            has_double = addDuration(node, "on_open_pantry", item.on_open_pantry);
             addDuration(node, "fridge", item.fridge);
+            has_double = addDuration(node, "on_open_fridge", item.on_open_fridge) || has_double;
             addDuration(node, "freezer", item.freezer);
-            addDuration(node, "on_open", item.on_open);
+            if (has_double) {
+                node.querySelector('.food-duration-container').classList.add('double-len');
+            }
             container.insertBefore(node, template);
         }
     }
@@ -116,9 +122,11 @@ function setupCamera() {
             indicator.style.setProperty('--length', length_1);
             var display_duration = nbsp('"' + duration.toString() + ' days"');
             indicator.style.setProperty('--days', display_duration);
+            return true;
         }
         else {
-            indicator.remove();
+            node.querySelector('.food-duration-container').removeChild(indicator);
+            return false;
         }
     }
     function nbsp(string) {
