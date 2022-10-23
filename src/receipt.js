@@ -46,6 +46,15 @@ async function visImage(elem, image) {
     elem.src = await copy.getBase64Async('image/png');
 }
 
+async function visImageCan(image) {
+    //return;
+    let can = document.createElement('canvas');
+    can.width = 800;
+    can.height = 800;
+    let context = can.getContext('2d');
+    context.drawImage(await createImageBitmap(image), 0, 0, can.width, can.height);
+    document.body.appendChild(can);
+}
 
 async function loadAndProcessImage(img_element) {
     const debugImage = document.getElementById('debug-img');
@@ -61,8 +70,10 @@ async function loadAndProcessImage(img_element) {
     const imageBytes = image.bitmap.data.byteLength;
     console.log('read in image');
     
+    image.greyscale();
     let blurred = image.clone();
     blurred.blur(100);
+    visImage(debugImage, blurred);
     debugTxt.innerText = "blurred";
 
     let maskimage = image.clone();
@@ -104,21 +115,145 @@ async function loadAndProcessImage(img_element) {
     //console.log('compied back');
     image = maskimage
     visImage(debugImage2, image);
-    //return image
+    return image
     
     console.log(image);
     let processedBuffer = await image.getBufferAsync('image/png');
+    visImage(debugImage2, image);
     //debugImage.src = await image.getBase64Async('image/png');
     return processedBuffer;
+}
+
+function rotateImage(image) {
+    let width = image.width;
+    let height = image.height;
+    let newImage = new ImageData(height, width);
+    for (let i = 0; i < width*height; i ++) {   
+        newImage.data[(i%height * width + Math.floor(i/height)) * 4 + 0] = image.data[i*4 + 0];
+        newImage.data[(i%height * width + Math.floor(i/height)) * 4 + 1] = image.data[i*4 + 1];
+        newImage.data[(i%height * width + Math.floor(i/height)) * 4 + 2] = image.data[i*4 + 2];
+        newImage.data[(i%height * width + Math.floor(i/height)) * 4 + 3] = image.data[i*4 + 3];
+    }
+    return newImage;
+}
+
+async function loadAndProcessImageCanvas(img_element) {
+    const debugImage = document.getElementById('debug-img');
+    const debugImage2 = document.getElementById('debug-img2');
+    const debugTxt = document.getElementById('textbox');
+
+    let imageBitmap = await createImageBitmap(img_element);
+
+    const width = imageBitmap.width;
+    const height = imageBitmap.height;
+    
+    let canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    
+    //visImageCan(imageBitmap);
+    let context = canvas.getContext('2d');
+    
+    context.filter = 'grayscale(1)';
+    context.drawImage(imageBitmap, 0, 0);
+    delete imageBitmap;
+    let image = context.getImageData(0, 0, width, height);
+    //image = rotateImage(image);
+
+    for (let i = 0; i < width*height; i ++) {
+        const average = (image.data[i*4+0] + image.data[i*4+1] + image.data[i*4+2]) / 3;
+        image.data[i*4+0] = average;
+        image.data[i*4+1] = average;
+        image.data[i*4+2] = average;
+        image.data[i*4+3] = 255;
+    }
+    //visImageCan(image);
+    
+    //context.clearRect(0, 0, width, height);
+    //context.filter = 'blur(100px)';
+    //context.drawImage(await createImageBitmap(image), 0, 0);
+    //let blurred = context.getImageData(0, 0, width, height);
+
+    //const scale = 32;
+    //let smallImage = context.getImageData(0, 0, width/scale, height/scale);
+
+    //const loopLimit = (width/scale-1)*(height/scale);
+    //for (let i = 0; i < loopLimit; i ++) {
+    //    const val = smallImage.data[i*4];//(smallImage.data[i*4] + smallImage.data[i*4+1] + smallImage.data[(i+height/scale)*4] + smallImage.data[(i+height/scale+1)*4]) / 4;
+    //    smallImage.data[i*4+0] = val;
+    //    smallImage.data[i*4+1] = val;
+    //    smallImage.data[i*4+2] = val;
+    //    smallImage.data[i*4+3] = 255;
+    //}
+    
+    //tmpBitmap = await createImageBitmap(smallImage);
+    const scale = 64;
+
+    let tmpBitmap = await createImageBitmap(image);
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = "high";
+    context.drawImage(tmpBitmap, 0, 0, width/scale, height/scale);
+    delete tmpBitmap;
+    tmpBitmap = await createImageBitmap(context.getImageData(0, 0, width/scale, height/scale))
+    const radius = 1;
+    context.globalCompositeOperation = 'lighten';
+    for (let x = -radius; x <= radius; x ++) {
+        for (let y = -radius; y <= radius; y ++) {
+            context.drawImage(tmpBitmap, x, y);
+        }
+    }
+    context.globalCompositeOperation = 'source-over';
+    delete tmpBitmap;
+    tmpBitmap = await createImageBitmap(context.getImageData(0, 0, width/scale, height/scale))
+    ////context.globalAlpha = 0.3;
+    //console.log(context.globalCompositeOperation);
+    //context.globalCompositeOperation = 'lighten';
+    //console.log(context.globalCompositeOperation);
+    //const radius = 3;
+    //for (let x = -radius; x <= radius; x ++) {
+    //    for (let y = -radius; y <= radius; y ++) {
+    //        context.drawImage(tmpBitmap, 0, (x/2)*scale, width, height+(x/2)*scale);
+    //        context.drawImage(tmpBitmap, (x/2)*scale, 0, width+(x/2)*scale, height);
+    //        context.drawImage(tmpBitmap, 0, -(x/2)*scale, width, height-(x/2)*scale);
+    //        context.drawImage(tmpBitmap, -(x/2)*scale, 0, width-(x/2)*scale, height);
+    //    }
+    //}
+    ////context.globalAlpha = 1;
+    //context.globalCompositeOperation = 'source-over';
+    context.drawImage(tmpBitmap, 0, 0, width, height);
+    delete tmpBitmap;
+    let blurred = context.getImageData(0, 0, width, height);
+
+    delete context;
+    delete canvas;
+    
+    visImageCan(blurred);
+
+    let maskimage = new ImageData(width, height);
+    
+    for (let i = 0; i < width*height; i ++) {
+        const thresh = blurred.data[i*4] - 40;
+        const val = 255 * (thresh < image.data[i*4]);
+        maskimage.data[i*4+0] = val;
+        maskimage.data[i*4+1] = val;
+        maskimage.data[i*4+2] = val;
+        maskimage.data[i*4+3] = 255;
+    }
+
+    debugTxt.innerText = "done";
+
+    visImageCan(maskimage);
+    return maskimage;
 }
 
 
 async function parseReceipt(img_element, logger) {
     //let image = await loadAndProcessImage(img_element);
     //let imagedata = new ImageData(new Uint8ClampedArray(image.bitmap.data.buffer), image.bitmap.width, image.bitmap.height);
+    let image = await loadAndProcessImageCanvas(img_element);
 
-    //const text = OCRAD(imagedata);
-    //return {text: text};
+    const text = OCRAD(image);
+    return {text: text};
     
     let processedBuffer = await loadAndProcessImage(img_element);
     

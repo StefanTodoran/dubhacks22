@@ -15,7 +15,7 @@ function setupCamera() {
         if (files.length > 0) {
             textbox.innerText = 'Loading...';
             let data = await parseReceipt(files[0], textboxLogger);
-            textbox.innerText = data.text;
+            textbox.innerText = "Result: " + data.text;
         }
     });
 }
