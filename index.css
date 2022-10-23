@@ -12,6 +12,13 @@ body {
   --dark-color: #604D42;
 }
 
+#loader {
+  width: calc(80vw * var(--progress));
+  height: 1em;
+  border-radius: 1em;
+  background-color: #F9B63099;
+}
+
 .row {
   display: flex; 
   flex-direction: row; 

@@ -36,27 +36,32 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 function setupCamera() {
     var _this = this;
-    document.getElementById('textbox').innerText = 'sjkdkfsdlfsd';
     var imageInps = document.querySelectorAll('.camera-inp');
-    var textbox = document.getElementById('textbox');
-    var textboxLogger = function (status) {
-        textbox.classList.remove('hidden');
-        textbox.innerText = "Loading... " + status.status + "   " + status.progress;
+    var loader = document.getElementById('loader');
+    var loaderProgress = function (status) {
+        var scan_btns = document.querySelectorAll('.scan-btn');
+        for (var i = 0; i < scan_btns.length; i++) {
+            scan_btns[i].classList.add('hidden');
+        }
+        loader.classList.remove('hidden');
+        loader.style.setProperty('--progress', status.progress);
+        if (status.status === 'recognizing text' && status.progress === 1) {
+            for (var i = 0; i < scan_btns.length; i++) {
+                scan_btns[i].classList.remove('hidden');
+            }
+            loader.classList.add('hidden');
+        }
     };
-    document.getElementById('textbox').innerText = 'adding event listener';
     var on_click = function (event) { return __awaiter(_this, void 0, void 0, function () {
         var files, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    document.getElementById('textbox').innerText = 'in event listere';
                     files = event.target.files;
                     if (!(files.length > 0)) return [3, 2];
-                    textbox.innerText = 'Loading...';
-                    return [4, parseReceipt(files[0], textboxLogger)];
+                    return [4, parseReceipt(files[0], loaderProgress)];
                 case 1:
                     data = _a.sent();
-                    textbox.innerText = data.text;
                     parse_data(data.text);
                     _a.label = 2;
                 case 2: return [2];
@@ -460,7 +465,6 @@ function process_receipt(receipt) {
     }
     displayFoodItems(final_food_items);
     queryRecipes(final_food_items);
-    console.log(final_food_items);
 }
 function visImage(elem, image) {
     return __awaiter(this, void 0, void 0, function () {
@@ -501,27 +505,24 @@ function visImageCan(image) {
 }
 function loadAndProcessImage(img_element) {
     return __awaiter(this, void 0, void 0, function () {
-        var debugImage, debugImage2, debugTxt, image, _a, _b, imageBytes, blurred, maskimage, width, height, i, thresh, val, processedBuffer;
+        var debugImage, debugImage2, debug, image, _a, _b, imageBytes, blurred, maskimage, width, height, i, thresh, val, processedBuffer;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
                     debugImage = document.getElementById('debug-img');
                     debugImage2 = document.getElementById('debug-img2');
-                    debugTxt = document.getElementById('textbox');
-                    debugTxt.innerText = "starting";
+                    debug = document.getElementById('loader');
                     _b = (_a = Jimp).read;
                     return [4, img_element.arrayBuffer()];
                 case 1: return [4, _b.apply(_a, [_c.sent()])];
                 case 2:
                     image = _c.sent();
-                    debugTxt.innerText = "read the image in";
                     imageBytes = image.bitmap.data.byteLength;
                     console.log('read in image');
                     image.greyscale();
                     blurred = image.clone();
                     blurred.blur(100);
                     visImage(debugImage, blurred);
-                    debugTxt.innerText = "blurred";
                     maskimage = image.clone();
                     width = image.bitmap.width;
                     height = image.bitmap.height;
@@ -533,7 +534,6 @@ function loadAndProcessImage(img_element) {
                         maskimage.bitmap.data[i * 4 + 2] = val;
                         maskimage.bitmap.data[i * 4 + 3] = 255;
                     }
-                    debugTxt.innerText = "done";
                     image = maskimage;
                     visImage(debugImage2, image);
                     return [2, image];
@@ -561,13 +561,13 @@ function rotateImage(image) {
 }
 function loadAndProcessImageCanvas(img_element) {
     return __awaiter(this, void 0, void 0, function () {
-        var debugImage, debugImage2, debugTxt, imageBitmap, width, height, canvas, context, image, i, average, scale, tmpBitmap, radius, x, y, blurred, maskimage, i, thresh, val, data;
+        var debugImage, debugImage2, debug, imageBitmap, width, height, canvas, context, image, i, average, scale, tmpBitmap, radius, x, y, blurred, maskimage, i, thresh, val, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     debugImage = document.getElementById('debug-img');
                     debugImage2 = document.getElementById('debug-img2');
-                    debugTxt = document.getElementById('textbox');
+                    debug = document.getElementById('loader');
                     return [4, createImageBitmap(img_element)];
                 case 1:
                     imageBitmap = _a.sent();
@@ -643,7 +643,6 @@ function loadAndProcessImageCanvas(img_element) {
                     context.drawImage(tmpBitmap, 0, 0);
                     delete tmpBitmap;
                     data = canvas.toDataURL('image/png');
-                    debugTxt.innerText = "done";
                     delete context;
                     delete canvas;
                     return [2, data];
