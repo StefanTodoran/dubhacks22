@@ -57,11 +57,12 @@ function setupCamera() {
                 case 1:
                     data = _a.sent();
                     textbox.innerText = data.text;
-                    _a.label = 2;
+                    return [2, data.text];
                 case 2: return [2];
             }
         });
     }); });
+    return null;
 }
 window.addEventListener('load', init);
 function init() {
@@ -78,7 +79,8 @@ function init() {
         { name: "Milk", raw: "MILK", group: "dairy", on_open_fridge: 1, fridge: 7 },
     ];
     displayFoodItems(examples, "Example Data Visualization");
-    setupCamera();
+    var receipt_raw_text = setupCamera();
+    parse_data(receipt_raw_text);
     var show_more = document.getElementById('show-more-btn');
     var demo = document.getElementById('demo');
     show_more.addEventListener('click', function () {
@@ -239,9 +241,11 @@ function quoted(string) {
 var RECEIPT = "\nSee back of rece jour chance\nto win 1000 154 ERTvikEa0G\ng Walmart 3i\n118511102 Mar JAHIE BRODKSHIRE\nBBgRs yfanEMQDMI gs\nST8 05483 00y 00000 R 009 e 06976\nTATER TOTS 001312000026 F 2.36 0\nHARD/PROV/DC 007874219410 F 2.68 0\nSNACK BARS 002190848816 F 4.98 T\nHRI CL CHS 003120806000 F 6.88 0\nHRI CL CHS 003120806000 F 6.88 0\nHRI CL CHS 003120806000 F 6.88 0\n** VOIDED ENTRY**\nHRT CL CHS 003120506000 F 58.80\nHRI 12 U SG 003120836000 F 6.88 0\nHRI CL PEP 003120807000 F 5.88 0\nEARBUDS 068113100946 488 X\nSC BCN CHDDR 007874202906 F 6.98 0\nABF THINBRST 022461710972 F 97.20\nPOTATO 007874219410 F 26.80\nDV RSE OTL W 001111101220 i\nAPPLE 3 BAG 0B4747300184 F 6.47 N\nSTOK LT SUT 004127102774 F 4.42 T J\nPEANUT BUTTR 005160026499 F 6.44 0 1\nAVO VERDE 061611206143 F 2.98 N\nROLLS P o BT 18\nBAGELS 001376402801 F 41.86 0\nGV SLTDERS 007874201525 2.98 X\nACCESSORY 007616161216 01.97 X\nCHEEZE IT 002410063623 F 40.00\nUAS 459 YOU SAVED 054\nRITZ 004400088210 F 2.78 N\nRUFFLES 002840020942 F 2.50 N\nGV HNY GRNS 007874207263 F 1.28 N\nSUBTOTAL 13944\nTAX 1 7000 458\nTOTAL 14402\nCASH TEND 16002\nCHANGE DUE 600\nITENS SOLD 26\nTCH ovrs EGTF 107z ij gfsa 5\nMM\no\nAU T\n04727719 1216946\nScan with Walnart ap to save recelpts\nmiE\ni\nmE\n";
 var keywords_to_food_items = [];
 var final_food_items = [];
-fetch('data/foodkeeper.json', { mode: 'no-cors' })
-    .then(function (response) { return response.json(); })
-    .then(function (food_data) { return process_food_data(JSON.parse(JSON.stringify(food_data))); });
+function parse_data(raw_receipt) {
+    fetch('data/foodkeeper.json', { mode: 'no-cors' })
+        .then(function (response) { return response.json(); })
+        .then(function (food_data) { return process_food_data(JSON.parse(JSON.stringify(food_data)), raw_receipt); });
+}
 function get_days(max_time, metric) {
     if (JSON.stringify(metric).includes("Day")) {
         return max_time;
@@ -283,7 +287,7 @@ function get_category(category_id_object) {
         return "default";
     }
 }
-function process_food_data(food_data) {
+function process_food_data(food_data, raw_receipt) {
     for (var _i = 0, _a = food_data.sheets[2].data; _i < _a.length; _i++) {
         var food_entry = _a[_i];
         var food_name = food_entry[2]["Name"];
@@ -354,7 +358,7 @@ function process_food_data(food_data) {
             keywords_to_food_items.push([filtered_keywords, food_item]);
         }
     }
-    process_receipt(RECEIPT);
+    process_receipt(raw_receipt);
 }
 var INSERTION_COST = 1;
 var DELETION_COST = 4;
