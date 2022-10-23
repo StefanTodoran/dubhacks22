@@ -95,7 +95,7 @@ function process_food_data(food_data: any) {
   for (let food_entry of food_data.sheets[2].data) {
     // find expiration by iterating through storage types for 1st non-null
     let food_name: string = food_entry[2]["Name"];
-    let food_item: FoodItem = {name: food_name};
+    let food_item: FoodItem = {name: food_name, raw: ""};
 
     let food_category: string = get_category(food_entry[1]);
     if (food_category != "default") {
@@ -217,6 +217,7 @@ function search(receipt_name: string) {
       }
     }
     console.log(receipt_word + ": " + min_keyword);
+    closest_food_item.raw = receipt_word
   }
 
   return closest_food_item;
