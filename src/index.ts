@@ -77,7 +77,6 @@
 
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      console.log("========================\n\n\n",item.name, item);
       // @ts-ignore
       const node: HTMLElement = template.cloneNode(true);
 
