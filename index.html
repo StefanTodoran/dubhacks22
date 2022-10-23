@@ -36,28 +36,46 @@
     <div style="flex: 1">
       <h1>How It Works</h1>
       <p>
-        By combining computer vision, clever algorithms to reconstruct words from abbreviations, and U.S. government food
-        keeping data, frijma is able to parse any receipt and help users visualize data about their food. Our app can
-        then provide recipes that specifically target the food the user already has, so there is no need to go out to
-        the store and buy more when perfectly usable food is available at home!
+        By combining image preprocessing, computer vision, clever algorithms to reconstruct words from abbreviations,
+        and U.S. government food keeping data, frijma is able to parse any receipt and help users visualize data about
+        their food. Our app can then provide recipes that specifically target the food the user already has, so there is
+        no need to go out to the store and buy more when perfectly usable food is available at home!
       </p>
     </div>
     <div id="icons">
-      <div class="icon-container" style="column-span: all;"><img class="icon" src="assets/question.png"/> How long food keeps when:</div>
-      <div><!-- scuffed hack so that the above div is on its own row --></div> 
-      <div class="icon-container"><img class="icon" src="assets/pantry.png"/> Placed&nbsp;in&nbsp;Pantry</div>
-      <div class="icon-container"><img class="icon" src="assets/fridge.png"/> Cooled&nbsp;in&nbsp;Fridge</div>
-      <div class="icon-container"><img class="icon" src="assets/freezer.png"/> Frozen&nbsp;in&nbsp;Freezer</div>
-      <div class="icon-container"><img class="icon" src="assets/on_open.png"/> Once&nbsp;Opened</div>
+      <div class="icon-container" style="column-span: all;"><img class="icon" src="assets/question.png" /> How long food
+        keeps when:</div>
+      <div>
+        <!-- scuffed hack so that the above div is on its own row -->
+      </div>
+      <div class="icon-container"><img class="icon" src="assets/pantry.png" /> Placed&nbsp;in&nbsp;Pantry</div>
+      <div class="icon-container"><img class="icon" src="assets/fridge.png" /> Cooled&nbsp;in&nbsp;Fridge</div>
+      <div class="icon-container"><img class="icon" src="assets/freezer.png" /> Frozen&nbsp;in&nbsp;Freezer</div>
+      <div class="icon-container"><img class="icon" src="assets/on_open.png" /> Once&nbsp;Opened</div>
     </div>
   </section>
 
-  <div style="display: flex; flex-direction: row; justify-content: center;">
+  <div class="row">
+    <img class="demo-img" src="assets/receipt.png" />
+    <div id="demo-grid">
+      <p>NAME&nbsp;</p><p>ID#&nbsp;</p><p>AMNT&nbsp;</p><p>DSC&nbsp;</p><p>PRC</p>
+      <p>APPL</p><p>31240686</p><p>9</p><p>NO</p><p>2.99</p>
+      <p>CRT</p><p>10465239</p><p>12</p><p>NO</p><p>1.99</p>
+      <p>MARGRN</p><p>17823649</p><p>1</p><p>NO</p><p>6.29</p>
+      <p>MNCED BEEF</p><p>17823649</p><p>3</p><p>YES</p><p>7.89</p>
+      <p>PNCK MIX</p><p>10293846</p><p>2</p><p>YES</p><p>4.59</p>
+      <p>YOGURT</p><p>98609352</p><p>10</p><p>NO</p><p>22.99</p>
+    </div>
+    <img class="demo-img" src="assets/data.png" />
+  </div>
+
+  <div class="row">
     <label id="scan-btn">
       Scan
       <input id="camera-inp" type="file" accept="image/*" , capture />
     </label>
   </div>
+
   <section id="visualizer">
     <div class="food-item hidden" id="template">
       <div class="food-item-title">
@@ -79,17 +97,17 @@
     <div class="recipe-item hidden_" id="template">
       <div class="recipe-title-line">
         <h2 style="margin-right: 1em;">Recipe Title Here</h2>
-        <img class="icon" src="assets/grain.png"/>
-        <img class="icon" src="assets/vegetable.png"/>
-        <img class="icon" src="assets/meat.png"/>
+        <img class="icon" src="assets/grain.png" />
+        <img class="icon" src="assets/vegetable.png" />
+        <img class="icon" src="assets/meat.png" />
       </div>
       <a class="recipe-url" href="https://www.allrecipes.com/recipe/76296/meat-pie/">Let's Cook!</a>
     </div>
   </section>
 
-  <p id='textbox'>ksdjflasdkjfklsjdflskdfjlsdfjlsdkfj</p>
-  <img src="" id="debug-img" style="width=100%"/>
-  <img src="" id="debug-img2" style="width=100%"/>
+  <p id='textbox'></p>
+  <img src="" id="debug-img" style="width: 100%;" />
+  <img src="" id="debug-img2" style="width: 100%;" />
 
   <section id="footer">
     <div class="hr"></div>

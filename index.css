@@ -7,6 +7,13 @@ body {
   --dark-color: #604D42;
 }
 
+.row {
+  display: flex; 
+  flex-direction: row; 
+  justify-content: center;
+  align-items: center;
+}
+
 #scan-btn {
   font-family: 'Quicksand', sans-serif;
   border: 1px solid var(--main-color);
@@ -29,6 +36,25 @@ body {
   opacity: 0;
   display: none;
   position: absolute;
+}
+
+#demo-grid {
+  display: grid; 
+  grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr;
+  max-width: 25vw;
+  padding: 5px 5px;
+  margin: 0 20px;
+}
+
+#demo-grid p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.demo-img {
+  user-select: none;
+  max-height: 300px;
+  max-width: min(300px, 25vw);
 }
 
 p {
@@ -107,6 +133,11 @@ p {
   opacity: 0.5;
 }
 
+#visualizer, #recipes, #demo-grid {
+  background-color: #fdfdfd;
+  border: 1px solid #e0e0e0;
+}
+
 #visualizer, #recipes {
   position: relative;
   border: 1px solid #e0e0e000;
@@ -114,8 +145,6 @@ p {
   margin: 5vh 5vw;
   min-height: 15vh;
   transition: border 0.5s ease, background-color 0.5s ease, padding 0.5s ease;
-  background-color: #fdfdfd;
-  border: 1px solid #e0e0e0;
   padding: 1vmin 2.5vmin;
 }
 
@@ -352,8 +381,12 @@ a:hover {
     font-size: 14px;
   }
 
-  .food-item {
+  .food-item, .row {
     flex-direction: column;
+  }
+
+  #demo-grid {
+  max-width: unset;
   }
 
   .food-item-title {
