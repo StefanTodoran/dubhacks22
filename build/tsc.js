@@ -62,16 +62,16 @@ function setupCamera() {
 window.addEventListener('load', init);
 function init() {
     var examples = [
-        { name: "Apples", group: "fruit", pantry: 12, fridge: 24 },
-        { name: "Carrots", group: "vegetable", fridge: 21, pantry: 7 },
-        { name: "Margarine", fridge: 124, on_open_fridge: 62 },
-        { name: "Minced Beef", group: "meat", fridge: 2, freezer: 5 },
-        { name: "Pancake Mix", group: "grains", pantry: 19, on_open_pantry: 12 },
-        { name: "Yogurt", group: "dairy", fridge: 7, freezer: 31, on_open_fridge: 3 },
-        { name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2 },
-        { name: "Jam", on_open_fridge: 365 },
-        { name: "Bread", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
-        { name: "Milk", group: "dairy", fridge: 7 },
+        { name: "Apples", raw: "APPL", group: "fruit", pantry: 12, fridge: 24 },
+        { name: "Carrots", raw: "CRT", group: "vegetable", fridge: 21, pantry: 7 },
+        { name: "Margarine", raw: "MARGRN", fridge: 124, on_open_fridge: 62 },
+        { name: "Minced Beef", raw: "MNCED BEEF", group: "meat", fridge: 2, freezer: 5 },
+        { name: "Pancake Mix", raw: "PNCK MIX", group: "grains", pantry: 19, on_open_pantry: 12 },
+        { name: "Yogurt", raw: "YOGURT", group: "dairy", fridge: 7, freezer: 31, on_open_fridge: 3 },
+        { name: "Broccoli", raw: "BRCLI", group: "vegetable", fridge: 5, pantry: 2 },
+        { name: "Jam", raw: "JAM", on_open_fridge: 365 },
+        { name: "Bread", raw: "BREAD", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
+        { name: "Milk", raw: "MILK", group: "dairy", on_open_fridge: 1, fridge: 7 },
     ];
     displayItems(examples);
     setupCamera();
@@ -80,7 +80,7 @@ function init() {
     var text = document.createElement('h2');
     text.innerText = "Example Data Visualization:";
     text.style.textAlign = "center";
-    container.insertBefore(text, template);
+    container.insertBefore(text, container.firstChild);
 }
 function displayRecipes(items) {
     console.log("Not Yet Implemented!");
@@ -92,11 +92,11 @@ function displayItems(items) {
     container.appendChild(template);
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
-        console.log(item);
         var node = template.cloneNode(true);
         node.classList.remove('hidden');
         node.id = "";
         node.querySelector('h2').textContent = item.name;
+        node.querySelector('h3').textContent = '(' + item.raw + ')';
         if (item.group) {
             node.classList.add(item.group);
         }
@@ -114,12 +114,15 @@ function displayItems(items) {
 }
 function addDuration(node, type, duration) {
     var indicator = node.querySelector("." + type);
-    console.log(node, type, duration);
     if (duration) {
         var length_1 = (Math.pow(duration, 0.5)).toString();
         indicator.style.setProperty('--length', length_1);
-        var display_duration = nbsp('"' + duration.toString() + ' days"');
+        var raw_text = (duration > 1) ? duration.toString() + ' days' : duration.toString() + ' day';
+        var display_duration = nbsp(quoted(raw_text));
         indicator.style.setProperty('--days', display_duration);
+        if (duration < 7) {
+            indicator.classList.add('short-duration');
+        }
         return true;
     }
     else {
@@ -130,7 +133,10 @@ function addDuration(node, type, duration) {
 function nbsp(string) {
     return string.replace(/ /g, '\u00a0');
 }
-var RECEIPT = "Wal ke\nalmart - <.\nSave money. Live better.\n(813) 932-0562\nManaser COLLEEN BRICKEY\n8885 N FLORIDA AVE\nTAMPA FL 33604\nST# 5221 OP# 00001061 TE# 06 TR# 05332\nBREAD 007225003712 F 2.88 N\nBREAD 007225003712 F 2.88 N\nGV PNT BUTTR 007874237003 F 3.84 N\nGV PNT BUTTR 007874237003 F 3.84 N\nGV PNT BUTTR 007874237003 F 3.84 N\nGV PNT BUTTR 007874237003 F 3.84 N\nGV PARM 160Z 007874201510 F 4.98 0\nGV CHNK CHKN 007874206784 F 1.98 N\nGV CHNK CHKN 007874206784 F 1.98 N\n12 CT NITRIL 073191913822 2.78 X\nFOLGERS 002550000377 F 10.48 N\nSC TWIST UP 007874222682 F 0.84 X\nEGGS 060638871459 F 1.88 0\nSUBTOTAL 46.04\nTAX 1 7.000 % 0.26\nTOTAL 46.30\nDEBIT TEND 46.30\nCHANGE DUE 0.00\nEFT DEBIT PAY FROM PRIMARY\nACCOUNT : 5259\n46.30 TOTAL PURCHASE\nPAYMENT DECLINED DEBIT NOT AVAILABLE\n11/06/11 02:21:54\nEFT DEBIT PAY FROM PRIMARY\nACCOUNT : 5269\n46.30 TOTAL PURCHASE\nREF # 131000195280\nNETWORK ID. 0071 APPR CODE 297664\n11/06/11 02:22:54\nS\nLavaway is back for Electronics,\nToys, and Jewelry. 10/17/11-12/16/11\n11/06/11 02:22:59";
+function quoted(string) {
+    return '"' + string + '"';
+}
+var RECEIPT = "\nSee back of rece jour chance\nto win 1000 154 ERTvikEa0G\ng Walmart 3i\n118511102 Mar JAHIE BRODKSHIRE\nBBgRs yfanEMQDMI gs\nST8 05483 00y 00000 R 009 e 06976\nTATER TOTS 001312000026 F 236 0\nHARD/PROV/DC 007874219410 F 268 0\nSNACK BARS 002190848816 F 498 T\nHRI CL CHS 003120806000 F 688 0\nHRI CL CHS 003120806000 F 688 0\nHRI CL CHS 003120806000 F 688 0\n** VOIDED ENTRY**\nHRT CL CHS 003120506000 F 5880\nHRI 12 U SG 003120836000 F 688 0\nHRI CL PEP 003120807000 F 588 0\nEARBUDS 068113100946 488 X\nSC BCN CHDDR 007874202906 F 698 0\nABF THINBRST 022461710972 F 9720\nPOTATO 007874219410 F 2680\nDV RSE OTL W 001111101220 i\nAPPLE 3 BAG 0B4747300184 F 647 N\nSTOK LT SUT 004127102774 F 442 T J\nPEANUT BUTTR 005160026499 F 644 0 1\nAVO VERDE 061611206143 F 298 N\nROLLS P o BT 18\nBAGELS 001376402801 F 4186 0\nGV SLTDERS 007874201525 298 X\nACCESSORY 007616161216 0197 X\nCHEEZE IT 002410063623 F 4000\nUAS 459 YOU SAVED 054\nRITZ 004400088210 F 278 N\nRUFFLES 002840020942 F 250 N\nGV HNY GRNS 007874207263 F 128 N\nSUBTOTAL 13944\nTAX 1 7000 458\nTOTAL 14402\nCASH TEND 16002\nCHANGE DUE 600\nITENS SOLD 26\nTCH ovrs EGTF 107z ij gfsa 5\nMM\no\nAU T\n04727719 1216946\nScan with Walnart ap to save recelpts\nmiE\ni\nmE\n";
 var keywords_to_food_items = [];
 var final_food_items = [];
 fetch('data/foodkeeper.json', { mode: 'no-cors' })
@@ -182,7 +188,7 @@ function process_food_data(food_data) {
     for (var _i = 0, _a = food_data.sheets[2].data; _i < _a.length; _i++) {
         var food_entry = _a[_i];
         var food_name = food_entry[2]["Name"];
-        var food_item = { name: food_name };
+        var food_item = { name: food_name, raw: "" };
         var food_category = get_category(food_entry[1]);
         if (food_category != "default") {
             food_item.group = food_category;
@@ -302,11 +308,15 @@ function search(receipt_name) {
             }
         }
         console.log(receipt_word + ": " + min_keyword);
+        closest_food_item.raw = receipt_word;
     }
     return closest_food_item;
 }
 function is_letter(char) {
     return char.toLowerCase() != char.toUpperCase();
+}
+function is_number(char) {
+    return !isNaN(parseInt(char, 10));
 }
 function process_receipt(receipt) {
     var receipt_lines = receipt.split('\n');
@@ -317,7 +327,7 @@ function process_receipt(receipt) {
         var receipt_name = "";
         for (var i = 0; i < receipt_line.length; i++) {
             var c = receipt_line.charAt(i);
-            if (!is_letter(c) && c != ' ') {
+            if (is_number(c)) {
                 break;
             }
             receipt_name += c;
@@ -333,7 +343,10 @@ function process_receipt(receipt) {
         var receipt_name = receipt_names_1[_a];
         final_food_items.push(search(receipt_name));
     }
-    displayItems(final_food_items);
+    var scan_btn = document.getElementById('scan-btn');
+    scan_btn.addEventListener('click', function () {
+        displayItems(final_food_items);
+    });
 }
 function parseReceipt(img_element, logger) {
     return __awaiter(this, void 0, void 0, function () {

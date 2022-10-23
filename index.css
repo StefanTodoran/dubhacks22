@@ -66,9 +66,16 @@ p {
   margin: 2.5vh 0;
 }
 
-#footer {
+#footer, .food-item-title {
   display: flex;
   flex-direction: column;
+}
+
+.food-item-title {
+  justify-content: flex-end;
+}
+
+#footer {
   justify-content: center;
   align-items: center;
 
@@ -168,8 +175,13 @@ p {
   flex-direction: row;
   align-items: center;
   color: var(--color);
-  margin: 0;
+  margin: 0 0 0 -6px;
   min-width: 10em;
+}
+
+.food-raw {
+  color: gray;
+  font-size: 14px;
 }
 
 .food-name::before, .food-duration::before {
@@ -241,9 +253,16 @@ p {
   color: white;
   content: var(--days);
   position: absolute;
+  top: 0;
   right: 1em;
   transform: translate(var(--offset), calc(25% - var(--offset)));
 }
+
+.food-duration.short-duration::after {
+  color: var(--color);
+  transform: translate(calc(150% + var(--offset)), calc(25% - var(--offset)));
+}
+
 .food-duration::before {
   transform: translate(-100%, calc(-1 * var(--offset)));
 }
@@ -326,18 +345,20 @@ a:hover {
 @media screen and (max-width: 1024px) {
   .food-name {
     font-size: 22px;
+    margin: 0;
   }
 
   .food-duration::after {
     font-size: 14px;
   }
 
-  .food-duration {
-    width: min(calc(var(--length) * 20%), 100%);
-  }
-
   .food-item {
     flex-direction: column;
+  }
+
+  .food-item-title {
+    flex-direction: row;
+    justify-content: space-between;
   }
 
   .food-duration-container {
@@ -368,6 +389,10 @@ a:hover {
 
   .food-name {
     font-size: 18px;
+  }
+
+  .food-raw {
+    font-size: 12px;
   }
 
   .food-item, .food-item:hover, .recipe-item, .recipe-item:hover {
