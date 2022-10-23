@@ -73,19 +73,14 @@ function init() {
         { name: "Bread", raw: "BREAD", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
         { name: "Milk", raw: "MILK", group: "dairy", on_open_fridge: 1, fridge: 7 },
     ];
-    displayItems(examples);
+    displayItems(examples, "Example Data Visualization");
     setupCamera();
-    var container = document.getElementById('visualizer');
-    var template = document.getElementById('template');
-    var text = document.createElement('h2');
-    text.innerText = "Example Data Visualization:";
-    text.style.textAlign = "center";
-    container.insertBefore(text, container.firstChild);
 }
 function displayRecipes(items) {
     console.log("Not Yet Implemented!");
 }
-function displayItems(items) {
+function displayItems(items, message) {
+    if (message === void 0) { message = "Your Data"; }
     var container = document.getElementById('visualizer');
     var template = document.getElementById('template');
     container.innerHTML = "";
@@ -111,6 +106,10 @@ function displayItems(items) {
         }
         container.insertBefore(node, template);
     }
+    var text = document.createElement('h2');
+    text.innerText = message;
+    text.style.textAlign = "center";
+    container.insertBefore(text, container.firstChild);
 }
 function addDuration(node, type, duration) {
     var indicator = node.querySelector("." + type);
@@ -136,7 +135,7 @@ function nbsp(string) {
 function quoted(string) {
     return '"' + string + '"';
 }
-var RECEIPT = "\nSee back of rece jour chance\nto win 1000 154 ERTvikEa0G\ng Walmart 3i\n118511102 Mar JAHIE BRODKSHIRE\nBBgRs yfanEMQDMI gs\nST8 05483 00y 00000 R 009 e 06976\nTATER TOTS 001312000026 F 236 0\nHARD/PROV/DC 007874219410 F 268 0\nSNACK BARS 002190848816 F 498 T\nHRI CL CHS 003120806000 F 688 0\nHRI CL CHS 003120806000 F 688 0\nHRI CL CHS 003120806000 F 688 0\n** VOIDED ENTRY**\nHRT CL CHS 003120506000 F 5880\nHRI 12 U SG 003120836000 F 688 0\nHRI CL PEP 003120807000 F 588 0\nEARBUDS 068113100946 488 X\nSC BCN CHDDR 007874202906 F 698 0\nABF THINBRST 022461710972 F 9720\nPOTATO 007874219410 F 2680\nDV RSE OTL W 001111101220 i\nAPPLE 3 BAG 0B4747300184 F 647 N\nSTOK LT SUT 004127102774 F 442 T J\nPEANUT BUTTR 005160026499 F 644 0 1\nAVO VERDE 061611206143 F 298 N\nROLLS P o BT 18\nBAGELS 001376402801 F 4186 0\nGV SLTDERS 007874201525 298 X\nACCESSORY 007616161216 0197 X\nCHEEZE IT 002410063623 F 4000\nUAS 459 YOU SAVED 054\nRITZ 004400088210 F 278 N\nRUFFLES 002840020942 F 250 N\nGV HNY GRNS 007874207263 F 128 N\nSUBTOTAL 13944\nTAX 1 7000 458\nTOTAL 14402\nCASH TEND 16002\nCHANGE DUE 600\nITENS SOLD 26\nTCH ovrs EGTF 107z ij gfsa 5\nMM\no\nAU T\n04727719 1216946\nScan with Walnart ap to save recelpts\nmiE\ni\nmE\n";
+var RECEIPT = "\nSee back of rece jour chance\nto win 1000 154 ERTvikEa0G\ng Walmart 3i\n118511102 Mar JAHIE BRODKSHIRE\nBBgRs yfanEMQDMI gs\nST8 05483 00y 00000 R 009 e 06.976\nTATER TOTS 001312000026 F 2.36 0\nHARD/PROV/DC 007874219410 F 268 0\nSNACK BARS 002190848816 F 4.98 T\nHRI CL CHS 003120806000 F 6.88 0\nHRI CL CHS 003120806000 F 6.88 0\nHRI CL CHS 003120806000 F 6.88 0\n** VOIDED ENTRY**\nHRT CL CHS 003120506000 F 58.80\nHRI 12 U SG 003120836000 F 6.88 0\nHRI CL PEP 003120807000 F 5.88 0\nEARBUDS 068113100946 488 X\nSC BCN CHDDR 007874202906 F 6.98 0\nABF THINBRST 022461710972 F 97.20\nPOTATO 007874219410 F 2680\nDV RSE OTL W 001111101220 i\nAPPLE 3 BAG 0B4747300184 F 647 N\nSTOK LT SUT 004127102774 F 442 T J\nPEANUT BUTTR 005160026499 F 644 0 1\nAVO VERDE 061611206143 F 298 N\nROLLS P o BT 18\nBAGELS 001376402801 F 4186 0\nGV SLTDERS 007874201525 298 X\nACCESSORY 007616161216 0197 X\nCHEEZE IT 002410063623 F 4000\nUAS 459 YOU SAVED 054\nRITZ 004400088210 F 278 N\nRUFFLES 002840020942 F 250 N\nGV HNY GRNS 007874207263 F 128 N\nSUBTOTAL 13944\nTAX 1 7000 458\nTOTAL 14402\nCASH TEND 16002\nCHANGE DUE 600\nITENS SOLD 26\nTCH ovrs EGTF 107z ij gfsa 5\nMM\no\nAU T\n04727719 1216946\nScan with Walnart ap to save recelpts\nmiE\ni\nmE\n";
 var keywords_to_food_items = [];
 var final_food_items = [];
 fetch('data/foodkeeper.json', { mode: 'no-cors' })
@@ -307,7 +306,7 @@ function search(receipt_name) {
                 min_keyword = keyword;
             }
         }
-        console.log(receipt_word + ": " + min_keyword);
+        console.log(receipt_word + ": " + min_keyword + " - cost: " + keyword_min_cost);
         closest_food_item.raw = receipt_word;
     }
     return closest_food_item;
@@ -324,21 +323,15 @@ function process_receipt(receipt) {
     var receipt_names = [];
     for (var _i = 0, receipt_lines_1 = receipt_lines; _i < receipt_lines_1.length; _i++) {
         var receipt_line = receipt_lines_1[_i];
-        var receipt_name = "";
-        for (var i = 0; i < receipt_line.length; i++) {
-            var c = receipt_line.charAt(i);
-            if (is_number(c)) {
-                break;
-            }
-            receipt_name += c;
+        if (receipt_line.includes("SUBTOTAL")) {
+            break;
         }
-        if (receipt_name != receipt_line) {
-            if (receipt_name.charAt(receipt_name.length - 1) == ' ') {
-                receipt_name = receipt_name.slice(0, -1);
-            }
-            receipt_names.push(receipt_name);
+        var re = new RegExp("^.*[0-9]{1,2}[.][0-9]{2}");
+        if (re.test(receipt_line)) {
+            receipt_names.push(receipt_line);
         }
     }
+    console.log(receipt_names);
     for (var _a = 0, receipt_names_1 = receipt_names; _a < receipt_names_1.length; _a++) {
         var receipt_name = receipt_names_1[_a];
         final_food_items.push(search(receipt_name));
