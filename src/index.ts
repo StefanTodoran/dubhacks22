@@ -73,7 +73,7 @@ function displayItems(items: FoodItem[]) {
   
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
-    console.log(item);
+    //console.log(item);
     // @ts-ignore
     const node: HTMLElement = template.cloneNode(true);
 
@@ -111,7 +111,7 @@ function displayItems(items: FoodItem[]) {
  */
 function addDuration(node: HTMLElement, type: string, duration: number) {
   const indicator: HTMLElement = node.querySelector("." + type);
-  console.log(node, type, duration);
+  //console.log(node, type, duration);
 
   if (duration) {
     const length = (duration ** 0.5).toString();

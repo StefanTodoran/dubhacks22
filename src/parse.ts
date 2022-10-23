@@ -216,7 +216,7 @@ function search(receipt_name: string) {
         min_keyword = keyword;
       }
     }
-    console.log(receipt_word + ": " + min_keyword);
+    console.log(receipt_word + ": " + min_keyword + " - cost: " + keyword_min_cost);
     closest_food_item.raw = receipt_word
   }
 
@@ -237,21 +237,29 @@ function process_receipt(receipt: string) {
 
   let receipt_names: string[] = [];
   for (let receipt_line of receipt_lines) {
-    let receipt_name = "";
-    for (let i = 0; i < receipt_line.length; i++) {
-      let c = receipt_line.charAt(i);
-      if (is_number(c)) {
-        break;
-      }
-      receipt_name += c;
+    //let receipt_name = "";
+    if (receipt_line.includes("SUBTOTAL")) {
+      break;
     }
-    if (receipt_name != receipt_line) {
-      if (receipt_name.charAt(receipt_name.length - 1) == ' ') {
-        receipt_name = receipt_name.slice(0, -1);
-      }
-      receipt_names.push(receipt_name);
+    let re = new RegExp("^.*[0-9]{1,2}[.][0-9]{2}");
+    if (re.test(receipt_line)) {
+      receipt_names.push(receipt_line);
     }
+    // for (let i = 0; i < receipt_line.length; i++) {
+    //   let c = receipt_line.charAt(i);
+    //   if (is_number(c)) {
+    //     break;
+    //   }
+    //   receipt_name += c;
+    // }
+    // if (receipt_name != receipt_line) {
+    //   if (receipt_name.charAt(receipt_name.length - 1) == ' ') {
+    //     receipt_name = receipt_name.slice(0, -1);
+    //   }
+    //   receipt_names.push(receipt_name);
+    // }
   }
+  console.log(receipt_names)
 
   for (let receipt_name of receipt_names) {
     final_food_items.push(search(receipt_name));
