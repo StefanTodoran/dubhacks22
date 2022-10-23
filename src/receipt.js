@@ -28,7 +28,9 @@ async function loadAndProcessImageCanvas(img_element) {
     let context = canvas.getContext('2d');
     
     //context.filter = 'grayscale(1)';
-    if (window.screen.width < window.screen.height && height < width) {
+    //document.getElementById('textbox').innerText = window.screen.width + ' ' + window.screen.height + ' ' + height + ' ' + width;
+    //if (window.screen.width < window.screen.height && height > width) {
+    if (['iPad', 'iPhone', 'iPod'].includes(navigator.platform)) {
         width = imageBitmap.height;
         height = imageBitmap.width;
         

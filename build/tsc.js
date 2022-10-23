@@ -145,6 +145,7 @@ function init() {
         }
     });
 }
+var MAX_RECIPES = 5;
 function displayRecipes(recipe_items, message) {
     if (message === void 0) { message = "Your Recipes"; }
     var container = document.getElementById('recipes');
@@ -167,7 +168,7 @@ function displayRecipes(recipe_items, message) {
         for (var j = 0; j <= Math.min(10, item.utilized.length); j++) {
             if (item.utilized[j]) {
                 utilized += item.utilized[j].toLowerCase();
-                if (j < Math.min(10, item.utilized.length)) {
+                if (j < Math.min(item.utilized.length, MAX_RECIPES)) {
                     utilized += ", ";
                 }
             }
@@ -558,7 +559,7 @@ function loadAndProcessImageCanvas(img_element) {
                     height = imageBitmap.height;
                     canvas = document.createElement('canvas');
                     context = canvas.getContext('2d');
-                    if (window.screen.width < window.screen.height && height < width) {
+                    if (['iPad', 'iPhone', 'iPod'].includes(navigator.platform)) {
                         width = imageBitmap.height;
                         height = imageBitmap.width;
                         canvas.width = width;
