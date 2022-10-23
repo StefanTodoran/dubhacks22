@@ -16,7 +16,7 @@ function init() {
     { name: "Broccoli", raw: "BRCLI", group: "vegetable", fridge: 5, pantry: 2 },
     { name: "Jam", raw: "JAM", on_open_fridge: 365 },
     { name: "Bread", raw: "BREAD", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
-    { name: "Milk", raw: "MILK", group: "dairy", fridge: 7 },
+    { name: "Milk", raw: "MILK", group: "dairy", on_open_fridge: 1, fridge: 7 },
   ];
 
   displayItems(examples);
@@ -73,7 +73,6 @@ function displayItems(items: FoodItem[]) {
   
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
-    console.log(item);
     // @ts-ignore
     const node: HTMLElement = template.cloneNode(true);
 
@@ -81,7 +80,6 @@ function displayItems(items: FoodItem[]) {
     node.id = "";
     node.querySelector('h2').textContent = item.name;
     node.querySelector('h3').textContent = '(' + item.raw + ')';
-    console.log(node.querySelector('h3'));
     if (item.group) {
       node.classList.add(item.group);
     }
@@ -112,14 +110,18 @@ function displayItems(items: FoodItem[]) {
  * @returns A boolean that is true if the duration bar is visible and false otherwise
  */
 function addDuration(node: HTMLElement, type: string, duration: number) {
-  const indicator: HTMLElement = node.querySelector("." + type);
-  console.log(node, type, duration);
-
+  const indicator: HTMLElement = node.querySelector("." + type); //.food-duration.{some type}
   if (duration) {
     const length = (duration ** 0.5).toString();
     indicator.style.setProperty('--length', length);
-    const display_duration = nbsp(quoted(duration.toString() + ' days'));
+    const raw_text = (duration > 1) ? duration.toString() + ' days' : duration.toString() + ' day';
+    const display_duration = nbsp(quoted(raw_text));
     indicator.style.setProperty('--days', display_duration);
+
+    if (duration < 7) {
+      indicator.classList.add('short-duration');
+    } 
+
     return true;
   } else {
     node.querySelector('.food-duration-container').removeChild(indicator);

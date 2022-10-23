@@ -253,9 +253,16 @@ p {
   color: white;
   content: var(--days);
   position: absolute;
+  top: 0;
   right: 1em;
   transform: translate(var(--offset), calc(25% - var(--offset)));
 }
+
+.food-duration.short-duration::after {
+  color: var(--color);
+  transform: translate(calc(150% + var(--offset)), calc(25% - var(--offset)));
+}
+
 .food-duration::before {
   transform: translate(-100%, calc(-1 * var(--offset)));
 }
@@ -345,7 +352,7 @@ a:hover {
   }
 
   .food-duration {
-    width: min(calc(var(--length) * 20%), 100%);
+    /* width: min(calc(var(--length) * 15%), 100%); */
   }
 
   .food-item {
