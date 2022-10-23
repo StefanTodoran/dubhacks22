@@ -11,6 +11,7 @@ function setupCamera() : string {
     
     document.getElementById('textbox').innerText = 'adding event listener';
     imageInp.addEventListener('change', async (event: any) => {
+        console.log('hi');
         document.getElementById('textbox').innerText = 'in event listere';
         let files = event.target.files;
         if (files.length > 0) {

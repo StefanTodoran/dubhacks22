@@ -49,6 +49,7 @@ function setupCamera() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    console.log('hi');
                     document.getElementById('textbox').innerText = 'in event listere';
                     files = event.target.files;
                     if (!(files.length > 0)) return [3, 2];
