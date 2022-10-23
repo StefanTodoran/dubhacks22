@@ -21,6 +21,11 @@ async function loadAndProcessImageCanvas(img_element) {
 
     let width = imageBitmap.width;
     let height = imageBitmap.height;
+
+    if (width > 3000 || height > 3000) {
+        width = Math.floor(width*0.75);
+        height = Math.floor(height*0.75);
+    }
     
     let canvas = document.createElement('canvas');
     
@@ -31,8 +36,9 @@ async function loadAndProcessImageCanvas(img_element) {
     //document.getElementById('textbox').innerText = window.screen.width + ' ' + window.screen.height + ' ' + height + ' ' + width;
     //if (window.screen.width < window.screen.height && height > width) {
     if (['iPad', 'iPhone', 'iPod'].includes(navigator.platform)) {
-        width = imageBitmap.height;
-        height = imageBitmap.width;
+        let tmp = width;
+        width = height;
+        height = tmp;
         
         canvas.width = width;
         canvas.height = height;
@@ -40,7 +46,7 @@ async function loadAndProcessImageCanvas(img_element) {
         context.save();
         context.translate(width/2, height/2);
         context.rotate(90*Math.PI/180);
-        context.drawImage(imageBitmap, -imageBitmap.width/2, -imageBitmap.height/2);
+        context.drawImage(imageBitmap, -height/2, -width/2, height, width);
         context.restore();
     } else {
         canvas.width = width;
