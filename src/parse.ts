@@ -5,7 +5,8 @@ interface FoodItem {
   pantry?: number,
   fridge?: number,
   freezer?: number,
-  on_open?: number,
+  on_open_fridge?: number,
+  on_open_pantry?: number,
   
   group?: string, // food type 
   tip?: string,
@@ -24,15 +25,16 @@ function get_days(max_time: number, metric: string) {
   
   if (JSON.stringify(metric).includes("Days")) {
     return max_time;
-  } else if (JSON.stringify(metric).includes("Weeks")) {
+  } else if (JSON.stringify(metric).includes("Week")) {
     return max_time * 7;
-  } else if (JSON.stringify(metric).includes("Months")) {
+  } else if (JSON.stringify(metric).includes("Month")) {
     return max_time * 30;
-  } else if (JSON.stringify(metric).includes("Years")) {
+  } else if (JSON.stringify(metric).includes("Year")) {
     return max_time * 365;
-  } else if (JSON.stringify(metric).includes("Hours")) {
+  } else if (JSON.stringify(metric).includes("Hour")) {
     return 1; // someone will know if the food is bad if it only lasts hours
   } else {
+    console.log(metric)
     console.log("this should never be called!");
   }
 }
@@ -76,20 +78,27 @@ function process_food_data(food_data: any) {
     } else if (food_entry[10] && !JSON.stringify(food_entry[10]).includes(null)) {
       food_item.pantry = get_days(food_entry[10]["DOP_Pantry_Max"], food_entry[11]);
     }
+    if (food_entry[14] && !JSON.stringify(food_entry[14]).includes(null)) {
+      food_item.on_open_pantry = get_days(food_entry[14]["Pantry_After_Opening_Max"], food_entry[15]);
+    }
     if (food_entry[17] && !JSON.stringify(food_entry[17]).includes(null)) {
       food_item.fridge = get_days(food_entry[17]["Refrigerate_Max"], food_entry[18]);
     } else if (food_entry[21] && !JSON.stringify(food_entry[21]).includes(null)) {
       food_item.fridge = get_days(food_entry[21]["DOP_Refrigerate_Max"], food_entry[22]);
+    }
+    if (food_entry[25] && !JSON.stringify(food_entry[25]).includes(null)) {
+      food_item.on_open_fridge = get_days(food_entry[25]["Refrigerate_After_Opening_Max"], food_entry[26]);
     }
     if (food_entry[31] && !JSON.stringify(food_entry[31]).includes(null)) {
       food_item.freezer = get_days(food_entry[31]["Freeze_Max"], food_entry[32]);
     } else if (food_entry[35] && !JSON.stringify(food_entry[35]).includes(null)) {
       food_item.freezer = get_days(food_entry[35]["DOP_Freeze_Max"], food_entry[36]);
     }
-    if (!food_item.pantry && !food_item.fridge && !food_item.freezer) {
+    if (!food_item.pantry && !food_item.fridge && !food_item.freezer &&
+        !food_item.on_open_pantry && !food_item.on_open_fridge) {
       console.log("This item doesn't have storage info")
       continue;
-    }         
+    }    
 
     let keywords_string: string = food_entry[4]["Keywords"];
     if (!keywords_string || keywords_string == '') {
