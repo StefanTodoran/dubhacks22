@@ -383,7 +383,7 @@ function process_food_data(food_data, raw_receipt) {
     process_receipt(raw_receipt);
 }
 var INSERTION_COST = 1;
-var DELETION_COST = 4;
+var DELETION_COST = 3;
 function reconstruction_cost(receipt_name, keyword) {
     var dp = [];
     for (var i = 0; i < receipt_name.length + 1; i++) {
@@ -444,7 +444,7 @@ function is_letter(char) {
 function is_number(char) {
     return !isNaN(parseInt(char, 10));
 }
-var MAX_COST = 1.05;
+var MAX_COST = 1;
 function process_receipt(receipt) {
     var receipt_lines = receipt.toLowerCase().split('\n');
     var receipt_names = [];
@@ -512,7 +512,7 @@ function visImageCan(image) {
 }
 function loadAndProcessImageCanvas(img_element) {
     return __awaiter(this, void 0, void 0, function () {
-        var debugImage, debugImage2, debug, imageBitmap, width, height, canvas, context, image, i, average, scale, tmpBitmap, radius, x, y, blurred, maskimage, i, thresh, val, data;
+        var debugImage, debugImage2, debug, imageBitmap, width, height, canvas, context, tmp, image, i, average, scale, tmpBitmap, radius, x, y, blurred, maskimage, i, thresh, val, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -524,17 +524,22 @@ function loadAndProcessImageCanvas(img_element) {
                     imageBitmap = _a.sent();
                     width = imageBitmap.width;
                     height = imageBitmap.height;
+                    if (width > 3000 || height > 3000) {
+                        width = Math.floor(width * 0.75);
+                        height = Math.floor(height * 0.75);
+                    }
                     canvas = document.createElement('canvas');
                     context = canvas.getContext('2d');
                     if (['iPad', 'iPhone', 'iPod'].includes(navigator.platform)) {
-                        width = imageBitmap.height;
-                        height = imageBitmap.width;
+                        tmp = width;
+                        width = height;
+                        height = tmp;
                         canvas.width = width;
                         canvas.height = height;
                         context.save();
                         context.translate(width / 2, height / 2);
                         context.rotate(90 * Math.PI / 180);
-                        context.drawImage(imageBitmap, -imageBitmap.width / 2, -imageBitmap.height / 2);
+                        context.drawImage(imageBitmap, -height / 2, -width / 2, height, width);
                         context.restore();
                     }
                     else {
