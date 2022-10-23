@@ -104,22 +104,21 @@ async function loadAndProcessImage(img_element) {
     //console.log('compied back');
     image = maskimage
     visImage(debugImage2, image);
-    return image
+    //return image
     
     console.log(image);
     let processedBuffer = await image.getBufferAsync('image/png');
-    visImage(debugImage2, image);
     //debugImage.src = await image.getBase64Async('image/png');
     return processedBuffer;
 }
 
 
 async function parseReceipt(img_element, logger) {
-    let image = await loadAndProcessImage(img_element);
-    let imagedata = new ImageData(new Uint8ClampedArray(image.bitmap.data.buffer), image.bitmap.width, image.bitmap.height);
+    //let image = await loadAndProcessImage(img_element);
+    //let imagedata = new ImageData(new Uint8ClampedArray(image.bitmap.data.buffer), image.bitmap.width, image.bitmap.height);
 
-    const text = OCRAD(imagedata);
-    return {text: text};
+    //const text = OCRAD(imagedata);
+    //return {text: text};
     
     let processedBuffer = await loadAndProcessImage(img_element);
     

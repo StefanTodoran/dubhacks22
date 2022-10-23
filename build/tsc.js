@@ -36,16 +36,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 function setupCamera() {
     var _this = this;
+    document.getElementById('textbox').innerText = 'sjkdkfsdlfsd';
     var imageInp = document.getElementById('camera-inp');
     var textbox = document.getElementById('textbox');
     var textboxLogger = function (status) {
         textbox.innerText = "Loading... " + status.status + "   " + status.progress;
     };
+    document.getElementById('textbox').innerText = 'adding event listener';
     imageInp.addEventListener('change', function (event) { return __awaiter(_this, void 0, void 0, function () {
         var files, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    document.getElementById('textbox').innerText = 'in event listere';
                     files = event.target.files;
                     if (!(files.length > 0)) return [3, 2];
                     textbox.innerText = 'Loading...';
@@ -58,6 +61,41 @@ function setupCamera() {
             }
         });
     }); });
+}
+var wasmInstance;
+var memory;
+var curMemIndex = 0;
+var processImage;
+function loadWasm(expectedMem) {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, bytes, instance;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4, fetch('wasm/image.wasm')];
+                case 1:
+                    response = _a.sent();
+                    return [4, response.arrayBuffer()];
+                case 2:
+                    bytes = _a.sent();
+                    return [4, WebAssembly.instantiate(bytes)];
+                case 3:
+                    instance = (_a.sent()).instance;
+                    wasmInstance = instance;
+                    memory = instance.exports.memory;
+                    processImage = instance.exports.processImage;
+                    while (memory.buffer.byteLength < expectedMem) {
+                        memory.grow(1);
+                    }
+                    return [2];
+            }
+        });
+    });
+}
+function allocImage(neededMemory) {
+    var newarr = new Uint8Array(memory.buffer, curMemIndex, neededMemory);
+    var prevIndex = curMemIndex;
+    curMemIndex += neededMemory;
+    return { image: newarr, handle: prevIndex };
 }
 window.addEventListener('load', init);
 function init() {
@@ -348,30 +386,88 @@ function process_receipt(receipt) {
         displayItems(final_food_items);
     });
 }
+function visImage(elem, image) {
+    return __awaiter(this, void 0, void 0, function () {
+        var copy, _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    copy = image.clone();
+                    copy.resize(500, 500);
+                    _a = elem;
+                    return [4, copy.getBase64Async('image/png')];
+                case 1:
+                    _a.src = _b.sent();
+                    return [2];
+            }
+        });
+    });
+}
+function loadAndProcessImage(img_element) {
+    return __awaiter(this, void 0, void 0, function () {
+        var debugImage, debugImage2, debugTxt, image, _a, _b, imageBytes, blurred, maskimage, width, height, i, thresh, val, processedBuffer;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    debugImage = document.getElementById('debug-img');
+                    debugImage2 = document.getElementById('debug-img2');
+                    debugTxt = document.getElementById('textbox');
+                    debugTxt.innerText = "starting";
+                    _b = (_a = Jimp).read;
+                    return [4, img_element.arrayBuffer()];
+                case 1: return [4, _b.apply(_a, [_c.sent()])];
+                case 2:
+                    image = _c.sent();
+                    debugTxt.innerText = "read the image in";
+                    imageBytes = image.bitmap.data.byteLength;
+                    console.log('read in image');
+                    blurred = image.clone();
+                    blurred.blur(100);
+                    debugTxt.innerText = "blurred";
+                    maskimage = image.clone();
+                    width = image.bitmap.width;
+                    height = image.bitmap.height;
+                    for (i = 0; i < width * height; i++) {
+                        thresh = blurred.bitmap.data[i * 4] - 20;
+                        val = 255 * (thresh < image.bitmap.data[i * 4]);
+                        maskimage.bitmap.data[i * 4 + 0] = val;
+                        maskimage.bitmap.data[i * 4 + 1] = val;
+                        maskimage.bitmap.data[i * 4 + 2] = val;
+                        maskimage.bitmap.data[i * 4 + 3] = 255;
+                    }
+                    debugTxt.innerText = "done";
+                    image = maskimage;
+                    visImage(debugImage2, image);
+                    console.log(image);
+                    return [4, image.getBufferAsync('image/png')];
+                case 3:
+                    processedBuffer = _c.sent();
+                    return [2, processedBuffer];
+            }
+        });
+    });
+}
 function parseReceipt(img_element, logger) {
     return __awaiter(this, void 0, void 0, function () {
-        var worker, data;
+        var processedBuffer, worker, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
+                case 0: return [4, loadAndProcessImage(img_element)];
+                case 1:
+                    processedBuffer = _a.sent();
                     worker = Tesseract.createWorker({
                         logger: logger
                     });
                     return [4, worker.load()];
-                case 1:
-                    _a.sent();
-                    return [4, worker.loadLanguage('eng')];
                 case 2:
                     _a.sent();
-                    return [4, worker.initialize('eng')];
+                    return [4, worker.loadLanguage('eng')];
                 case 3:
                     _a.sent();
-                    return [4, worker.setParameters({
-                            tessedit_char_whitelist: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
-                        })];
+                    return [4, worker.initialize('eng')];
                 case 4:
                     _a.sent();
-                    return [4, worker.recognize(img_element)];
+                    return [4, worker.recognize(processedBuffer)];
                 case 5:
                     data = _a.sent();
                     console.log(data);
