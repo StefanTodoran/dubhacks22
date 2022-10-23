@@ -37,19 +37,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 function setupCamera() {
     var _this = this;
     document.getElementById('textbox').innerText = 'sjkdkfsdlfsd';
-    var imageInp = document.getElementById('camera-inp');
+    var imageInps = document.querySelectorAll('.camera-inp');
     var textbox = document.getElementById('textbox');
     var textboxLogger = function (status) {
         textbox.classList.remove('hidden');
         textbox.innerText = "Loading... " + status.status + "   " + status.progress;
     };
     document.getElementById('textbox').innerText = 'adding event listener';
-    imageInp.addEventListener('change', function (event) { return __awaiter(_this, void 0, void 0, function () {
+    var on_click = function (event) { return __awaiter(_this, void 0, void 0, function () {
         var files, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    console.log('hi');
                     document.getElementById('textbox').innerText = 'in event listere';
                     files = event.target.files;
                     if (!(files.length > 0)) return [3, 2];
@@ -63,43 +62,11 @@ function setupCamera() {
                 case 2: return [2];
             }
         });
-    }); });
+    }); };
+    for (var i = 0; i < imageInps.length; i++) {
+        imageInps[i].addEventListener('change', on_click);
+    }
     return null;
-}
-var wasmInstance;
-var memory;
-var curMemIndex = 0;
-var processImage;
-function loadWasm(expectedMem) {
-    return __awaiter(this, void 0, void 0, function () {
-        var response, bytes, instance;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4, fetch('wasm/image.wasm')];
-                case 1:
-                    response = _a.sent();
-                    return [4, response.arrayBuffer()];
-                case 2:
-                    bytes = _a.sent();
-                    return [4, WebAssembly.instantiate(bytes)];
-                case 3:
-                    instance = (_a.sent()).instance;
-                    wasmInstance = instance;
-                    memory = instance.exports.memory;
-                    processImage = instance.exports.processImage;
-                    while (memory.buffer.byteLength < expectedMem) {
-                        memory.grow(1);
-                    }
-                    return [2];
-            }
-        });
-    });
-}
-function allocImage(neededMemory) {
-    var newarr = new Uint8Array(memory.buffer, curMemIndex, neededMemory);
-    var prevIndex = curMemIndex;
-    curMemIndex += neededMemory;
-    return { image: newarr, handle: prevIndex };
 }
 window.addEventListener('load', init);
 function init() {
@@ -274,7 +241,6 @@ function nbsp(string) {
 function quoted(string) {
     return '"' + string + '"';
 }
-var RECEIPT = "\nSee back of rece jour chance\nto win 1000 154 ERTvikEa0G\ng Walmart 3i\n118511102 Mar JAHIE BRODKSHIRE\nBBgRs yfanEMQDMI gs\nST8 05483 00y 00000 R 009 e 06976\nTATER TOTS 001312000026 F 2.36 0\nHARD/PROV/DC 007874219410 F 2.68 0\nSNACK BARS 002190848816 F 4.98 T\nHRI CL CHS 003120806000 F 6.88 0\nHRI CL CHS 003120806000 F 6.88 0\nHRI CL CHS 003120806000 F 6.88 0\n** VOIDED ENTRY**\nHRT CL CHS 003120506000 F 58.80\nHRI 12 U SG 003120836000 F 6.88 0\nHRI CL PEP 003120807000 F 5.88 0\nEARBUDS 068113100946 488 X\nSC BCN CHDDR 007874202906 F 6.98 0\nABF THINBRST 022461710972 F 97.20\nPOTATO 007874219410 F 26.80\nDV RSE OTL W 001111101220 i\nAPPLE 3 BAG 0B4747300184 F 6.47 N\nSTOK LT SUT 004127102774 F 4.42 T J\nPEANUT BUTTR 005160026499 F 6.44 0 1\nAVO VERDE 061611206143 F 2.98 N\nROLLS P o BT 18\nBAGELS 001376402801 F 41.86 0\nGV SLTDERS 007874201525 2.98 X\nACCESSORY 007616161216 01.97 X\nCHEEZE IT 002410063623 F 40.00\nUAS 459 YOU SAVED 054\nRITZ 004400088210 F 2.78 N\nRUFFLES 002840020942 F 2.50 N\nGV HNY GRNS 007874207263 F 1.28 N\nSUBTOTAL 13944\nTAX 1 7000 458\nTOTAL 14402\nCASH TEND 16002\nCHANGE DUE 600\nITENS SOLD 26\nTCH ovrs EGTF 107z ij gfsa 5\nMM\no\nAU T\n04727719 1216946\nScan with Walnart ap to save recelpts\nmiE\ni\nmE\n";
 var keywords_to_food_items = [];
 var final_food_items = [];
 function parse_data(raw_receipt) {
@@ -492,13 +458,9 @@ function process_receipt(receipt) {
             food_item.raw = receipt_name;
         }
     }
-    var scan_btns = document.querySelectorAll('.scan-btn');
-    for (var i = 0; i < scan_btns.length; i++) {
-        scan_btns[i].addEventListener('click', function () {
-            displayFoodItems(final_food_items);
-            queryRecipes(final_food_items);
-        });
-    }
+    displayFoodItems(final_food_items);
+    queryRecipes(final_food_items);
+    console.log(final_food_items);
 }
 function visImage(elem, image) {
     return __awaiter(this, void 0, void 0, function () {
