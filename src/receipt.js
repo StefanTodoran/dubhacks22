@@ -28,7 +28,7 @@ async function loadAndProcessImageCanvas(img_element) {
     let context = canvas.getContext('2d');
     
     //context.filter = 'grayscale(1)';
-    if (window.screen.width < window.screen.height && window.screen.width < 1000) {
+    if (window.screen.width < window.screen.height && height < width) {
         width = imageBitmap.height;
         height = imageBitmap.width;
         

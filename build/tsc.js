@@ -81,6 +81,41 @@ function setupCamera() {
     }
     return null;
 }
+var wasmInstance;
+var memory;
+var curMemIndex = 0;
+var processImage;
+function loadWasm(expectedMem) {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, bytes, instance;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4, fetch('wasm/image.wasm')];
+                case 1:
+                    response = _a.sent();
+                    return [4, response.arrayBuffer()];
+                case 2:
+                    bytes = _a.sent();
+                    return [4, WebAssembly.instantiate(bytes)];
+                case 3:
+                    instance = (_a.sent()).instance;
+                    wasmInstance = instance;
+                    memory = instance.exports.memory;
+                    processImage = instance.exports.processImage;
+                    while (memory.buffer.byteLength < expectedMem) {
+                        memory.grow(1);
+                    }
+                    return [2];
+            }
+        });
+    });
+}
+function allocImage(neededMemory) {
+    var newarr = new Uint8Array(memory.buffer, curMemIndex, neededMemory);
+    var prevIndex = curMemIndex;
+    curMemIndex += neededMemory;
+    return { image: newarr, handle: prevIndex };
+}
 window.addEventListener('load', init);
 function init() {
     var examples = [
@@ -441,13 +476,13 @@ function is_letter(char) {
 function is_number(char) {
     return !isNaN(parseInt(char, 10));
 }
-var MAX_COST = 1;
+var MAX_COST = 1.05;
 function process_receipt(receipt) {
     var receipt_lines = receipt.toLowerCase().split('\n');
     var receipt_names = [];
     for (var _i = 0, receipt_lines_1 = receipt_lines; _i < receipt_lines_1.length; _i++) {
         var receipt_line = receipt_lines_1[_i];
-        if (receipt_line.includes("SUBTOTAL")) {
+        if (receipt_line.includes("total")) {
             break;
         }
         var re = new RegExp("(^.*[0-9]{1,2}[.][0-9]{2}|^.*[0-9]{1,2}[\s][0-9]{2})");
@@ -457,9 +492,13 @@ function process_receipt(receipt) {
             receipt_line = receipt_line.slice(0, re_result.index);
             receipt_line = receipt_line.replace(/[^a-zA-Z, \s]/g, '');
             receipt_line = receipt_line.replace(/(\s.\s|\s.$|^.\s)/g, '');
+            if (receipt_line == '') {
+                continue;
+            }
             receipt_names.push(receipt_line.trim());
         }
     }
+    console.log(receipt_names);
     for (var _a = 0, receipt_names_1 = receipt_names; _a < receipt_names_1.length; _a++) {
         var receipt_name = receipt_names_1[_a];
         var _b = search(receipt_name), food_item = _b[0], cost = _b[1];
@@ -479,98 +518,28 @@ function process_receipt(receipt) {
     displayFoodItems(final_food_items);
     queryRecipes(final_food_items);
 }
-function visImage(elem, image) {
-    return __awaiter(this, void 0, void 0, function () {
-        var copy, _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    copy = image.clone();
-                    copy.resize(500, 500);
-                    _a = elem;
-                    return [4, copy.getBase64Async('image/png')];
-                case 1:
-                    _a.src = _b.sent();
-                    return [2];
-            }
-        });
-    });
-}
+var debugImages = false;
 function visImageCan(image) {
     return __awaiter(this, void 0, void 0, function () {
         var can, context, _a, _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
+                    if (!debugImages) return [3, 2];
                     can = document.createElement('canvas');
-                    can.width = 800;
-                    can.height = 800;
+                    can.width = 600;
+                    can.height = image.height * can.width / image.width;
                     context = can.getContext('2d');
                     _b = (_a = context).drawImage;
                     return [4, createImageBitmap(image)];
                 case 1:
                     _b.apply(_a, [_c.sent(), 0, 0, can.width, can.height]);
                     document.body.appendChild(can);
-                    return [2];
+                    _c.label = 2;
+                case 2: return [2];
             }
         });
     });
-}
-function loadAndProcessImage(img_element) {
-    return __awaiter(this, void 0, void 0, function () {
-        var debugImage, debugImage2, debug, image, _a, _b, imageBytes, blurred, maskimage, width, height, i, thresh, val, processedBuffer;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
-                case 0:
-                    debugImage = document.getElementById('debug-img');
-                    debugImage2 = document.getElementById('debug-img2');
-                    debug = document.getElementById('loader');
-                    _b = (_a = Jimp).read;
-                    return [4, img_element.arrayBuffer()];
-                case 1: return [4, _b.apply(_a, [_c.sent()])];
-                case 2:
-                    image = _c.sent();
-                    imageBytes = image.bitmap.data.byteLength;
-                    console.log('read in image');
-                    image.greyscale();
-                    blurred = image.clone();
-                    blurred.blur(100);
-                    visImage(debugImage, blurred);
-                    maskimage = image.clone();
-                    width = image.bitmap.width;
-                    height = image.bitmap.height;
-                    for (i = 0; i < width * height; i++) {
-                        thresh = blurred.bitmap.data[i * 4] - 20;
-                        val = 255 * (thresh < image.bitmap.data[i * 4]);
-                        maskimage.bitmap.data[i * 4 + 0] = val;
-                        maskimage.bitmap.data[i * 4 + 1] = val;
-                        maskimage.bitmap.data[i * 4 + 2] = val;
-                        maskimage.bitmap.data[i * 4 + 3] = 255;
-                    }
-                    image = maskimage;
-                    visImage(debugImage2, image);
-                    return [2, image];
-                case 3:
-                    processedBuffer = _c.sent();
-                    visImage(debugImage2, image);
-                    return [2, processedBuffer];
-            }
-        });
-    });
-}
-function rotateImage(image) {
-    var width = image.width;
-    var height = image.height;
-    var newImage = new ImageData(height, width);
-    for (var x = 0; x < width; x++) {
-        for (var y = 0; y < height; y++) {
-            newImage.data[(y * width + x) * 4 + 0] = image.data[(x * height + y) * 4 + 0];
-            newImage.data[(y * width + x) * 4 + 1] = image.data[(x * height + y) * 4 + 1];
-            newImage.data[(y * width + x) * 4 + 2] = image.data[(x * height + y) * 4 + 2];
-            newImage.data[(y * width + x) * 4 + 3] = image.data[(x * height + y) * 4 + 3];
-        }
-    }
-    return newImage;
 }
 function loadAndProcessImageCanvas(img_element) {
     return __awaiter(this, void 0, void 0, function () {
@@ -588,7 +557,7 @@ function loadAndProcessImageCanvas(img_element) {
                     height = imageBitmap.height;
                     canvas = document.createElement('canvas');
                     context = canvas.getContext('2d');
-                    if (window.screen.width < window.screen.height && window.screen.width < 1000) {
+                    if (window.screen.width < window.screen.height && height < width) {
                         width = imageBitmap.height;
                         height = imageBitmap.width;
                         canvas.width = width;
@@ -613,6 +582,7 @@ function loadAndProcessImageCanvas(img_element) {
                         image.data[i * 4 + 2] = average;
                         image.data[i * 4 + 3] = 255;
                     }
+                    visImageCan(image);
                     scale = 64;
                     return [4, createImageBitmap(image)];
                 case 2:
@@ -639,6 +609,7 @@ function loadAndProcessImageCanvas(img_element) {
                     context.drawImage(tmpBitmap, 0, 0, width, height);
                     delete tmpBitmap;
                     blurred = context.getImageData(0, 0, width, height);
+                    visImageCan(blurred);
                     maskimage = new ImageData(width, height);
                     for (i = 0; i < width * height; i++) {
                         thresh = blurred.data[i * 4] - 50;
@@ -648,6 +619,7 @@ function loadAndProcessImageCanvas(img_element) {
                         maskimage.data[i * 4 + 2] = val;
                         maskimage.data[i * 4 + 3] = 255;
                     }
+                    visImageCan(maskimage);
                     return [4, createImageBitmap(maskimage)];
                 case 5:
                     tmpBitmap = _a.sent();
