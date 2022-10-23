@@ -23,7 +23,7 @@ fetch('data/foodkeeper.json', {mode: 'no-cors'})
 function get_days(max_time: number, metric: string) {
   //console.log(metric);
   
-  if (JSON.stringify(metric).includes("Days")) {
+  if (JSON.stringify(metric).includes("Day")) {
     return max_time;
   } else if (JSON.stringify(metric).includes("Week")) {
     return max_time * 7;
