@@ -428,6 +428,7 @@ function is_number(char) {
 var MAX_COST = 1;
 function process_receipt(receipt) {
     var receipt_lines = receipt.toLowerCase().split('\n');
+    console.log(receipt_lines);
     var receipt_names = [];
     for (var _i = 0, receipt_lines_1 = receipt_lines; _i < receipt_lines_1.length; _i++) {
         var receipt_line = receipt_lines_1[_i];
@@ -444,6 +445,7 @@ function process_receipt(receipt) {
     }
     for (var _a = 0, receipt_names_1 = receipt_names; _a < receipt_names_1.length; _a++) {
         var receipt_name = receipt_names_1[_a];
+        console.log(receipt_name);
         var _b = search(receipt_name), food_item = _b[0], cost = _b[1];
         if (cost > MAX_COST) {
             continue;
