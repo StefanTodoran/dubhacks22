@@ -26,20 +26,20 @@ function init() {
   displayItems(examples);
   setupCamera();
 
-  const container = document.getElementById('visualizer');
-  const template = document.getElementById('template');
-  const text = document.createElement('h2');
-  text.innerText = "Example Data Visualization:";
-  text.style.textAlign = "center";
-  container.insertBefore(text, template);
-}
+    const container = document.getElementById('visualizer');
+    const template = document.getElementById('template');
+    const text = document.createElement('h2');
+    text.innerText = "Example Data Visualization:";
+    text.style.textAlign = "center";
+    container.insertBefore(text, template);
+  }
 
-interface RecipeItem {
-  title: string,
-  utilized: FoodItem[], // specific food items user used in this recipe
-  categories: string[], // food categories present in this recipe
-  time: number, // time to make in hours
-}
+  interface RecipeItem {
+    title: string,
+    utilized: FoodItem[], // specific food items user used in this recipe
+    categories: string[], // food categories present in this recipe
+    time: number, // time to make in hours
+  }
 
 function displayRecipes(items: RecipeItem[]) {
   console.log("Not Yet Implemented!");
@@ -85,6 +85,7 @@ function displayItems(items: FoodItem[]) {
     if (item.group) {
       node.classList.add(item.group);
     }
+
 
     let has_double = false;
 
