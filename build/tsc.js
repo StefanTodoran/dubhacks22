@@ -38,9 +38,10 @@ function setupCamera() {
     var _this = this;
     var imageInps = document.querySelectorAll('.camera-inp');
     var loader = document.getElementById('loader');
+    var loader_txt = document.getElementById('loader-text');
     var scan_btns = document.querySelectorAll('.scan-btn');
     var loaderProgress = function (status) {
-        loader.style.setProperty('--status', quoted(nbsp(status.status + '...')));
+        loader_txt.textContent = nbsp(status.status + '...');
         loader.style.setProperty('--progress', status.progress);
         if (status.status === 'recognizing text' && status.progress === 1) {
             for (var i = 0; i < scan_btns.length; i++) {
@@ -50,7 +51,7 @@ function setupCamera() {
         }
     };
     var on_click = function (event) { return __awaiter(_this, void 0, void 0, function () {
-        var i, files, data;
+        var i, y, files, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -58,6 +59,8 @@ function setupCamera() {
                         scan_btns[i].classList.add('hidden');
                     }
                     loader.classList.remove('hidden');
+                    y = loader.getBoundingClientRect().top + window.pageYOffset + -35;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
                     files = event.target.files;
                     if (!(files.length > 0)) return [3, 2];
                     return [4, parseReceipt(files[0], loaderProgress)];

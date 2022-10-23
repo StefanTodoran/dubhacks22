@@ -21,11 +21,10 @@ body {
 }
 #loader-text {
   color: var(--main-color);
-  content: var(--status);
   position: absolute;
   top: 0;
   left: 50%;
-  transform: translate(-50%, -100%);
+  transform: translate(-50%, -200%);
 }
 
 .row {
