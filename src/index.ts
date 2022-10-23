@@ -20,7 +20,9 @@ function init() {
   ];
 
   displayFoodItems(examples, "Example Data Visualization");
-  setupCamera();
+  let receipt_raw_text = setupCamera();
+
+  parse_data(receipt_raw_text);
 
   const show_more = document.getElementById('show-more-btn');
   const demo = document.getElementById('demo');

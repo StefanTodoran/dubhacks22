@@ -1,5 +1,5 @@
 
-function setupCamera() {
+function setupCamera() : string {
     document.getElementById('textbox').innerText = 'sjkdkfsdlfsd';
     const imageInp = document.getElementById('camera-inp');
     const textbox = document.getElementById('textbox');
@@ -17,7 +17,9 @@ function setupCamera() {
             textbox.innerText = 'Loading...';
             let data = await parseReceipt(files[0], textboxLogger);
             textbox.innerText = data.text;
+            return data.text;
         }
     });
+    return null;
 }
 
