@@ -37,6 +37,24 @@ function get_days(max_time: number, metric: string) {
   }
 }
 
+function get_category(category_id_object: any) {
+  let category_id = category_id_object["Category_ID"];
+
+  if ((category_id >= 10 && category_id <= 17) || (category_id >= 20 && category_id <= 22)) {
+    return "meat"
+  } else if (category_id == 19 || category_id == 24) {
+    return "vegetable"
+  } else if (category_id == 19) {
+    return "fruit"
+  } else if ((category_id >= 2 && category_id <= 4) || category_id == 9) {
+    return "grains"
+  } else if (category_id == 7) {
+    return "dairy"
+  } else {
+    return "default"
+  }
+}
+
 function process_food_data(food_data: any) {
   // let food = JSON.parse(JSON.stringify(food_entry))
   // console.log("-------------------")
@@ -47,6 +65,11 @@ function process_food_data(food_data: any) {
     // find expiration by iterating through storage types for 1st non-null
     let food_name: string = food_entry[2]["Name"];
     let food_item: FoodItem = {name: food_name};
+
+    let food_category: string = get_category(food_entry[1]);
+    if (food_category != "default") {
+      food_item.group = food_category;
+    }
 
     if (food_entry[6] && !JSON.stringify(food_entry[6]).includes(null)) {
       food_item.pantry = get_days(food_entry[6]["Pantry_Max"], food_entry[7]);
@@ -76,6 +99,7 @@ function process_food_data(food_data: any) {
       keywords_to_food_items.push([keywords_string.split(','), food_item]);
     }
   }
+  console.log(keywords_to_food_items)
 
   console.log(reconstruction_cost("crt", "dips"));
   // search("crt");
