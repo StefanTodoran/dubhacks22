@@ -132,7 +132,7 @@ function process_food_data(food_data: any) {
     let keywords_string: string = food_entry[4]["Keywords"];
     if (!keywords_string || keywords_string == '') {
       // if there are no keywords, use the food item name as a keyword
-      keywords_to_food_items.push([[food_name], food_item]);
+      keywords_to_food_items.push([[food_name.toLowerCase()], food_item]);
     } else {
       keywords_string = keywords_string.split(' ').join('');
       let keywords = keywords_string.split(',');
@@ -150,7 +150,7 @@ function process_food_data(food_data: any) {
 }
 
 var INSERTION_COST = 1;
-var DELETION_COST = 10;
+var DELETION_COST = 4;
 
 function reconstruction_cost(receipt_name: string, keyword: string) {
   let dp: number[][] = [];
@@ -199,10 +199,10 @@ function search(receipt_name: string) {
     }
     let curr_avg_cost = total_over_words / receipt_word_count;
     let name_cost = reconstruction_cost(receipt_name, food_item.name);
-    let weighted_avg_cost = NAME_CONSIDERATION * name_cost + (1 - NAME_CONSIDERATION) * curr_avg_cost;
-    if (weighted_avg_cost < min_cost) {
+    let true_cost = (NAME_CONSIDERATION * name_cost + (1 - NAME_CONSIDERATION) * curr_avg_cost) / receipt_name.length;
+    if (true_cost < min_cost) {
       closest_food_item = food_item; 
-      min_cost = weighted_avg_cost;
+      min_cost = true_cost;
       // closest_keywords = keywords;  // for logging
     }
   }
@@ -223,7 +223,7 @@ function search(receipt_name: string) {
   //   console.log(receipt_word + ": " + min_keyword + " - cost: " + keyword_min_cost);
   // }
 
-  return closest_food_item;
+  return [closest_food_item, min_cost];
 }
 
 function is_letter(char : string) {
@@ -234,8 +234,10 @@ function is_number(char : string) {
   return !isNaN(parseInt(char, 10));
 }
 
+const MAX_COST = 1;
+
 function process_receipt(receipt: string) {
-  let receipt_lines = receipt.split('\n');
+  let receipt_lines = receipt.toLowerCase().split('\n');
   let receipt_names: string[] = [];
   for (let receipt_line of receipt_lines) {
     //let receipt_name = "";
@@ -247,20 +249,24 @@ function process_receipt(receipt: string) {
       receipt_line = receipt_line.replace(/[0-9]/g, '');
       receipt_line = receipt_line.replace(/(\s.\s|\s.$)/g, '');
       receipt_line = receipt_line.replace('.', '');
-      receipt_names.push(receipt_line.trim().toLowerCase());
+      receipt_names.push(receipt_line.trim());
     }
   }
 
   for (let receipt_name of receipt_names) {
-    let closest_food_item = search(receipt_name);
-    if (closest_food_item.raw == "") {
-      closest_food_item.raw = receipt_name;
-      final_food_items.push(closest_food_item);
+    let [food_item, cost] = search(receipt_name);
+    if (cost > MAX_COST) {
+      continue;
     }
-    let prev_cost = reconstruction_cost(closest_food_item.raw, closest_food_item.name);
-    let curr_cost = reconstruction_cost(receipt_name, closest_food_item.name);
+    if (food_item.raw == "") {
+      food_item.raw = receipt_name;
+      final_food_items.push(food_item);
+      // console.log(food_item.name + ", " + food_item.raw + ": " + cost);
+    }
+    let prev_cost = reconstruction_cost(food_item.raw, food_item.name);
+    let curr_cost = reconstruction_cost(receipt_name, food_item.name);
     if (curr_cost < prev_cost) {
-      closest_food_item.raw = receipt_name;
+      food_item.raw = receipt_name;
     }
   }
 

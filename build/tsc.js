@@ -40,6 +40,7 @@ function setupCamera() {
     var imageInp = document.getElementById('camera-inp');
     var textbox = document.getElementById('textbox');
     var textboxLogger = function (status) {
+        textbox.classList.remove('hidden');
         textbox.innerText = "Loading... " + status.status + "   " + status.progress;
     };
     document.getElementById('textbox').innerText = 'adding event listener';
@@ -235,7 +236,7 @@ function process_food_data(food_data) {
         }
         var keywords_string = food_entry[4]["Keywords"];
         if (!keywords_string || keywords_string == '') {
-            keywords_to_food_items.push([[food_name], food_item]);
+            keywords_to_food_items.push([[food_name.toLowerCase()], food_item]);
         }
         else {
             keywords_string = keywords_string.split(' ').join('');
@@ -253,7 +254,7 @@ function process_food_data(food_data) {
     process_receipt(RECEIPT);
 }
 var INSERTION_COST = 1;
-var DELETION_COST = 10;
+var DELETION_COST = 4;
 function reconstruction_cost(receipt_name, keyword) {
     var dp = [];
     for (var i = 0; i < receipt_name.length + 1; i++) {
@@ -300,13 +301,13 @@ function search(receipt_name) {
         }
         var curr_avg_cost = total_over_words / receipt_word_count;
         var name_cost = reconstruction_cost(receipt_name, food_item.name);
-        var weighted_avg_cost = NAME_CONSIDERATION * name_cost + (1 - NAME_CONSIDERATION) * curr_avg_cost;
-        if (weighted_avg_cost < min_cost) {
+        var true_cost = (NAME_CONSIDERATION * name_cost + (1 - NAME_CONSIDERATION) * curr_avg_cost) / receipt_name.length;
+        if (true_cost < min_cost) {
             closest_food_item = food_item;
-            min_cost = weighted_avg_cost;
+            min_cost = true_cost;
         }
     }
-    return closest_food_item;
+    return [closest_food_item, min_cost];
 }
 function is_letter(char) {
     return char.toLowerCase() != char.toUpperCase();
@@ -314,8 +315,9 @@ function is_letter(char) {
 function is_number(char) {
     return !isNaN(parseInt(char, 10));
 }
+var MAX_COST = 1;
 function process_receipt(receipt) {
-    var receipt_lines = receipt.split('\n');
+    var receipt_lines = receipt.toLowerCase().split('\n');
     var receipt_names = [];
     for (var _i = 0, receipt_lines_1 = receipt_lines; _i < receipt_lines_1.length; _i++) {
         var receipt_line = receipt_lines_1[_i];
@@ -327,20 +329,23 @@ function process_receipt(receipt) {
             receipt_line = receipt_line.replace(/[0-9]/g, '');
             receipt_line = receipt_line.replace(/(\s.\s|\s.$)/g, '');
             receipt_line = receipt_line.replace('.', '');
-            receipt_names.push(receipt_line.trim().toLowerCase());
+            receipt_names.push(receipt_line.trim());
         }
     }
     for (var _a = 0, receipt_names_1 = receipt_names; _a < receipt_names_1.length; _a++) {
         var receipt_name = receipt_names_1[_a];
-        var closest_food_item = search(receipt_name);
-        if (closest_food_item.raw == "") {
-            closest_food_item.raw = receipt_name;
-            final_food_items.push(closest_food_item);
+        var _b = search(receipt_name), food_item = _b[0], cost = _b[1];
+        if (cost > MAX_COST) {
+            continue;
         }
-        var prev_cost = reconstruction_cost(closest_food_item.raw, closest_food_item.name);
-        var curr_cost = reconstruction_cost(receipt_name, closest_food_item.name);
+        if (food_item.raw == "") {
+            food_item.raw = receipt_name;
+            final_food_items.push(food_item);
+        }
+        var prev_cost = reconstruction_cost(food_item.raw, food_item.name);
+        var curr_cost = reconstruction_cost(receipt_name, food_item.name);
         if (curr_cost < prev_cost) {
-            closest_food_item.raw = receipt_name;
+            food_item.raw = receipt_name;
         }
     }
     var scan_btn = document.getElementById('scan-btn');
