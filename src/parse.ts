@@ -3,6 +3,8 @@ var keywords_to_food_items: any[] = [];
 var final_food_items: FoodItem[] = [];
 
 function parse_data(raw_receipt: string) {
+    keywords_to_food_items = [];
+    final_food_items = [];
     console.log(raw_receipt);
     fetch('data/foodkeeper.json', { mode: 'no-cors' })
         .then((response) => response.json())
