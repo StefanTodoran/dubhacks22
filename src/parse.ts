@@ -9,12 +9,13 @@ interface FoodItem {
     
     group?: string, // food type 
     tip?: string,
+    no_data?: boolean, // no expiration data
 }
 
 
 var food_items: FoodItem[] = [];
 
-fetch('data/foodkeeper.json')
+fetch('data/foodkeeper.json', {mode: 'no-cors'})
     .then((response) => response.json())
     .then((food_data) => process_food_data(JSON.parse(JSON.stringify(food_data))));
 

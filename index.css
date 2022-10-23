@@ -117,6 +117,18 @@ p {
   padding: 5vmin 5vmin;
 }
 
+.icon {
+  height: 2em;
+  width: 2em;
+}
+
+.icon-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 !important;
+}
+
 /* FOOD ITEM STYLES */
 .food-item {
   display: flex;
@@ -190,13 +202,59 @@ p {
   --icon: url(assets/fruit.png)
 }
 
+/* Custom Scrollbar */
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 .hidden {
   display: none;
+}
+
+@media screen and (max-width: 1024px) {
+  .food-name {
+    font-size: 22px;
+    border-right: none;
+  }
+
+  .food-duration::after {
+    font-size: 14px;
+  }
+
+  .food-duration {
+    width: min(calc(var(--length) * 20%), 100%);
+  }
+
+  .food-item {
+    flex-direction: column;
+  }
 }
 
 @media screen and (max-width: 768px) {
   #description {
     flex-direction: column;
+  }
+
+  #icons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 2em;
   }
 
   #scan-btn {
@@ -205,18 +263,5 @@ p {
 
   .food-name {
     font-size: 18px;
-    border-right: none;
-  }
-
-  .food-duration {
-    width: min(calc(var(--length) * 20%), 100%);
-  }
-
-  .food-duration::after {
-    font-size: 10px;
-  }
-
-  .food-item {
-    flex-direction: column;
   }
 }

@@ -119,7 +119,7 @@ function setupCamera() {
     }
 })();
 var food_items = [];
-fetch('data/foodkeeper.json')
+fetch('data/foodkeeper.json', { mode: 'no-cors' })
     .then(function (response) { return response.json(); })
     .then(function (food_data) { return process_food_data(JSON.parse(JSON.stringify(food_data))); });
 function get_days(max_time, metric) {
