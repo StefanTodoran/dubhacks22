@@ -8,23 +8,23 @@
    * on page load (include changing from one page to another).
    */
   function init() {
-    
+
     // DELETE THIS!!
-    const examples:FoodItem[] = [
-      {name: "Apples", group: "fruit", pantry: 12, fridge: 24},
-      {name: "Carrots", group: "vegetable", fridge: 21, pantry: 7},
-      {name: "Margarine", fridge: 124, on_open: 62},
-      {name: "Minced Beef", group: "meat", fridge: 2, freezer: 5},
-      {name: "Pancake Mix", group: "grains", pantry: 19, on_open: 12},
-      {name: "Yogurt", group: "dairy", fridge: 7, freezer: 31, on_open: 3},
-      {name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2},
-      {name: "Jam", on_open: 365},
-      {name: "Bread", group: "grains", pantry: 4, fridge: 14, on_open: 15},
-      {name: "Milk", group: "dairy", fridge: 7},
+    const examples: FoodItem[] = [
+      { name: "Apples", group: "fruit", pantry: 12, fridge: 24 },
+      { name: "Carrots", group: "vegetable", fridge: 21, pantry: 7 },
+      { name: "Margarine", fridge: 124, on_open_fridge: 62 },
+      { name: "Minced Beef", group: "meat", fridge: 2, freezer: 5 },
+      { name: "Pancake Mix", group: "grains", pantry: 19, on_open_pantry: 12 },
+      { name: "Yogurt", group: "dairy", fridge: 7, freezer: 31, on_open_fridge: 3 },
+      { name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2 },
+      { name: "Jam", on_open_fridge: 365 },
+      { name: "Bread", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
+      { name: "Milk", group: "dairy", fridge: 7 },
     ];
 
     const scan_btn = document.getElementById('scan-btn');
-    scan_btn.addEventListener('click', () => {});
+    scan_btn.addEventListener('click', () => { });
 
     displayItems(examples);
     setupCamera();
@@ -50,13 +50,14 @@
 
   interface FoodItem {
     name: string,
-    
+
     // until expiration in days, provide at least 1
     pantry?: number,
+    on_open_pantry?: number,
     fridge?: number,
+    on_open_fridge?: number,
     freezer?: number,
-    on_open?: number,
-    
+
     group?: string, // fruit, vegetable, dairy, grains, or meat
     tip?: string,
   }
@@ -76,8 +77,9 @@
 
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
+      console.log("========================\n\n\n",item.name, item);
       // @ts-ignore
-      const node:HTMLElement = template.cloneNode(true);
+      const node: HTMLElement = template.cloneNode(true);
 
       node.classList.remove('hidden');
       node.querySelector('h2').textContent = nbsp(item.name);
@@ -85,10 +87,17 @@
         node.classList.add(item.group);
       }
 
+      let has_double = false;
+
       addDuration(node, "pantry", item.pantry);
+      has_double = addDuration(node, "on_open_pantry", item.on_open_pantry);
       addDuration(node, "fridge", item.fridge);
+      has_double = has_double || addDuration(node, "on_open_fridge", item.on_open_fridge);
       addDuration(node, "freezer", item.freezer);
-      addDuration(node, "on_open", item.on_open);
+
+      if (has_double) {
+        node.querySelector('.food-duration-container').classList.add('double-len');
+      }
 
       // insert after template
       container.insertBefore(node, template);
@@ -97,20 +106,27 @@
 
   /**
    * Sets up a food-duration bar inside a food-item, or if the food duration is unset,
-   * hides the corresponding div.
+   * hides the corresponding div. Returns true if the duration was set and the bar is visible.
    * @param node A food-item div, a clone of the foot-item template
    * @param type A duration type, one of the four options in the FoodItem interface 
    * @param duration The actual value stored for that duration in the FoodItem object, can be null
+   * @returns A boolean that is true if the duration bar is visible and false otherwise
    */
   function addDuration(node: HTMLElement, type: string, duration: number) {
-    const indicator:HTMLElement = node.querySelector("." + type);
+    const indicator: HTMLElement = node.querySelector("." + type);
+    console.log(type, duration);
     if (duration) {
       const length = (duration ** 0.5).toString();
       indicator.style.setProperty('--length', length);
       const display_duration = nbsp('"' + duration.toString() + ' days"');
       indicator.style.setProperty('--days', display_duration);
+      return true;
     } else {
-      indicator.remove();
+      console.log("HIDE");
+      indicator.classList.add('hidden');
+      console.log(indicator);
+      node.querySelector('.food-duration-container').removeChild(indicator);
+      return false;
     }
   }
 

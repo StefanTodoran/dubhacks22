@@ -109,7 +109,7 @@ p {
   transition: border 0.5s ease, background-color 0.5s ease, padding 0.5s ease;
   background-color: #fdfdfd;
   border: 1px solid #e0e0e0;
-  padding: 2.5vmin 2.5vmin;
+  padding: 1vmin 2.5vmin;
 }
 
 #icons {
@@ -148,10 +148,16 @@ p {
   border-radius: 10px;
   background-color: #f9f9f9;
   border: 1px solid #d9d9d9;
+  transition: border 0.5s ease, background-color 0.5s ease;
 
   --color: var(--dark-color);
   --rgb: 96, 77, 66;
   --icon: url(assets/default.png);
+}
+
+.food-item:hover {
+  background-color: #f0f0f0;
+  border: 1px solid #999999;
 }
 
 .food-name {
@@ -159,7 +165,6 @@ p {
   flex-direction: row;
   align-items: center;
   color: var(--color);
-  border-right: 1px solid lightgray;
   margin: 0;
   min-width: 10em;
 }
@@ -167,16 +172,24 @@ p {
 .food-name::before, .food-duration::before {
   content: "";
   display: inline-block;
+  background-image: var(--icon);
+
   background-size: 2em 2em;
   height: 2em;
   width: 2em;
-  background-image: var(--icon);
+}
+.food-duration.on_open_pantry::before, .food-duration.on_open_fridge::before {
+  background-size: 4em 2em;
+  height: 2em;
+  width: 4em;
 }
 
 .food-duration-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  border-left: 1px solid lightgray;
+  margin-left: 2em;
   width: 100%;
 }
 
@@ -212,9 +225,13 @@ p {
   border: var(--offset) solid var(--color);
   box-sizing: border-box;
 }
-.food-duration.on_open {
+.food-duration.on_open_pantry {
   background-color: rgba(var(--rgb), 0.25);
-  --icon: url(assets/on_open.png);
+  --icon: url(assets/pantry_open.png);
+}
+.food-duration.on_open_fridge {
+  background-color: rgba(var(--rgb), 0.25);
+  --icon: url(assets/fridge_open.png);
 }
 
 .food-duration::after {
@@ -284,7 +301,6 @@ p {
 @media screen and (max-width: 1024px) {
   .food-name {
     font-size: 22px;
-    border-right: none;
   }
 
   .food-duration::after {
@@ -300,8 +316,12 @@ p {
   }
 
   .food-duration-container {
-    padding-left: 2em;
     width: calc(100% - 2em);
+  }
+
+  .food-duration-container.double-len {
+    margin-left: 4em;
+    width: calc(100% - 4em);
   }
 }
 
@@ -325,8 +345,17 @@ p {
     font-size: 18px;
   }
 
+  .food-item, .food-item:hover {
+    padding-right: 2vw;
+    border-radius: 0;
+    border-right: none;
+    border-left: none;
+  }
+
   #visualizer {
-    margin: 3vh 2vw;
-    padding: 1vmin 2vmin;
+    margin: 3vh 0;
+    padding: 0;
+    border: none;
+    background-color: white;
   }
 }
