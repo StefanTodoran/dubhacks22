@@ -62,16 +62,16 @@ function setupCamera() {
 window.addEventListener('load', init);
 function init() {
     var examples = [
-        { name: "Apples", group: "fruit", pantry: 12, fridge: 24 },
-        { name: "Carrots", group: "vegetable", fridge: 21, pantry: 7 },
-        { name: "Margarine", fridge: 124, on_open_fridge: 62 },
-        { name: "Minced Beef", group: "meat", fridge: 2, freezer: 5 },
-        { name: "Pancake Mix", group: "grains", pantry: 19, on_open_pantry: 12 },
-        { name: "Yogurt", group: "dairy", fridge: 7, freezer: 31, on_open_fridge: 3 },
-        { name: "Broccoli", group: "vegetable", fridge: 5, pantry: 2 },
-        { name: "Jam", on_open_fridge: 365 },
-        { name: "Bread", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
-        { name: "Milk", group: "dairy", fridge: 7 },
+        { name: "Apples", raw: "APPL", group: "fruit", pantry: 12, fridge: 24 },
+        { name: "Carrots", raw: "CRT", group: "vegetable", fridge: 21, pantry: 7 },
+        { name: "Margarine", raw: "MARGRN", fridge: 124, on_open_fridge: 62 },
+        { name: "Minced Beef", raw: "MNCED BEEF", group: "meat", fridge: 2, freezer: 5 },
+        { name: "Pancake Mix", raw: "PNCK MIX", group: "grains", pantry: 19, on_open_pantry: 12 },
+        { name: "Yogurt", raw: "YOGURT", group: "dairy", fridge: 7, freezer: 31, on_open_fridge: 3 },
+        { name: "Broccoli", raw: "BRCLI", group: "vegetable", fridge: 5, pantry: 2 },
+        { name: "Jam", raw: "JAM", on_open_fridge: 365 },
+        { name: "Bread", raw: "BREAD", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
+        { name: "Milk", raw: "MILK", group: "dairy", fridge: 7 },
     ];
     displayItems(examples);
     setupCamera();
@@ -97,6 +97,8 @@ function displayItems(items) {
         node.classList.remove('hidden');
         node.id = "";
         node.querySelector('h2').textContent = item.name;
+        node.querySelector('h3').textContent = '(' + item.raw + ')';
+        console.log(node.querySelector('h3'));
         if (item.group) {
             node.classList.add(item.group);
         }
@@ -118,7 +120,7 @@ function addDuration(node, type, duration) {
     if (duration) {
         var length_1 = (Math.pow(duration, 0.5)).toString();
         indicator.style.setProperty('--length', length_1);
-        var display_duration = nbsp('"' + duration.toString() + ' days"');
+        var display_duration = nbsp(quoted(duration.toString() + ' days'));
         indicator.style.setProperty('--days', display_duration);
         return true;
     }
@@ -129,6 +131,9 @@ function addDuration(node, type, duration) {
 }
 function nbsp(string) {
     return string.replace(/ /g, '\u00a0');
+}
+function quoted(string) {
+    return '"' + string + '"';
 }
 var RECEIPT = "Wal ke\nalmart - <.\nSave money. Live better.\n(813) 932-0562\nManaser COLLEEN BRICKEY\n8885 N FLORIDA AVE\nTAMPA FL 33604\nST# 5221 OP# 00001061 TE# 06 TR# 05332\nBREAD 007225003712 F 2.88 N\nBREAD 007225003712 F 2.88 N\nGV PNT BUTTR 007874237003 F 3.84 N\nGV PNT BUTTR 007874237003 F 3.84 N\nGV PNT BUTTR 007874237003 F 3.84 N\nGV PNT BUTTR 007874237003 F 3.84 N\nGV PARM 160Z 007874201510 F 4.98 0\nGV CHNK CHKN 007874206784 F 1.98 N\nGV CHNK CHKN 007874206784 F 1.98 N\n12 CT NITRIL 073191913822 2.78 X\nFOLGERS 002550000377 F 10.48 N\nSC TWIST UP 007874222682 F 0.84 X\nEGGS 060638871459 F 1.88 0\nSUBTOTAL 46.04\nTAX 1 7.000 % 0.26\nTOTAL 46.30\nDEBIT TEND 46.30\nCHANGE DUE 0.00\nEFT DEBIT PAY FROM PRIMARY\nACCOUNT : 5259\n46.30 TOTAL PURCHASE\nPAYMENT DECLINED DEBIT NOT AVAILABLE\n11/06/11 02:21:54\nEFT DEBIT PAY FROM PRIMARY\nACCOUNT : 5269\n46.30 TOTAL PURCHASE\nREF # 131000195280\nNETWORK ID. 0071 APPR CODE 297664\n11/06/11 02:22:54\nS\nLavaway is back for Electronics,\nToys, and Jewelry. 10/17/11-12/16/11\n11/06/11 02:22:59";
 var keywords_to_food_items = [];
@@ -182,7 +187,7 @@ function process_food_data(food_data) {
     for (var _i = 0, _a = food_data.sheets[2].data; _i < _a.length; _i++) {
         var food_entry = _a[_i];
         var food_name = food_entry[2]["Name"];
-        var food_item = { name: food_name };
+        var food_item = { name: food_name, raw: "" };
         var food_category = get_category(food_entry[1]);
         if (food_category != "default") {
             food_item.group = food_category;
@@ -302,11 +307,15 @@ function search(receipt_name) {
             }
         }
         console.log(receipt_word + ": " + min_keyword);
+        closest_food_item.raw = receipt_word;
     }
     return closest_food_item;
 }
 function is_letter(char) {
     return char.toLowerCase() != char.toUpperCase();
+}
+function is_number(char) {
+    return !isNaN(parseInt(char, 10));
 }
 function process_receipt(receipt) {
     var receipt_lines = receipt.split('\n');
@@ -317,7 +326,7 @@ function process_receipt(receipt) {
         var receipt_name = "";
         for (var i = 0; i < receipt_line.length; i++) {
             var c = receipt_line.charAt(i);
-            if (!is_letter(c) && c != ' ') {
+            if (is_number(c)) {
                 break;
             }
             receipt_name += c;

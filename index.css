@@ -66,9 +66,16 @@ p {
   margin: 2.5vh 0;
 }
 
-#footer {
+#footer, .food-item-title {
   display: flex;
   flex-direction: column;
+}
+
+.food-item-title {
+  justify-content: flex-end;
+}
+
+#footer {
   justify-content: center;
   align-items: center;
 
@@ -170,6 +177,11 @@ p {
   color: var(--color);
   margin: 0;
   min-width: 10em;
+}
+
+.food-raw {
+  color: gray;
+  font-size: 14px;
 }
 
 .food-name::before, .food-duration::before {
@@ -340,6 +352,11 @@ a:hover {
     flex-direction: column;
   }
 
+  .food-item-title {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
   .food-duration-container {
     width: calc(100% - 2em);
   }
@@ -368,6 +385,10 @@ a:hover {
 
   .food-name {
     font-size: 18px;
+  }
+
+  .food-raw {
+    font-size: 12px;
   }
 
   .food-item, .food-item:hover, .recipe-item, .recipe-item:hover {

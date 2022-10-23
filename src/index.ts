@@ -80,6 +80,8 @@ function displayItems(items: FoodItem[]) {
     node.classList.remove('hidden');
     node.id = "";
     node.querySelector('h2').textContent = item.name;
+    node.querySelector('h3').textContent = '(' + item.raw + ')';
+    console.log(node.querySelector('h3'));
     if (item.group) {
       node.classList.add(item.group);
     }
@@ -116,7 +118,7 @@ function addDuration(node: HTMLElement, type: string, duration: number) {
   if (duration) {
     const length = (duration ** 0.5).toString();
     indicator.style.setProperty('--length', length);
-    const display_duration = nbsp('"' + duration.toString() + ' days"');
+    const display_duration = nbsp(quoted(duration.toString() + ' days'));
     indicator.style.setProperty('--days', display_duration);
     return true;
   } else {
@@ -128,4 +130,8 @@ function addDuration(node: HTMLElement, type: string, duration: number) {
 // Replaces spaces with non breaking spaces.
 function nbsp(string: string) {
   return string.replace(/ /g, '\u00a0');
+}
+
+function quoted(string: string) {
+  return '"' + string + '"';
 }
