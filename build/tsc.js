@@ -64,7 +64,7 @@ function setupCamera() {
                         scan_btns[i].classList.add('hidden');
                     }
                     loader.classList.remove('hidden');
-                    y = loader.getBoundingClientRect().top + window.pageYOffset + -35;
+                    y = document.getElementById('icons').getBoundingClientRect().top + window.pageYOffset + -35;
                     window.scrollTo({ top: y, behavior: 'smooth' });
                     files = event.target.files;
                     if (!(files.length > 0)) return [3, 2];
@@ -81,41 +81,6 @@ function setupCamera() {
         imageInps[i].addEventListener('change', on_click);
     }
     return null;
-}
-var wasmInstance;
-var memory;
-var curMemIndex = 0;
-var processImage;
-function loadWasm(expectedMem) {
-    return __awaiter(this, void 0, void 0, function () {
-        var response, bytes, instance;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4, fetch('wasm/image.wasm')];
-                case 1:
-                    response = _a.sent();
-                    return [4, response.arrayBuffer()];
-                case 2:
-                    bytes = _a.sent();
-                    return [4, WebAssembly.instantiate(bytes)];
-                case 3:
-                    instance = (_a.sent()).instance;
-                    wasmInstance = instance;
-                    memory = instance.exports.memory;
-                    processImage = instance.exports.processImage;
-                    while (memory.buffer.byteLength < expectedMem) {
-                        memory.grow(1);
-                    }
-                    return [2];
-            }
-        });
-    });
-}
-function allocImage(neededMemory) {
-    var newarr = new Uint8Array(memory.buffer, curMemIndex, neededMemory);
-    var prevIndex = curMemIndex;
-    curMemIndex += neededMemory;
-    return { image: newarr, handle: prevIndex };
 }
 window.addEventListener('load', init);
 function init() {
@@ -145,6 +110,7 @@ function init() {
         }
     });
 }
+var MAX_RECIPES = 5;
 function displayRecipes(recipe_items, message) {
     if (message === void 0) { message = "Your Recipes"; }
     var container = document.getElementById('recipes');
@@ -167,7 +133,7 @@ function displayRecipes(recipe_items, message) {
         for (var j = 0; j <= Math.min(10, item.utilized.length); j++) {
             if (item.utilized[j]) {
                 utilized += item.utilized[j].toLowerCase();
-                if (j < Math.min(10, item.utilized.length)) {
+                if (j < Math.min(item.utilized.length, MAX_RECIPES)) {
                     utilized += ", ";
                 }
             }
@@ -518,6 +484,7 @@ function process_receipt(receipt) {
     }
     displayFoodItems(final_food_items);
     queryRecipes(final_food_items);
+    final_food_items = [];
 }
 var debugImages = false;
 function visImageCan(image) {

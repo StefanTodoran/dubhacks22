@@ -231,6 +231,7 @@ function process_receipt(receipt: string) {
 
     displayFoodItems(final_food_items);
     queryRecipes(final_food_items);
+    final_food_items = [];
 }
 
 //  0. "ID"
