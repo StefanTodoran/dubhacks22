@@ -4,20 +4,20 @@ to win 1000 154 ERTvikEa0G
 g Walmart 3i
 118511102 Mar JAHIE BRODKSHIRE
 BBgRs yfanEMQDMI gs
-ST8 05483 00y 00000 R 009 e 06976
-TATER TOTS 001312000026 F 236 0
+ST8 05483 00y 00000 R 009 e 06.976
+TATER TOTS 001312000026 F 2.36 0
 HARD/PROV/DC 007874219410 F 268 0
-SNACK BARS 002190848816 F 498 T
-HRI CL CHS 003120806000 F 688 0
-HRI CL CHS 003120806000 F 688 0
-HRI CL CHS 003120806000 F 688 0
+SNACK BARS 002190848816 F 4.98 T
+HRI CL CHS 003120806000 F 6.88 0
+HRI CL CHS 003120806000 F 6.88 0
+HRI CL CHS 003120806000 F 6.88 0
 ** VOIDED ENTRY**
-HRT CL CHS 003120506000 F 5880
-HRI 12 U SG 003120836000 F 688 0
-HRI CL PEP 003120807000 F 588 0
+HRT CL CHS 003120506000 F 58.80
+HRI 12 U SG 003120836000 F 6.88 0
+HRI CL PEP 003120807000 F 5.88 0
 EARBUDS 068113100946 488 X
-SC BCN CHDDR 007874202906 F 698 0
-ABF THINBRST 022461710972 F 9720
+SC BCN CHDDR 007874202906 F 6.98 0
+ABF THINBRST 022461710972 F 97.20
 POTATO 007874219410 F 2680
 DV RSE OTL W 001111101220 i
 APPLE 3 BAG 0B4747300184 F 647 N
@@ -227,7 +227,7 @@ function search(receipt_name: string) {
         min_keyword = keyword;
       }
     }
-    console.log(receipt_word + ": " + min_keyword);
+    console.log(receipt_word + ": " + min_keyword + " - cost: " + keyword_min_cost);
     closest_food_item.raw = receipt_word
   }
 
@@ -248,21 +248,29 @@ function process_receipt(receipt: string) {
 
   let receipt_names: string[] = [];
   for (let receipt_line of receipt_lines) {
-    let receipt_name = "";
-    for (let i = 0; i < receipt_line.length; i++) {
-      let c = receipt_line.charAt(i);
-      if (is_number(c)) {
-        break;
-      }
-      receipt_name += c;
+    //let receipt_name = "";
+    if (receipt_line.includes("SUBTOTAL")) {
+      break;
     }
-    if (receipt_name != receipt_line) {
-      if (receipt_name.charAt(receipt_name.length - 1) == ' ') {
-        receipt_name = receipt_name.slice(0, -1);
-      }
-      receipt_names.push(receipt_name);
+    let re = new RegExp("^.*[0-9]{1,2}[.][0-9]{2}");
+    if (re.test(receipt_line)) {
+      receipt_names.push(receipt_line);
     }
+    // for (let i = 0; i < receipt_line.length; i++) {
+    //   let c = receipt_line.charAt(i);
+    //   if (is_number(c)) {
+    //     break;
+    //   }
+    //   receipt_name += c;
+    // }
+    // if (receipt_name != receipt_line) {
+    //   if (receipt_name.charAt(receipt_name.length - 1) == ' ') {
+    //     receipt_name = receipt_name.slice(0, -1);
+    //   }
+    //   receipt_names.push(receipt_name);
+    // }
   }
+  console.log(receipt_names)
 
   for (let receipt_name of receipt_names) {
     final_food_items.push(search(receipt_name));

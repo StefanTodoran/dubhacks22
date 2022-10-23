@@ -19,24 +19,17 @@ function init() {
     { name: "Milk", raw: "MILK", group: "dairy", on_open_fridge: 1, fridge: 7 },
   ];
 
-  displayItems(examples);
+  displayItems(examples, "Example Data Visualization");
   setupCamera();
+}
 
-    const container = document.getElementById('visualizer');
-    const template = document.getElementById('template');
-    const text = document.createElement('h2');
-    text.innerText = "Example Data Visualization:";
-    text.style.textAlign = "center";
-    container.insertBefore(text, template);
-  }
-
-  interface RecipeItem {
-    title: string,
-    utilized: FoodItem[], // specific food items user used in this recipe
-    categories: string[], // food categories present in this recipe
-    time: number, // time to make in hours
-    url: string, // link to the recipe
-  }
+interface RecipeItem {
+  title: string,
+  utilized: FoodItem[], // specific food items user used in this recipe
+  categories: string[], // food categories present in this recipe
+  time: number, // time to make in hours
+  url: string, // link to the recipe
+}
 
 function displayRecipes(items: RecipeItem[]) {
   console.log("Not Yet Implemented!");
@@ -61,16 +54,17 @@ interface FoodItem {
  * Takes a list of FoodItems and displays them in the visualizer with appropraite icons
  * as a bar graph of the duration that they keep in various environments. Clears the visualizer.
  * @param items The list of food items
+ * @param message Some text to display at the top of the visualizer
  */
-function displayItems(items: FoodItem[]) {
+function displayItems(items: FoodItem[], message: string = "Your Data") {
   const container = document.getElementById('visualizer');
   const template = document.getElementById('template');
 
-  
+
   // clear the container except the template child
   container.innerHTML = "";
   container.appendChild(template);
-  
+
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
     // @ts-ignore
@@ -99,6 +93,11 @@ function displayItems(items: FoodItem[]) {
     // insert after template
     container.insertBefore(node, template);
   }
+
+  const text = document.createElement('h2');
+  text.innerText = message;
+  text.style.textAlign = "center";
+  container.insertBefore(text, container.firstChild);
 }
 
 /**
@@ -120,7 +119,7 @@ function addDuration(node: HTMLElement, type: string, duration: number) {
 
     if (duration < 7) {
       indicator.classList.add('short-duration');
-    } 
+    }
 
     return true;
   } else {
