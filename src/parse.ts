@@ -213,12 +213,13 @@ function process_receipt(receipt: string) {
         if (receipt_line.includes("SUBTOTAL")) {
             break;
         }
-        let re = new RegExp("^.*[0-9]{1,2}[.][0-9]{2}");
+        let re = new RegExp("(^.*[0-9]{1,2}[.][0-9]{2}|^.*[0-9]{1,2}[\s][0-9]{2})");
         if (re.test(receipt_line)) {
-            receipt_line = receipt_line.replace(/[0-9]/g, '');
-            receipt_line = receipt_line.replace(/(\s.\s|\s.$)/g, '');
-            receipt_line = receipt_line.replace('.', '');
-            receipt_names.push(receipt_line.trim());
+          //receipt_line = receipt_line.replace(/[0-9]/g, '');
+          receipt_line = receipt_line.replace(/[^a-zA-Z]/g, '');
+          receipt_line = receipt_line.replace(/(\s.\s|\s.$)/g, '');
+          //receipt_line = receipt_line.replace('.', '');
+          receipt_names.push(receipt_line.trim());
         }
     }
 
