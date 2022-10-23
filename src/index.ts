@@ -47,10 +47,10 @@ interface RecipeItem {
 /**
  * Takes a list of RecipeItems and displays them in the recipe list with appropraite icons
  * and description, as well as a link. Clears the container.
- * @param items The list of recipe items
+ * @param recipe_items The list of recipe items
  * @param message Some text to display at the top of the list
  */
-function displayRecipes(items: RecipeItem[], message: string = "Your Recipes") {
+function displayRecipes(recipe_items: RecipeItem[], message: string = "Your Recipes") {
   const container = document.getElementById('recipes');
   const template = document.getElementById('recipe-template');
 
@@ -58,8 +58,8 @@ function displayRecipes(items: RecipeItem[], message: string = "Your Recipes") {
   container.innerHTML = "";
   container.appendChild(template);
 
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
+  for (let i = 0; i < recipe_items.length; i++) {
+    const item = recipe_items[i];
     // @ts-ignore
     const node: HTMLElement = template.cloneNode(true);
 

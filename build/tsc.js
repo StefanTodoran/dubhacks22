@@ -105,14 +105,14 @@ function init() {
         }
     });
 }
-function displayRecipes(items, message) {
+function displayRecipes(recipe_items, message) {
     if (message === void 0) { message = "Your Recipes"; }
     var container = document.getElementById('recipes');
     var template = document.getElementById('recipe-template');
     container.innerHTML = "";
     container.appendChild(template);
     var _loop_1 = function (i) {
-        var item = items[i];
+        var item = recipe_items[i];
         var node = template.cloneNode(true);
         node.classList.remove('hidden');
         node.id = "";
@@ -135,7 +135,7 @@ function displayRecipes(items, message) {
         node.querySelector('p').textContent = utilized;
         container.insertBefore(node, template);
     };
-    for (var i = 0; i < items.length; i++) {
+    for (var i = 0; i < recipe_items.length; i++) {
         _loop_1(i);
     }
     var text = document.createElement('h2');

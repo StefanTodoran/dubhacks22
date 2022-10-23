@@ -1,4 +1,3 @@
-
 //function getGreyVal(image, x, y) {
 //    return Jimp.intToRGBA(image.getPixelColor(x, y)).r;
 //}
@@ -171,7 +170,6 @@ async function loadAndProcessImageCanvas(img_element) {
     }
     delete imageBitmap;
     let image = context.getImageData(0, 0, width, height);
-    console.log(width);
     //image = rotateImage(image);
     //width = image.width;
     //height = image.height;
@@ -294,7 +292,6 @@ async function parseReceipt(img_element, logger) {
     //});
     const data = await worker.recognize(dataurl);
     //const { data: { text } } = await worker.recognize('https://tesseract.projectnaptha.com/img/eng_bw.png');
-    console.log(data);
     await worker.terminate();
     return data.data;
 }
