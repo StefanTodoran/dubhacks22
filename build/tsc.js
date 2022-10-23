@@ -38,12 +38,8 @@ function setupCamera() {
     var _this = this;
     var imageInps = document.querySelectorAll('.camera-inp');
     var loader = document.getElementById('loader');
+    var scan_btns = document.querySelectorAll('.scan-btn');
     var loaderProgress = function (status) {
-        var scan_btns = document.querySelectorAll('.scan-btn');
-        for (var i = 0; i < scan_btns.length; i++) {
-            scan_btns[i].classList.add('hidden');
-        }
-        loader.classList.remove('hidden');
         loader.style.setProperty('--status', quoted(nbsp(status.status + '...')));
         loader.style.setProperty('--progress', status.progress);
         if (status.status === 'recognizing text' && status.progress === 1) {
@@ -54,10 +50,14 @@ function setupCamera() {
         }
     };
     var on_click = function (event) { return __awaiter(_this, void 0, void 0, function () {
-        var files, data;
+        var i, files, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    for (i = 0; i < scan_btns.length; i++) {
+                        scan_btns[i].classList.add('hidden');
+                    }
+                    loader.classList.remove('hidden');
                     files = event.target.files;
                     if (!(files.length > 0)) return [3, 2];
                     return [4, parseReceipt(files[0], loaderProgress)];
@@ -167,6 +167,9 @@ function displayFoodItems(food_items, message) {
             node.querySelector('.food-duration-container').classList.add('double-len');
         }
         container.insertBefore(node, template);
+    }
+    if (food_items.length === 0) {
+        message = "Bad receipt. No data to display.";
     }
     var text = document.createElement('h2');
     text.innerText = message;
@@ -442,8 +445,11 @@ function process_receipt(receipt) {
         }
         var re = new RegExp("(^.*[0-9]{1,2}[.][0-9]{2}|^.*[0-9]{1,2}[\s][0-9]{2})");
         if (re.test(receipt_line)) {
-            receipt_line = receipt_line.replace(/[^a-zA-Z]/g, '');
-            receipt_line = receipt_line.replace(/(\s.\s|\s.$)/g, '');
+            var re_money = new RegExp("[0-9]{1,2}[.][0-9]{2}");
+            var re_result = re_money.exec(receipt_line);
+            receipt_line = receipt_line.slice(0, re_result.index);
+            receipt_line = receipt_line.replace(/[^a-zA-Z, \s]/g, '');
+            receipt_line = receipt_line.replace(/(\s.\s|\s.$|^.\s)/g, '');
             receipt_names.push(receipt_line.trim());
         }
     }

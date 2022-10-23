@@ -116,7 +116,7 @@ interface FoodItem {
 /**
  * Takes a list of FoodItems and displays them in the visualizer with appropraite icons
  * as a bar graph of the duration that they keep in various environments. Clears the visualizer.
- * @param items The list of food items
+ * @param food_items The list of food items
  * @param message Some text to display at the top of the visualizer
  */
 function displayFoodItems(food_items: FoodItem[], message: string = "Your Data") {
@@ -154,6 +154,10 @@ function displayFoodItems(food_items: FoodItem[], message: string = "Your Data")
 
     // insert after template
     container.insertBefore(node, template);
+  }
+
+  if (food_items.length === 0) {
+    message = "Bad receipt. No data to display.";
   }
 
   const text = document.createElement('h2');

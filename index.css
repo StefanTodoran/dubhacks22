@@ -19,8 +19,8 @@ body {
   border-radius: 1em;
   background-color: #F9B63099;
 }
-#loader::after {
-  color: var(--dark-color);
+#loader-text {
+  color: var(--main-color);
   content: var(--status);
   position: absolute;
   top: 0;
@@ -52,6 +52,7 @@ button {
 }
 
 .scan-btn {
+  font-family: 'Londrina Solid', cursive;
   font-size: 50px;
   padding: 5px 20px;
 }
