@@ -327,6 +327,7 @@ button {
 .food-raw {
   color: gray;
   font-size: 14px;
+  text-transform: lowercase;
 }
 
 .food-name::before, .food-duration::before, .recipe-name::before {

@@ -7,22 +7,20 @@ window.addEventListener('load', init);
 function init() {
 
   const examples: FoodItem[] = [
-    { name: "Apples", raw: "APPL", group: "fruit", pantry: 12, fridge: 24 },
-    { name: "Carrots", raw: "CRT", group: "vegetable", fridge: 21, pantry: 7 },
-    { name: "Margarine", raw: "MARGRN", fridge: 124, on_open_fridge: 62 },
-    { name: "Minced Beef", raw: "MNCED BEEF", group: "meat", fridge: 2, freezer: 5 },
-    { name: "Pancake Mix", raw: "PNCK MIX", group: "grains", pantry: 19, on_open_pantry: 12 },
-    { name: "Yogurt", raw: "YOGURT", group: "dairy", fridge: 7, freezer: 31, on_open_fridge: 3 },
-    { name: "Broccoli", raw: "BRCLI", group: "vegetable", fridge: 5, pantry: 2 },
-    { name: "Jam", raw: "JAM", on_open_fridge: 365 },
-    { name: "Bread", raw: "BREAD", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
-    { name: "Milk", raw: "MILK", group: "dairy", on_open_fridge: 1, fridge: 7 },
+    { name: "Apples", raw: "appl", group: "fruit", pantry: 12, fridge: 24 },
+    { name: "Carrots", raw: "crt", group: "vegetable", fridge: 21, pantry: 7 },
+    { name: "Margarine", raw: "margrn", fridge: 124, on_open_fridge: 62 },
+    { name: "Minced Beef", raw: "mncd beef", group: "meat", fridge: 2, freezer: 5 },
+    { name: "Pancake Mix", raw: "pnck mix", group: "grains", pantry: 19, on_open_pantry: 12 },
+    { name: "Yogurt", raw: "yogurt", group: "dairy", fridge: 7, freezer: 31, on_open_fridge: 3 },
+    { name: "Broccoli", raw: "brcli", group: "vegetable", fridge: 5, pantry: 2 },
+    { name: "Jam", raw: "jam", on_open_fridge: 365 },
+    { name: "Bread", raw: "bread", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
+    { name: "Milk", raw: "milk", group: "dairy", on_open_fridge: 1, fridge: 7 },
   ];
 
   displayFoodItems(examples, "Example Data Visualization");
   setupCamera();
-
-  //parse_data(receipt_raw_text);
 
   const show_more = document.getElementById('show-more-btn');
   const demo = document.getElementById('demo');
@@ -33,7 +31,7 @@ function init() {
     } else {
       show_more.textContent = "See More";
     }
-  })
+  });
 }
 
 interface RecipeItem {
@@ -43,8 +41,6 @@ interface RecipeItem {
   img: string,
   url: string, // link to the recipe
 }
-
-var MAX_RECIPES = 5;
 
 /**
  * Takes a list of RecipeItems and displays them in the recipe list with appropraite icons
@@ -60,7 +56,8 @@ function displayRecipes(recipe_items: RecipeItem[], message: string = "Your Reci
   container.innerHTML = "";
   container.appendChild(template);
 
-  for (let i = 0; i < recipe_items.length; i++) {
+  const MAX_RECIPES = 8;
+  for (let i = 0; i < Math.min(MAX_RECIPES, recipe_items.length); i++) {
     const item = recipe_items[i];
     // @ts-ignore
     const node: HTMLElement = template.cloneNode(true);
@@ -76,8 +73,9 @@ function displayRecipes(recipe_items: RecipeItem[], message: string = "Your Reci
       window.open(item.url, '_blank');
     });
 
-    let utilized = "Includes "
-    for (let j = 0; j < Math.min(10, item.utilized.length); j++) {
+    const MAX_INGREDIENTS = 10;
+    let utilized = "Includes ";
+    for (let j = 0; j < Math.min(MAX_INGREDIENTS, item.utilized.length); j++) {
       if (item.utilized[j]) {
         utilized += item.utilized[j].toLowerCase() + ", ";
       }
@@ -108,7 +106,7 @@ interface FoodItem {
   on_open_fridge?: number,
   freezer?: number,
 
-  days_left?: number,
+  days_left?: number, // not displayed
 
   group?: string, // fruit, vegetable, dairy, grains, or meat
   tip?: string,
@@ -136,7 +134,7 @@ function displayFoodItems(food_items: FoodItem[], message: string = "Your Data")
     node.classList.remove('hidden');
     node.id = "";
     node.querySelector('h2').textContent = item.name;
-    node.querySelector('h3').textContent = '(' + item.raw + ')';
+    node.querySelector('h3').textContent = '(' + item.raw.toUpperCase() + ')';
     if (item.group) {
       node.classList.add(item.group);
     }
@@ -158,7 +156,7 @@ function displayFoodItems(food_items: FoodItem[], message: string = "Your Data")
   }
 
   if (food_items.length === 0) {
-    message = "Bad receipt. No data to display.";
+    message = "Bad read. No data to display.";
   }
 
   const text = document.createElement('h2');

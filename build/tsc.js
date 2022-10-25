@@ -80,21 +80,24 @@ function setupCamera() {
     for (var i = 0; i < imageInps.length; i++) {
         imageInps[i].addEventListener('change', on_click);
     }
+    for (var i = 0; i < scan_btns.length; i++) {
+        scan_btns[i].addEventListener('keypress', on_click);
+    }
     return null;
 }
 window.addEventListener('load', init);
 function init() {
     var examples = [
-        { name: "Apples", raw: "APPL", group: "fruit", pantry: 12, fridge: 24 },
-        { name: "Carrots", raw: "CRT", group: "vegetable", fridge: 21, pantry: 7 },
-        { name: "Margarine", raw: "MARGRN", fridge: 124, on_open_fridge: 62 },
-        { name: "Minced Beef", raw: "MNCED BEEF", group: "meat", fridge: 2, freezer: 5 },
-        { name: "Pancake Mix", raw: "PNCK MIX", group: "grains", pantry: 19, on_open_pantry: 12 },
-        { name: "Yogurt", raw: "YOGURT", group: "dairy", fridge: 7, freezer: 31, on_open_fridge: 3 },
-        { name: "Broccoli", raw: "BRCLI", group: "vegetable", fridge: 5, pantry: 2 },
-        { name: "Jam", raw: "JAM", on_open_fridge: 365 },
-        { name: "Bread", raw: "BREAD", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
-        { name: "Milk", raw: "MILK", group: "dairy", on_open_fridge: 1, fridge: 7 },
+        { name: "Apples", raw: "appl", group: "fruit", pantry: 12, fridge: 24 },
+        { name: "Carrots", raw: "crt", group: "vegetable", fridge: 21, pantry: 7 },
+        { name: "Margarine", raw: "margrn", fridge: 124, on_open_fridge: 62 },
+        { name: "Minced Beef", raw: "mncd beef", group: "meat", fridge: 2, freezer: 5 },
+        { name: "Pancake Mix", raw: "pnck mix", group: "grains", pantry: 19, on_open_pantry: 12 },
+        { name: "Yogurt", raw: "yogurt", group: "dairy", fridge: 7, freezer: 31, on_open_fridge: 3 },
+        { name: "Broccoli", raw: "brcli", group: "vegetable", fridge: 5, pantry: 2 },
+        { name: "Jam", raw: "jam", on_open_fridge: 365 },
+        { name: "Bread", raw: "bread", group: "grains", pantry: 4, fridge: 22, on_open_fridge: 15 },
+        { name: "Milk", raw: "milk", group: "dairy", on_open_fridge: 1, fridge: 7 },
     ];
     displayFoodItems(examples, "Example Data Visualization");
     setupCamera();
@@ -110,13 +113,13 @@ function init() {
         }
     });
 }
-var MAX_RECIPES = 5;
 function displayRecipes(recipe_items, message) {
     if (message === void 0) { message = "Your Recipes"; }
     var container = document.getElementById('recipes');
     var template = document.getElementById('recipe-template');
     container.innerHTML = "";
     container.appendChild(template);
+    var MAX_RECIPES = 8;
     var _loop_1 = function (i) {
         var item = recipe_items[i];
         var node = template.cloneNode(true);
@@ -129,8 +132,9 @@ function displayRecipes(recipe_items, message) {
         node.addEventListener('click', function () {
             window.open(item.url, '_blank');
         });
+        var MAX_INGREDIENTS = 10;
         var utilized = "Includes ";
-        for (var j = 0; j < Math.min(10, item.utilized.length); j++) {
+        for (var j = 0; j < Math.min(MAX_INGREDIENTS, item.utilized.length); j++) {
             if (item.utilized[j]) {
                 utilized += item.utilized[j].toLowerCase() + ", ";
             }
@@ -140,7 +144,7 @@ function displayRecipes(recipe_items, message) {
         node.querySelector('p').textContent = utilized;
         container.insertBefore(node, template);
     };
-    for (var i = 0; i < recipe_items.length; i++) {
+    for (var i = 0; i < Math.min(MAX_RECIPES, recipe_items.length); i++) {
         _loop_1(i);
     }
     var text = document.createElement('h2');
@@ -161,7 +165,7 @@ function displayFoodItems(food_items, message) {
         node.classList.remove('hidden');
         node.id = "";
         node.querySelector('h2').textContent = item.name;
-        node.querySelector('h3').textContent = '(' + item.raw + ')';
+        node.querySelector('h3').textContent = '(' + item.raw.toUpperCase() + ')';
         if (item.group) {
             node.classList.add(item.group);
         }
@@ -177,7 +181,7 @@ function displayFoodItems(food_items, message) {
         container.insertBefore(node, template);
     }
     if (food_items.length === 0) {
-        message = "Bad receipt. No data to display.";
+        message = "Bad read. No data to display.";
     }
     var text = document.createElement('h2');
     text.innerText = message;
