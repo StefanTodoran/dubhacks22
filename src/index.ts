@@ -22,14 +22,18 @@ function init() {
   displayFoodItems(examples, "Example Data Visualization");
   setupCamera();
 
-  const show_more = document.getElementById('show-more-btn');
+  const show_more_btn = document.getElementById('show-more-btn');
+  const show_more_section = document.querySelectorAll('.show-more-section');
   const demo = document.getElementById('demo');
-  show_more.addEventListener('click', () => {
+  show_more_btn.addEventListener('click', () => {
     demo.classList.toggle('shown');
-    if (show_more.textContent == "See More") {
-      show_more.textContent = "Go Back";
+    if (show_more_btn.textContent == "See More") {
+      show_more_btn.textContent = "Go Back";
     } else {
-      show_more.textContent = "See More";
+      show_more_btn.textContent = "See More";
+    }
+    for (let i = 0; i < show_more_section.length; i++) {
+      show_more_section[i].classList.toggle('shown');
     }
   });
 }

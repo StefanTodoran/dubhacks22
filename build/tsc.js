@@ -80,9 +80,6 @@ function setupCamera() {
     for (var i = 0; i < imageInps.length; i++) {
         imageInps[i].addEventListener('change', on_click);
     }
-    for (var i = 0; i < scan_btns.length; i++) {
-        scan_btns[i].addEventListener('keypress', on_click);
-    }
     return null;
 }
 window.addEventListener('load', init);
@@ -101,15 +98,19 @@ function init() {
     ];
     displayFoodItems(examples, "Example Data Visualization");
     setupCamera();
-    var show_more = document.getElementById('show-more-btn');
+    var show_more_btn = document.getElementById('show-more-btn');
+    var show_more_section = document.querySelectorAll('.show-more-section');
     var demo = document.getElementById('demo');
-    show_more.addEventListener('click', function () {
+    show_more_btn.addEventListener('click', function () {
         demo.classList.toggle('shown');
-        if (show_more.textContent == "See More") {
-            show_more.textContent = "Go Back";
+        if (show_more_btn.textContent == "See More") {
+            show_more_btn.textContent = "Go Back";
         }
         else {
-            show_more.textContent = "See More";
+            show_more_btn.textContent = "See More";
+        }
+        for (var i = 0; i < show_more_section.length; i++) {
+            show_more_section[i].classList.toggle('shown');
         }
     });
 }
